@@ -1,4 +1,4 @@
-µ<?php
+<?php
 $host = "";
 $user = "";
 $password = "";
