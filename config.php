@@ -1,8 +1,8 @@
 <?php
-$host = "";
-$user = "";
-$password = "";
-$database = "";
+$host = "flanderscraft.ddns.net";
+$user = "root";
+$password = "VTIkontich.05";
+$database = "stock";
 
 $conn = new mysqli($host, $user, $password, $database);
 $conn->connect_errno;

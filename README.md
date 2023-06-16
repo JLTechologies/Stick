@@ -2,7 +2,7 @@
 This is a standalone Stock Management system
 
 ## About
-This software is designed to make it easier for Power Installation to have an overview of their stock.
+This software is designed to make it easier for Power Installation to have an overview of their local stock.
 It can be used by anyone that has a need for it.
 
 ## License
