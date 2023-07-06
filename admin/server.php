@@ -98,11 +98,6 @@ if (isset($_POST['login_user'])) {
 
   }
 
-  // EDIT USER
-  if (isset($_POST['edit_user'])) {
-
-  }
-
   // REMOVE USER
   if (isset($_POST['remove_user'])) {
 
@@ -113,8 +108,6 @@ if (isset($_POST['login_user'])) {
 
   }
 
-  // EDIT GROUP
-
   // REMOVE GROUP
   if (isset($_POST['remove_group'])) {
 
@@ -122,43 +115,49 @@ if (isset($_POST['login_user'])) {
 
   // ADD ITEM
 
-  // EDIT ITEM
-
   // REMOVE ITEM
 
   // ADD ROOTCATEGORY
-
-  // EDIT ROOTCATEGORY
 
   // REMOVE ROOTCATEGORY
 
   // ADD CHILDCATEGORY
 
-  // EDIT CHILDCATEGORY
-
   // REMOVE CHILDCATEGORY
 
   // ADD BRAND
+  if (isset($_POST['brandadd'])) {
+    $brandname = mysqli_real_escape_string($conn, $_POST['brandname']);
+    $brandimage = mysqli_real_escape_string($conn, $_POST['brandimage']);
+    $brandcontact = mysqli_real_escape_string($conn, $POST['brandcontact']);
 
-  // EDIT BRAND
+    if (empty($brandname)) {
+      array_push($errors, "Name of the brand can not be empty!");
+    }
+    if (empty($brandcontact)) {
+      array_push($errors, "Contact for a brand is required!");
+    }
+
+    if (count($errors) == 0) {
+      $brandaddquery = "INSERT INTO brands (name, image, brandcontactID) VALUES('$brandname', '$brandimage', '$brandcontact')";
+      mysqli_query($conn, $brandaddquery);
+      $_SESSION['success'] = "New brand created";
+      header('location: ./index.php');
+    }
+
+  }
 
   // REMOVE BRAND
 
   // ADD LOCATION
 
-  // EDIT LOCATION
-
   // REMOVE LOCATION
 
   // ADD BRANDCONTACT
 
-  // EDIT BRANDCONTACT
-
   // REMOVE BRANDCONTACT
 
   // ADD MEASUREMENT
-
-  // EDIT MEASUREMENT
 
   // REMOVE MEASUREMENT
   

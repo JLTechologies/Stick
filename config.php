@@ -1,5 +1,5 @@
 <?php
-$host = "flanderscraft.ddns.net";
+$host = "localhost";
 $user = "root";
 $password = "VTIkontich.05";
 $database = "stock";

@@ -6,11 +6,20 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
+  include('../server.php');
   session_start();
+  $_SESSION['message'] = '';
 
-  if (isset($_GET['logout'])) {
-    session_destroy();
-  }
+  //if (!isset($_SESSION['email'])) {
+   // $_SESSION['msg'] = "You must log in first";
+    //header('location: ../login.php');
+  //}
+  //if (isset($_GET['logout'])) {
+    //session_destroy();
+    //unset($_SESSION['email']);
+    //unset($_SESSION['success']);
+    //header("location: ../login.php");
+  //}
 
   include('../queries.php');
 
@@ -71,7 +80,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="../" class="nav-link active">
+            <a href="../" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -95,7 +104,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/" class="nav-link">
+			<a href="../brands/" class="nav-link active">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Brands
@@ -179,7 +188,8 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="./">Admin</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
+              <li class="breadcrumb-item"><a href ="../">Dashboard</a></li>
+              <li class="breadcrumb-item active">Brands</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -191,18 +201,91 @@
     <div class="content">
       <div class="container-fluid">
         <div class="row">
-          <!-- notification message -->
-  	<?php if (isset($_SESSION['success'])) : ?>
-      <div class="error success" >
-      	<h3>
-          <?php 
-          	echo $_SESSION['success'];
-          ?>
-      	</h3>
-      </div>
-  	<?php endif ?>
+          <?php echo $_SESSION['message'];?>
+          <div class="col-lg-6">
+            <div class="card">
+              <div class="card-body table-responsive p-0">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Image</th>
+                      <th>Name</th>
+                      <th>Edit</th>
+                      <th>Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                      $getbrandlist = mysqli_query($conn, $brandlist);
+
+                      if (! $getbrandlist) {
+                        die('Could not fetch data: '.mysqli_error($conn));
+                      }
+
+                      while($row = mysqli_fetch_assoc($getbrandlist)) {
+                        ?>
+                        <tr class="align-middle">
+                          <td class="text-center"><?php echo htmlspecialchars($row['brandID']);?></td>
+                          <td class="text-center"><img src="<?php echo htmlspecialchars($row['image']);?>" alt="brandimage" style="width:50px;height:50px;"></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
+                          <td>
+                            <form name="edit" action="./edit.php" method="post">
+                              <input type="hidden" name="edit" value="<?php echo htmlspecialchars($row['brandID']);?>"/>
+                              <input type="submit" value="edit brand"/>
+                            </form>
+                          </td>
+                          <td>
+                            <form name="brandremove" action="./index.php" method="post">
+                              <input type="hidden" name="brandremove" value="<?php htmlspecialchars($row['brandID']);?>"/>
+                              <input type="submit" value="remove brand"/>
+                            </form>
+                          </td>        
+                     <?php };
+                    ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Add Brand</h3>
+              </div>
+              <form name="brandadd" action="./index.php" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="brandname">Brand name</label>
+                    <input type="text" class="form-control" id="brandname" placeholder="Enter Brand Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="brandimage">Brand Image</label>
+                    <input type="text" class="form-control" id="brandimage" placeholder="Enter Brand Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="brandcontact">Brand Contact</label>
+                    <select class="custom-select form-control border border-width-2" id="brandcontact" placeholder="Please select a contact">
+                      <?php
+                        $getcontact = mysqli_query($conn, $brandcontactlist);
+
+                        if (! $getcontact) {
+                          die('Could not fetch data: '.mysqli_error($conn));
+                        }
+                        while ($row1 = mysqli_fetch_assoc($getcontact)) {?>
+                          <option value="<?php htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['name']);?> <?php echo htmlspecialchars($row1['last_name']);?> </option>
+                        <?php };
+                        ?>
+                    </select>
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Add Brand</button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-        <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
@@ -212,7 +295,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('./footer.php'); ?>
+	<?php include('../footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->
