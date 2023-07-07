@@ -71,7 +71,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="../" class="nav-link active">
+            <a href="../" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -111,7 +111,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../measure.php" class="nav-link">
+			<a href="../measure.php" class="nav-link active">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Measurements
@@ -201,8 +201,75 @@
       	</h3>
       </div>
   	<?php endif ?>
+    <div class="col-lg-6">
+            <div class="card">
+              <div class="card-body table-responsive p-0">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Name</th>
+                      <th>Shortcode</th>
+                      <th>Edit</th>
+                      <th>Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                      $getmeasurements = mysqli_query($conn, $measurements);
+
+                      if (! $getmeasurements) {
+                        die('Could not fetch data: '.mysqli_error($conn));
+                      }
+
+                      while($row = mysqli_fetch_assoc($getmeasurements)) {
+                        ?>
+                        <tr class="align-middle">
+                          <td class="text-center"><?php echo htmlspecialchars($row['measureID']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['shortcode']);?></td>
+                          <td>
+                            <form name="measureedit" action="./edit.php" method="post">
+                              <input type="hidden" name="measureedit" value="<?php echo htmlspecialchars($row['measureID']);?>"/>
+                              <input type="submit" value="edit brand"/>
+                            </form>
+                          </td>
+                          <td>
+                            <form name="measureremove" action="./index.php" method="post">
+                              <input type="hidden" name="measureremove" value="<?php htmlspecialchars($row['measureID']);?>"/>
+                              <input type="submit" value="remove brand"/>
+                            </form>
+                          </td>        
+                     <?php };
+                    ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Add Measurement</h3>
+              </div>
+              <form name="measureadd" action="./index.php" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="measurename">Name</label>
+                    <input type="text" class="form-control" id="measurename" placeholder="Enter Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="measureshortcode">Shortcode</label>
+                    <input type="text" class="form-control" id="measureshortcode" placeholder="Enter Shortcode">
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Add Measurement</button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-        <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

@@ -6,4 +6,5 @@ $brandlist = "SELECT * FROM brands";
 $brandcontactlist = "SELECT * FROM brandcontact";
 $countries = "SELECT * FROM countries";
 $locations = "SELECT * FROM locations INNER JOIN countries ON locations.countryId = countries.countryid";
+$measurements = "SELECT * FROM measure";
 ?>

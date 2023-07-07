@@ -83,7 +83,7 @@ if (isset($_POST['login_user'])) {
           $_SESSION['success'] = "Welcome $email.";
           header('location: ./index.php');
         }else {
-            array_push($errors, "Wrong email or phone/password combination");
+            array_push($errors, "Wrong email or password combination");
         }
     }
   }
@@ -231,11 +231,27 @@ if (isset($_POST['login_user'])) {
     header('location: ./index.php');
   }
   // ADD MEASUREMENT
+  if (isset($_POST['measureadd'])) {
+    $measurename = mysqli_real_escape_string($conn,$_POST['measurename']);
+    $measureshortcode = mysqli_real_escape_string($conn,$_POST['measureshortcode']);
+    if (empty($measurename)) {
+      array_push($errors, "Name for measurement is required");
+    }
+    if (empty($measureshortcode)) {
+      array_push($errors, "Shortcode is required");
+    }
+    if (count($errors == 0)) {
+      $measureadd = "INSERT INTO measure (name, shortcode) VALUES ('$measurename', '$measureshortcode')";
+      mysqli_query($conn, $measureadd);
+      $_SESSION['success'] = "New measurement has been created";
+      header('location: ./index.php');
+    }
+  }
 
   // REMOVE MEASUREMENT
-  if (isset($_POST['removemeasure'])) {
+  if (isset($_POST['measureremove'])) {
     $measureID = mysqli_real_escape_string($conn,$_POST['measureremove']);
-    $removemeasurement = "DELETE FROM measurements WHERE measureID = '$measureID'";
+    $removemeasurement = "DELETE FROM measure WHERE measureID = '$measureID'";
     mysqli_query($conn, $removemeasurement);
     $_SESSION['success'] = "Measurement has been succesfully deleted";
     header('location: .index.php');
