@@ -105,12 +105,28 @@ if (isset($_POST['login_user'])) {
 
   // ADD GROUP
   if (isset($_POST['add_group'])) {
+    $groupname = mysqli_real_escape_string($conn, $_POST['groupname']);
 
+    if (empty($groupname)) {
+      array_push($errors, "Groupname is required");
+    }
+
+    if (count($errors) == 0) {
+      $groupadd = "INSERT INTO groups (name) VALUES ('$groupname')";
+      mysqli_query($conn, $groupadd);
+      $_SESSION['success'] = "New group created";
+      header('location: ./index.php');      
+    }
   }
 
   // REMOVE GROUP
-  if (isset($_POST['remove_group'])) {
-
+  if (isset($_POST['groupremove'])) {
+    $groupid = mysqli_real_escape_string($conn, $_POST['groupID']);
+  
+  $groupremovequery = "DELETE from brands WHERE groupID = '$groupid'";
+  mysqli_query($conn, $groupremovequery);
+  $_SESSION['success'] = "Group has been removed";
+  header('location: ./index.php');
   }
 
   // ADD ITEM
