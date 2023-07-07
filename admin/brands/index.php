@@ -7,7 +7,6 @@
   <?php
   include('../../config.php');
   include('../server.php');
-  session_start();
   $_SESSION['message'] = '';
 
   //if (!isset($_SESSION['email'])) {
@@ -67,7 +66,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="../index.php" class="brand-link">
-      <img src="./logo.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="../favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $site; ?></span>
     </a>
 
@@ -88,7 +87,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations.php" class="nav-link">
+            <a href="../locations/" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Locations
@@ -187,7 +186,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="./">Admin</a></li>
+              <li class="breadcrumb-item"><a href="../">Admin</a></li>
               <li class="breadcrumb-item"><a href ="../">Dashboard</a></li>
               <li class="breadcrumb-item active">Brands</li>
             </ol>
@@ -200,6 +199,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+    <?php include ('../errors.php'); ?>
         <div class="row">
           <?php echo $_SESSION['message'];?>
           <div class="col-lg-6">
@@ -230,8 +230,8 @@
                           <td class="text-center"><img src="<?php echo htmlspecialchars($row['image']);?>" alt="brandimage" style="width:50px;height:50px;"></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
                           <td>
-                            <form name="edit" action="./edit.php" method="post">
-                              <input type="hidden" name="edit" value="<?php echo htmlspecialchars($row['brandID']);?>"/>
+                            <form name="brandedit" action="./edit.php" method="post">
+                              <input type="hidden" name="brandedit" value="<?php echo htmlspecialchars($row['brandID']);?>"/>
                               <input type="submit" value="edit brand"/>
                             </form>
                           </td>

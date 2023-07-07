@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
-  include('../../config.php');
+  include('../config.php');
   session_start();
 
   if (isset($_GET['logout'])) {
     session_destroy();
   }
 
-  include('../queries.php');
+  include('./queries.php');
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -26,9 +26,9 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="./plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../css/adminlte.min.css">
+  <link rel="stylesheet" href="./css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -57,21 +57,20 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="../index.php" class="brand-link">
-      <img src="./logo.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <a href="./index.php" class="brand-link">
+      <img src="./favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $site; ?></span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
-
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="../" class="nav-link active">
+            <a href="./" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -79,7 +78,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations.php" class="nav-link">
+            <a href="./locations" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Locations
@@ -87,7 +86,7 @@
             </a>
           </li>
           <li class="nav-item">
-			<a href="../categories/" class="nav-link">
+			<a href="./categories/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Categories
@@ -95,7 +94,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/" class="nav-link">
+			<a href="./brands/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Brands
@@ -103,7 +102,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../contacts/" class="nav-link">
+			<a href="./contacts/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -111,7 +110,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../measure.php" class="nav-link">
+			<a href="./measurements" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Measurements
@@ -119,7 +118,7 @@
 			</a>
 			</li>
 		  <li class="nav-item">
-            <a href="../items/" class="nav-link">
+            <a href="./items/" class="nav-link">
               <i class="nav-icon fas fa-industry"></i>
               <p>
                 Items
@@ -127,7 +126,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-			<a href="../users/" class="nav-link">
+			<a href="./users/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Users
@@ -135,7 +134,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../groups/" class="nav-link">
+			<a href="./users/groups" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Groups
@@ -220,10 +219,10 @@
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src="../plugins/jquery/jquery.min.js"></script>
+<script src="./plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="./plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../js/adminlte.min.js"></script>
+<script src="./js/adminlte.min.js"></script>
 </body>
 </html>

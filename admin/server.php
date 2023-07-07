@@ -139,7 +139,7 @@ if (isset($_POST['login_user'])) {
     }
 
     if (count($errors) == 0) {
-      $brandaddquery = "INSERT INTO brands (name, image, brandcontactID) VALUES('$brandname', '$brandimage', '$brandcontact')";
+      $brandaddquery = "INSERT INTO brands (name, image, brandcontactID) VALUES ('$brandname', '$brandimage', '$brandcontact')";
       mysqli_query($conn, $brandaddquery);
       $_SESSION['success'] = "New brand created";
       header('location: ./index.php');
@@ -148,17 +148,97 @@ if (isset($_POST['login_user'])) {
   }
 
   // REMOVE BRAND
+  if (isset($_POST['brandremove'])) {
+    $brandid = mysqli_real_escape_string($conn, $_POST['brandID']);
+  
+  $brandremovequery = "DELETE from brands WHERE brandID = '$brandid'";
+  mysqli_query($conn, $brandremovequery);
+  $_SESSION['success'] = "Brand has been removed";
+  header('location: ./index.php');
+  }
 
   // ADD LOCATION
+  if (isset($_POST['locationadd'])) {
+    $locationname = mysqli_real_escape_string($conn,$_POST['locationname']);
+    $locationstreet = mysqli_real_escape_string($conn,$_POST['locationname']);
+    $locationnumber = mysqli_real_escape_string($conn,$_POST['locationname']);
+    $locationaddition = mysqli_real_escape_string($conn,$_POST['locationname']);
+    $locationzipcode = mysqli_real_escape_string($conn,$_POST['locationname']);
+    $lcoationcity = mysqli_real_escape_string($conn,$_POST['locationname']);
+    $locationstate = mysqli_real_escape_string($conn,$_POST['locationname']);
+    $locationcountry = mysqli_real_escape_string($conn,$_POST['locationname']);
+    if (empty($locationaddition)) {
+      $locationaddquery = "INSERT INTO locationsn(name, street, number, zipcode, city, state, countryID) 
+          VALUES ('$locationname', '$locationstreet', '$locationnumber', '$locationzipcode', '$locationcity', '$locationstate', '$locationcountry')";
+      mysqli_query($conn, $locationaddquery);
+      $_SESSION['success'] = "Location has been added";
+      header("location: ./index.php");
+    }
+    else {
+      $locationaddquery2 = "INSERT INTO locations(name, street, number, addition, zipcode, city, state, countryID) 
+          VALUES ('$locationname', '$locationstreet', '$locationnumber', '$locationaddition', '$locationzipcode', '$locationcity', '$locationstate', '$locationcountry')";
+      mysqli_query($conn, $locationaddquery);
+      $_SESSION['success'] = "Location has been added";
+      header("location: ./index.php");
+    }
+  }
 
   // REMOVE LOCATION
+  if (isset($_POST['locationremove'])) {
+    $locationid = mysqli_real_escape_string($conn, $_POST['locationremove']);
+  
+    $locationremove = "DELETE from locations WHERE locationID = '$locationid'";
+    mysqli_query($conn, $locationremove);
+    $_SESSION['success'] = "Location has been removed";
+    header('location: ./index.php');
+  }
 
   // ADD BRANDCONTACT
+  if (isset($_POST['contactadd'])) {
+    $contactname = mysqli_real_escape_string($conn,$_POST['name']);
+    $contactlastname = mysqli_real_escape_string($conn,$_POST['lastname']);
+    $contactphone = mysqli_real_escape_string($conn,$_POST['phone']);
+    $contactemail = mysqli_real_escape_string($conn,$_POST['email']);
+    $contactstreet = mysqli_real_escape_string($conn,$_POST['street']);
+    $contactnumber = mysqli_real_escape_string($conn,$_POST['number']);
+    $contactaddition = mysqli_real_escape_string($conn,$_POST['addition']);
+    $contactzipcode = mysqli_real_escape_string($conn,$_POST['zipcode']);
+    $contactcity = mysqli_real_escape_string($conn,$_POST['city']);
+    $contactstate = mysqli_real_escape_string($conn,$_POST['state']);
+    $contactcountry = mysqli_real_escape_string($conn,$_POST['country']);
+    if (empty($contactaddition)) {
+      $contactaddquery = "INSERT INTO brandcontact (name, last_name, phone, email, street, number, zipcode, city, state, countryID) 
+            VALUES ('$contactname', '$contactlastname', '$contactphone', '$contactemail', '$contactstreet', '$contactnumber', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
+      mysqli_query($conn, $contactaddquery);
+      $_SESSION['success'] = "Contact has been created";
+      header("location: ./index.php");
+    }
+    else {
+      $contactaddquery2 = "INSERT INTO brandcontact (name, last_name, phone, email, street, number, addition, zipcode, city, state, countryID) 
+            VALUES ('$contactname', '$contactlastname', '$contactphone', '$contactemail', '$contactstreet', '$contactnumber', '$contactaddition', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
+      mysqli_query($conn, $contactaddquery2);
+      $_SESSION['success'] = "Contact has been created";
+      header("location: ./index.php");
+    }
+  }
 
   // REMOVE BRANDCONTACT
-
+  if (isset($_POST['contactremove'])) {
+    $contactID = mysqli_real_escape_string($conn,$_POST['contactremove']);
+    $removecontactbrande = "DELETE FROM brandcontact WHERE brandcontactID = '$contactID'";
+    mysqli_query($conn, $removecontactbrand);
+    $_SESSION['success'] = "Contact has been removed";
+    header('location: ./index.php');
+  }
   // ADD MEASUREMENT
 
   // REMOVE MEASUREMENT
+  if (isset($_POST['removemeasure'])) {
+    $measureID = mysqli_real_escape_string($conn,$_POST['measureremove']);
+    $removemeasurement = "DELETE FROM measurements WHERE measureID = '$measureID'";
+    mysqli_query($conn, $removemeasurement);
+    $_SESSION['success'] = "Measurement has been succesfully deleted";
+    header('location: .index.php');
+  }
   
   ?>

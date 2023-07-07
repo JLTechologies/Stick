@@ -5,14 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
-  include('../../config.php');
+  include('../../../config.php');
+  include('../../server.php');
   session_start();
+  $_SESSION['message'] = '';
 
-  if (isset($_GET['logout'])) {
-    session_destroy();
-  }
+  //if (!isset($_SESSION['email'])) {
+   // $_SESSION['msg'] = "You must log in first";
+    //header('location: ../../login.php');
+  //}
+  //if (isset($_GET['logout'])) {
+    //session_destroy();
+    //unset($_SESSION['email']);
+    //unset($_SESSION['success']);
+    //header("location: ../../login.php");
+  //}
 
-  include('../queries.php');
+  include('../../queries.php');
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -26,9 +35,9 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../css/adminlte.min.css">
+  <link rel="stylesheet" href="../../css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -79,7 +88,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations.php" class="nav-link active">
+            <a href="../locations.php" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Locations
@@ -95,7 +104,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/" class="nav-link">
+			<a href="../brands/" class="nav-link active">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Brands
@@ -179,8 +188,9 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="./">Admin</a></li>
-              <li class="breadcrumb-item"><a href="../">Dashboard</a></li>
-              <li class="breadcrumb-item">Locations</li>
+              <li class="breadcrumb-item"><a href ="../">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="../">Brands</a></li>
+              <li class="breadcrumb-item">Brand Contacts</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -191,19 +201,9 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-        <?php include ('../errors.php'); ?>
         <div class="row">
-          <!-- notification message -->
-  	<?php if (isset($_SESSION['success'])) : ?>
-      <div class="error success" >
-      	<h3>
-          <?php 
-          	echo $_SESSION['success'];
-          ?>
-      	</h3>
-      </div>
-  	<?php endif ?>
-     <div class="col-lg-6">
+          <?php echo $_SESSION['message'];?>
+          <div class="col-lg-6">
             <div class="card">
               <div class="card-body table-responsive p-0">
                 <table class="table">
@@ -211,34 +211,38 @@
                     <tr>
                       <th>Index</th>
                       <th>Name</th>
-                      <th>Address</th>
+                      <th>Last Name</th>
+                      <th>Phone</th>
+                      <th>Email</th>
                       <th>Edit</th>
                       <th>Remove</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php
-                      $getlocations = mysqli_query($conn, $locations);
+                      $getbrandcontactlist = mysqli_query($conn, $brandcontactlist);
 
-                      if (! $getlocations) {
+                      if (! $getbrandcontactlist) {
                         die('Could not fetch data: '.mysqli_error($conn));
                       }
 
-                      while($row = mysqli_fetch_assoc($getlocations)) {
+                      while($row = mysqli_fetch_assoc($getbrandcontactlist)) {
                         ?>
                         <tr class="align-middle">
-                          <td class="text-center"><?php echo htmlspecialchars($row['locationID']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['brandcontactID']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['street']);?> <?php echo htmlspecialchars($row['number']);?> / <?php echo htmlspecialchars($row['addition']);?> , <?php echo htmlspecialchars($row['zipcode']);?> <?php echo htmlspecialchars($row['city']);?> <?php echo htmlspecialchars($row['nicename']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['last_name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['phone']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['email']);?></td>
                           <td>
-                            <form name="locationedit" action="./edit.php" method="post">
-                              <input type="hidden" name="locationedit" value="<?php echo htmlspecialchars($row['locationID']);?>"/>
+                            <form name="edit" action="./edit.php" method="post">
+                              <input type="hidden" name="edit" value="<?php echo htmlspecialchars($row['brandcontactID']);?>"/>
                               <input type="submit" value="edit brand"/>
                             </form>
                           </td>
                           <td>
-                            <form name="locationremove" action="./index.php" method="post">
-                              <input type="hidden" name="locationremove" value="<?php htmlspecialchars($row['locationID']);?>"/>
+                            <form name="contactremove" action="./index.php" method="post">
+                              <input type="hidden" name="brandremove" value="<?php htmlspecialchars($row['brandcontactID']);?>"/>
                               <input type="submit" value="remove brand"/>
                             </form>
                           </td>        
@@ -252,41 +256,53 @@
           <div class="col-md-6">
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Location</h3>
+                <h3 class="card-title">Add Contact</h3>
               </div>
-              <form name="locationadd" action="./index.php" method="post">
+              <form name="contactadd" action="./index.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="locationname">Name</label>
-                    <input type="text" class="form-control" id="locationname" placeholder="Enter Brand Name">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="Enter Name" required>
                   </div>
                   <div class="form-group">
-                    <label for="locationstreet">Street</label>
-                    <input type="text" class="form-control" id="locationstreet" placeholder="Enter Brand Name">
+                    <label for="lastname">Last Name</label>
+                    <input type="text" class="form-control" id="lastname" placeholder="Enter Last Name" required>
                   </div>
                   <div class="form-group">
-                    <label for="locationnumber">Number</label>
-                    <input type="text" class="form-control" id="locationnumber" placeholder="Enter Brand Name">
-                  </div> 
-                  <div class="form-group">
-                    <label for="locationaddition">Addition</label>
-                    <input type="text" class="form-control" id="locationaddition" placeholder="Enter Brand Name">
-                  </div> 
-                  <div class="form-group">
-                    <label for="locationzipcode">Zipcode</label>
-                    <input type="text" class="form-control" id="lcoationzipcode" placeholder="Enter Brand Name">
-                  </div> 
-                  <div class="form-group">
-                    <label for="locationcity">City</label>
-                    <input type="text" class="form-control" id="locationcity" placeholder="Enter Brand Name">
-                  </div> 
-                  <div class="form-group">
-                    <label for="locationstate">State</label>
-                    <input type="text" class="form-control" id="locationstate" placeholder="Enter Brand Name">
+                    <label for="phone">tel</label>
+                    <input type="text" class="form-control" id="phone" placeholder="Enter Phone Number" required>
                   </div>
                   <div class="form-group">
-                    <label for="locationcountry">Country</label>
-                    <select class="custom-select form-control border border-width-2" id="locationcountry" required>
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="street">Street</label>
+                    <input type="text" class="form-control" id="street" placeholder="Enter Streetname" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="number">Number</label>
+                    <input type="number" class="form-control" id="number" placeholder="Enter Number" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="addition">Addition</label>
+                    <input type="text" class="form-control" id="addition" placeholder="Enter addition to number (optional)">
+                  </div>
+                  <div class="form-group">
+                    <label for="zipcode">Zipcode</label>
+                    <input type="text" class="form-control" id="zipcode" placeholder="Enter Zipcode" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" id="city" placeholder="Enter City" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="state">State</label>
+                    <input type="text" class="form-control" id="state" placeholder="Enter State" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="country">Country</label>
+                    <select class="custom-select form-control border border-width-2" id="country" required>
                       <?php
                         $getcountries = mysqli_query($conn, $countries);
 
@@ -301,7 +317,7 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Add Location</button>
+                  <button type="submit" class="btn btn-primary">Add contact</button>
                 </div>
               </form>
             </div>
@@ -316,7 +332,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('./footer.php'); ?>
+	<?php include('../../footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->
@@ -324,10 +340,10 @@
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src="../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../js/adminlte.min.js"></script>
+<script src="../../js/adminlte.min.js"></script>
 </body>
 </html>
