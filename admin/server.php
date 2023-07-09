@@ -132,14 +132,68 @@ if (isset($_POST['login_user'])) {
   // ADD ITEM
 
   // REMOVE ITEM
+  if (isset($_POST['itemremove'])) {
+    $itemid = mysqli_real_escape_string($conn, $_POST['itemid']);
+
+    $itemremovequery = "DELETE FROM items WHERE itemID = '$itemid'";
+    mysqli_query($conn, $itemremovequery);
+    $_SESSION['success'] = "Item has been removed";
+    header('location: ./index.php');
+  }
 
   // ADD ROOTCATEGORY
+  if (isset($_POST['rootadd'])) {
+    $rootname = mysqli_real_escape_string($conn, $_POST['rootname']);
+    $rootactive = mysqli_real_escape_string($conn, $_POST['rootactive']);
+
+    if (empty($rootname)) {
+      array_push($errors, "Root category name is required");
+    }
+
+    if (count($errors) == 0) {
+      $rootaddsuery = "INSERT INTO rootcategories (active, name) VALUES ('$rootactive', '$rootname')";
+      mysqli_query($conn, $rootaddsuery);
+      $_SESSION['success'] = "New rootcategory has been created";
+      header('location: ./index.php');
+    }
+  }
 
   // REMOVE ROOTCATEGORY
+  if (isset($_POST['rootremove'])) {
+    $rootid = mysqli_real_escape_string($conn, $_POST['rootid']);
+
+    $rootremove = "DELETE FROM rootcategories WHERE categoryid = '$rootid'";
+    mysqli_query($conn, $rootremove);
+    $_SESSION['success'] = "Rootcategory has been removed";
+    header('location: ./index.php');
+  }
 
   // ADD CHILDCATEGORY
+  if (isset($_POST['childadd'])) {
+    $childname = mysqli_real_escape_string($conn, $_POST['childname']);
+    $rootcat = mysqli_real_escape_string($conn, $_POST['selectroot']);
+
+    if (empty($childname)) {
+      array_push($errors, "Root category name is required");
+    }
+
+    if (count($errors) == 0) {
+      $childaddquery = "INSERT INTO childcategories (rootcategoryID, childname) VALUES ('$rootcat', '$childname')";
+      mysqli_query($conn, $childaddquery);
+      $_SESSION['success'] = "New childcategory has been created";
+      header('location: ./index.php');
+    }
+  }
 
   // REMOVE CHILDCATEGORY
+  if (isset($_POST['childremove'])) {
+    $childid = mysqli_real_escape_string($conn, $_POST['childid']);
+
+    $childremove = "DELETE FROM childcategories WHERE childcategoryID = '$childid'";
+    mysqli_query($conn, $chileremove);
+    $_SESSION['success'] = "Childcategory has been removed";
+    header('location: ./index.php');
+  }
 
   // ADD BRAND
   if (isset($_POST['brandadd'])) {
