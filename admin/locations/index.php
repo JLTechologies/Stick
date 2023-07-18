@@ -79,7 +79,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations.php" class="nav-link active">
+            <a href="./" class="nav-link active">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Locations
@@ -103,7 +103,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../contacts/" class="nav-link">
+			<a href="../brands/contacts/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -111,21 +111,29 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../measure.php" class="nav-link">
+			<a href="../measurements/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Measurements
 				</p>
 			</a>
 			</li>
-		  <li class="nav-item">
-            <a href="../items/" class="nav-link">
-              <i class="nav-icon fas fa-industry"></i>
-              <p>
-                Items
-              </p>
-            </a>
-          </li>
+      <ul class="nav nav-treeview">
+          <?php
+          $getroot = mysqli_query($conn, $rootcategories);
+
+          if (! $getroot) {
+            die('Could not fetch data: '.mysqi_error($conn));
+          }
+
+          while ($row2 = mysqli_fetch_assoc($getroot)) {
+            ?>
+            <li class="nav-item">
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+            </li>
+          <?php };
+          ?>
+        </ul>
 		  <li class="nav-item">
 			<a href="../users/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
@@ -135,7 +143,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../groups/" class="nav-link">
+			<a href="../users/groups/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Groups
@@ -258,35 +266,35 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="locationname">Name</label>
-                    <input type="text" class="form-control" id="locationname" placeholder="Enter Brand Name">
+                    <input type="text" class="form-control" id="locationname" placeholder="Enter Location Name">
                   </div>
                   <div class="form-group">
                     <label for="locationstreet">Street</label>
-                    <input type="text" class="form-control" id="locationstreet" placeholder="Enter Brand Name">
+                    <input type="text" class="form-control" id="locationstreet" placeholder="Enter Location Street">
                   </div>
                   <div class="form-group">
                     <label for="locationnumber">Number</label>
-                    <input type="text" class="form-control" id="locationnumber" placeholder="Enter Brand Name">
+                    <input type="text" class="form-control" id="locationnumber" placeholder="Enter Location Number">
                   </div> 
                   <div class="form-group">
                     <label for="locationaddition">Addition</label>
-                    <input type="text" class="form-control" id="locationaddition" placeholder="Enter Brand Name">
+                    <input type="text" class="form-control" id="locationaddition" placeholder="Enter Location Addition">
                   </div> 
                   <div class="form-group">
                     <label for="locationzipcode">Zipcode</label>
-                    <input type="text" class="form-control" id="lcoationzipcode" placeholder="Enter Brand Name">
+                    <input type="text" class="form-control" id="lcoationzipcode" placeholder="Enter Location Zipcode">
                   </div> 
                   <div class="form-group">
                     <label for="locationcity">City</label>
-                    <input type="text" class="form-control" id="locationcity" placeholder="Enter Brand Name">
+                    <input type="text" class="form-control" id="locationcity" placeholder="Enter Location City">
                   </div> 
                   <div class="form-group">
                     <label for="locationstate">State</label>
-                    <input type="text" class="form-control" id="locationstate" placeholder="Enter Brand Name">
+                    <input type="text" class="form-control" id="locationstate" placeholder="Enter Location State">
                   </div>
                   <div class="form-group">
                     <label for="locationcountry">Country</label>
-                    <select class="custom-select form-control border border-width-2" id="locationcountry" required>
+                    <select class="custom-select form-control border border-width-2" id="locationcountry">
                       <?php
                         $getcountries = mysqli_query($conn, $countries);
 

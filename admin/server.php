@@ -12,40 +12,41 @@ include('../config.php');
 // ADD USER
 if (isset($_POST['admin_reg_user'])) {
   // receive all input values from the form
-  $firstname = mysqli_real_escape_string($db, $_POST['first_name']);
-  $lastname = mysqli_real_escape_string($db, $_POST['last_name']);
-  $email = mysqli_real_escape_string($db, $_POST['email']);
-  $phone = mysqli_real_escape_string($db, $_POST['phone']);
-  $active = mysqli_real_escape_string($db, $_POST['active']);
-  $group = mysqli_real_escape_string($db, $_POST['groupid']);
-  $password_1 = mysqli_real_escape_string($db, $_POST['password_1']);
-  $password_2 = mysqli_real_escape_string($db, $_POST['password_2']);
+  $userfirstname = mysqli_real_escape_string($db, $_POST['userfirstname']);
+  $userlastname = mysqli_real_escape_string($db, $_POST['userlastname']);
+  $useremail = mysqli_real_escape_string($db, $_POST['useremail']);
+  $userphone = mysqli_real_escape_string($db, $_POST['userphone']);
+  $useractive = mysqli_real_escape_string($db, $_POST['useractive']);
+  $usergroup = mysqli_real_escape_string($db, $_POST['usergroup']);
+  $password1 = mysqli_real_escape_string($db, $_POST['password1']);
+  $password2 = mysqli_real_escape_string($db, $_POST['password2']);
+  $created_on = new DateTime('now');
 
   // form validation: ensure that the form is correctly filled ...
   // by adding (array_push()) corresponding error unto $errors array
-  if (empty($firstname)) { array_push($errors, "First name is required"); }
-  if (empty($lastname)) { array_push($erros, "Last name is required"); }
-  if (empty($email)) { array_push($errors, "Phone number is required"); }
-  if (empty($phone)) { array_push($errors, "Email is required"); }
-  if (empty($active)) { array_push($errors, "Active status is required"); }
-  if (empty($group)) { array_push($errors, "Group selection is required"); }
-  if (empty($password_1)) { array_push($errors, "Password is required"); }
-  if ($password_1 != $password_2) {
+  if (empty($userfirstname)) { array_push($errors, "First name is required"); }
+  if (empty($userlastname)) { array_push($erros, "Last name is required"); }
+  if (empty($useremail)) { array_push($errors, "Phone number is required"); }
+  if (empty($userphone)) { array_push($errors, "Email is required"); }
+  if (empty($useractive)) { array_push($errors, "Active status is required"); }
+  if (empty($usergroup)) { array_push($errors, "Group selection is required"); }
+  if (empty($password1)) { array_push($errors, "Password is required"); }
+  if ($password1 != $password2) {
 	array_push($errors, "The two passwords do not match");
   }
 
   // first check the database to make sure 
   // a user does not already exist with the same username and/or email
-  $user_check_query = "SELECT * FROM users WHERE first_name='$firstname' OR last_name='$lastname' OR email='$email' LIMIT 1";
+  $user_check_query = "SELECT * FROM users WHERE first_name='$userfirstname' OR last_name='$userlastname' OR email='$useremail' LIMIT 1";
   $result = mysqli_query($conn, $user_check_query);
   $user = mysqli_fetch_assoc($result);
   
   if ($user) { // if user exists
-    if ($user['email'] === $email) {
+    if ($user['email'] === $useremail) {
       array_push($errors, "Email is already used by another account.");
     }
 
-    if ($user['first_name'] === $firstname && ['last_name'] === $lastname) {
+    if ($user['first_name'] === $userfirstname && ['last_name'] === $userlastname) {
       array_push($errors, "Person already exists.");
     }
   }
@@ -55,9 +56,9 @@ if (isset($_POST['admin_reg_user'])) {
   	$password = md5($password_1);//encrypt the password before saving in the database
 
   	$query = "INSERT INTO users (first_name, last_name, groupID email, phone, active, created_on, password) 
-  			  VALUES('$firstname', '$lastname', '$groupid', '$email', '$phone', '$active', '$created_on', '$password')";
+  			  VALUES('$userfirstname', '$userlastname', '$usergroup', '$useremail', '$userphone', '$useractive', '$created_on', '$password')";
   	mysqli_query($conn, $query);
-  	$_SESSION['success'] = "The new user $email is now registered";
+  	$_SESSION['success'] = "$userlastname $userfirtname is now registered";
   	header('location: ./index.php');
   }
 }

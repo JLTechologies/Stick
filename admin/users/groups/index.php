@@ -71,7 +71,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="../" class="nav-link">
+            <a href="../../" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -79,7 +79,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations.php" class="nav-link">
+            <a href="../../locations/" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Locations
@@ -87,7 +87,7 @@
             </a>
           </li>
           <li class="nav-item">
-			<a href="../categories/" class="nav-link">
+			<a href="../../categories/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Categories
@@ -95,7 +95,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/" class="nav-link">
+			<a href="../../brands/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Brands
@@ -103,7 +103,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../contacts/" class="nav-link">
+			<a href="../../brands/contacts/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -111,23 +111,31 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../measure.php" class="nav-link">
+			<a href="../../measurements/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Measurements
 				</p>
 			</a>
 			</li>
+      <ul class="nav nav-treeview">
+          <?php
+          $getroot = mysqli_query($conn, $rootcategories);
+
+          if (! $getroot) {
+            die('Could not fetch data: '.mysqi_error($conn));
+          }
+
+          while ($row2 = mysqli_fetch_assoc($getroot)) {
+            ?>
+            <li class="nav-item">
+              <a href="../../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+            </li>
+          <?php };
+          ?>
+        </ul>
 		  <li class="nav-item">
-            <a href="../items/" class="nav-link">
-              <i class="nav-icon fas fa-industry"></i>
-              <p>
-                Items
-              </p>
-            </a>
-          </li>
-		  <li class="nav-item">
-			<a href="../users/" class="nav-link">
+			<a href="../" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Users
@@ -135,7 +143,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../groups/" class="nav-link active">
+			<a href="./" class="nav-link active">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Groups
@@ -143,7 +151,7 @@
 			</a>
 			</li>
 			<li class="nav-item">
-			<a href="../settings.php" class="nav-link">
+			<a href="../../settings.php" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Settings

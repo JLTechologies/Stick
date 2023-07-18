@@ -6,13 +6,10 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
-  session_start();
-
-  if (isset($_GET['logout'])) {
-    session_destroy();
-  }
+  $_SESSION['message'] = '';
 
   include('../queries.php');
+  include('../server.php');
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -71,7 +68,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="../" class="nav-link active">
+            <a href="../" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -79,7 +76,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations.php" class="nav-link">
+            <a href="../locations/" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Locations
@@ -103,7 +100,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../contacts/" class="nav-link">
+			<a href="../brands/contacts/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -111,23 +108,31 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../measure.php" class="nav-link">
+			<a href="../measurements/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Measurements
 				</p>
 			</a>
 			</li>
+      <ul class="nav nav-treeview">
+          <?php
+          $getroot = mysqli_query($conn, $rootcategories);
+
+          if (! $getroot) {
+            die('Could not fetch data: '.mysqi_error($conn));
+          }
+
+          while ($row2 = mysqli_fetch_assoc($getroot)) {
+            ?>
+            <li class="nav-item">
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+            </li>
+          <?php };
+          ?>
+        </ul>
 		  <li class="nav-item">
-            <a href="../items/" class="nav-link">
-              <i class="nav-icon fas fa-industry"></i>
-              <p>
-                Items
-              </p>
-            </a>
-          </li>
-		  <li class="nav-item">
-			<a href="../users/" class="nav-link">
+			<a href="./" class="nav-link active">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Users
@@ -135,7 +140,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../groups/" class="nav-link">
+			<a href="./groups/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Groups
@@ -178,8 +183,9 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="./">Admin</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
+              <li class="breadcrumb-item"><a href="../">Admin</a></li>
+              <li class="breadcrumb-item"><a href="../">Dashboard</a></li>
+              <li class="breadcrumb-item">Users</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -190,7 +196,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-        <div class="row">
+        <?php include ('../errors.php');?>
           <!-- notification message -->
   	<?php if (isset($_SESSION['success'])) : ?>
       <div class="error success" >
@@ -201,8 +207,127 @@
       	</h3>
       </div>
   	<?php endif ?>
+        <div class="row">
+    <div class="col-lg-6">
+            <div class="card">
+              <div class="card-body">
+              <div class="card-header">
+                <h3 class="card-title">List Users</h3>
+              </div>
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>Name</th>
+                      <th>Last Name</th>
+                      <th>Group</th>
+                      <th>Details</th>
+                      <th>Edit</th>
+                      <th>Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                      $getusers = mysqli_query($conn, $userlist);
+
+                      if (! $getusers) {
+                        die('Could not fetch data: '.mysqli_error($conn));
+                      }
+
+                      while($row = mysqli_fetch_assoc($getusers)) {
+                        ?>
+                        <tr class="align-middle">
+                          <td class="text-center"><?php echo htmlspecialchars($row['userid']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['first_name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['last_name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
+                          <td>
+                            <form name="userdetails" action="./details.php" method="post">
+                              <input type="hidden" name="userdetails" value="<?php echo htmlspecialchars($row['userid']);?>"/>
+                              <input type="submit" value="edit brand"/>
+                            </form>
+                          </td>
+                          <td>
+                            <form name="useredit" action="./edit.php" method="post">
+                              <input type="hidden" name="useredit" value="<?php echo htmlspecialchars($row['userid']);?>"/>
+                              <input type="submit" value="edit brand"/>
+                            </form>
+                          </td>
+                          <td>
+                            <form name="userremove" action="./index.php" method="post">
+                              <input type="hidden" name="userremove" value="<?php htmlspecialchars($row['userid']);?>"/>
+                              <input type="submit" value="remove brand"/>
+                            </form>
+                          </td>
+                      </tr>    
+                     <?php };
+                    ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Add User</h3>
+              </div>
+              <form name="admin_reg_user" action="./index.php" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="userfirstname">Name</label>
+                    <input type="text" class="form-control" id="userfirstname" placeholder="Enter Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="userlastname">Last Name</label>
+                    <input type="text" class="form-control" id="userlastname" placeholder="Enter Last Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="useremail">Email</label>
+                    <input type="text" class="form-control" id="useremail" placeholder="Enter Email">
+                  </div>
+                  <div class="form-group">
+                    <label for="userphone">Phone</label>
+                    <input type="text" class="form-control" id="userphone" placeholder="Enter Work Phone">
+                  </div>
+                  <div class="form-group">
+                    <label for="usergroup">Select Group</label>
+                    <select class="custom-select form-control border border-width-2" id="usergroup">
+                      <?php
+                        $getgrouplist = mysqli_query($conn, $grouplist);
+
+                        if (! $getgrouplist) {
+                          die('Could not fetch data: '.mysqli_error($conn));
+                        }
+                        while ($row1 = mysqli_fetch_assoc($getgrouplist)) {?>
+                          <option value="<?php htmlspecialchars($row1['groupID']) ;?>"><?php echo htmlspecialchars($row1['name']);?></option>
+                        <?php };
+                        ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="useractive">User Active?</label>                    
+                    <select class="custom-select form-control border border-width-2" id="useractive">
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="password1">Password</label>
+                    <input type="text" class="form-control" id="password1" placeholder="Enter Password">
+                  </div>
+                  <div class="form-group">
+                    <label for="password2">Verify Password</label>
+                    <input type="text" class="form-control" id="password2" placeholder="Re-enter Password">
+                  </div>
+                </div>
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-primary">Add User</button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
-        <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
@@ -212,7 +337,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('./footer.php'); ?>
+	<?php include('../footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->
