@@ -6,6 +6,7 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
+  include('../server.php');
   session_start();
 
   if (isset($_GET['logout'])) {
@@ -199,8 +200,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-        <?php include ('../errors.php'); ?>
-        <div class="row">
+        <?php include('../errors.php'); ?>
           <!-- notification message -->
   	<?php if (isset($_SESSION['success'])) : ?>
       <div class="error success" >
@@ -211,6 +211,7 @@
       	</h3>
       </div>
   	<?php endif ?>
+        <div class="row">
      <div class="col-lg-6">
             <div class="card">
               <div class="card-body table-responsive p-0">
@@ -236,18 +237,18 @@
                         ?>
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['locationID']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['locationname']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['street']);?> <?php echo htmlspecialchars($row['number']);?> / <?php echo htmlspecialchars($row['addition']);?> , <?php echo htmlspecialchars($row['zipcode']);?> <?php echo htmlspecialchars($row['city']);?> <?php echo htmlspecialchars($row['nicename']);?></td>
                           <td>
                             <form name="locationedit" action="./edit.php" method="post">
                               <input type="hidden" name="locationedit" value="<?php echo htmlspecialchars($row['locationID']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <input type="submit" value="edit location"/>
                             </form>
                           </td>
                           <td>
                             <form name="locationremove" action="./index.php" method="post">
                               <input type="hidden" name="locationremove" value="<?php htmlspecialchars($row['locationID']);?>"/>
-                              <input type="submit" value="remove brand"/>
+                              <input type="submit" value="remove location"/>
                             </form>
                           </td>        
                      <?php };
@@ -324,7 +325,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('./footer.php'); ?>
+	<?php include('../footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->
