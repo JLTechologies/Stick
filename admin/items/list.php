@@ -10,6 +10,7 @@
 
   include('../queries.php');
   include('../server.php');
+  $id = $_GET['id'];
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {

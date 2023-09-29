@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
-  include('../../config.php');
-  session_start();
+  include('../../../config.php');
+  include('../../authentication.php');
 
   if (isset($_GET['logout'])) {
     session_destroy();
   }
-
-  include('../queries.php');
+  include('../../queries.php');
+  include('../../server.php');
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../../css/adminlte.min.css">
+  
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -103,7 +104,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../../brands/contacts/" class="nav-link">
+			<a href="../../brands/contact/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -199,18 +200,19 @@
 
     <!-- Main content -->
     <div class="content">
-      <div class="container-fluid">
-        <div class="row">
           <!-- notification message -->
   	<?php if (isset($_SESSION['success'])) : ?>
       <div class="error success" >
       	<h3>
           <?php 
           	echo $_SESSION['success'];
+            unset($_SESSION["success"]);
           ?>
       	</h3>
       </div>
   	<?php endif ?>
+      <div class="container-fluid">
+        <div class="row">
     <div class="col-lg-6">
             <div class="card">
               <div class="card-body table-responsive p-0">
@@ -235,17 +237,17 @@
                         ?>
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['groupID']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['groupname']);?></td>
                           <td>
-                            <form name="groupedit" action="./edit.php" method="post">
-                              <input type="hidden" name="groupedit" value="<?php echo htmlspecialchars($row['measureID']);?>"/>
+                            <form name="group_edit" action="./edit.php" method="post">
+                              <input type="hidden" name="groupedit" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
                               <input type="submit" value="edit group"/>
                             </form>
                           </td>
                           <td>
-                            <form name="groupremove" action="./index.php" method="post">
-                              <input type="hidden" name="groupremove" value="<?php htmlspecialchars($row['measureID']);?>"/>
-                              <input type="submit" value="remove group"/>
+                            <form action="./index.php" method="post">
+                              <input type="hidden" name="groupremove" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
+                              <button type="submit" class="btn btn-danger btn-block" name="group_remove">Remove Group</button>
                             </form>
                           </td>        
                      <?php };
@@ -256,19 +258,19 @@
             </div>
           </div>
           <div class="col-md-6">
-            <div class="card card-primary">
+            <div class="card card-primary input-group">
               <div class="card-header">
                 <h3 class="card-title">Add Group</h3>
               </div>
-              <form name="measureadd" action="./index.php" method="post">
+              <form action="./index.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="measurename">Name</label>
-                    <input type="text" class="form-control" id="measurename" placeholder="Enter Name">
+                    <label for="groupname" class="control-label">Name</label>
+                    <input type="text" class="form-control" name="groupname" placeholder="Enter Name">
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Add Group</button>
+                  <button type="submit" class="btn btn-primary btn-block" name="add_group">Add Group</button>
                 </div>
               </form>
             </div>
@@ -283,7 +285,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('./footer.php'); ?>
+	<?php include('../../footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->
@@ -291,10 +293,17 @@
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src="../plugins/jquery/jquery.min.js"></script>
+<script src="../../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../js/adminlte.min.js"></script>
+<script src="../../js/adminlte.min.js"></script>
+<!-- Toaster -->
+<script src="../../plguins/toastr/toastr.min.js"></script>
+<!-- Sweetalert -->
+<script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
+
+<!-- Required php code -->
+
 </body>
 </html>

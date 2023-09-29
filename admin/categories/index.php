@@ -6,8 +6,8 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
+  include('../authentication.php');
   include('../server.php');
-  $_SESSION['message'] = '';
 
   //if (!isset($_SESSION['email'])) {
    // $_SESSION['msg'] = "You must log in first";
@@ -111,7 +111,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/contacts/" class="nav-link">
+			<a href="../brands/contact/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -206,10 +206,19 @@
 
     <!-- Main content -->
     <div class="content">
+          <!-- notification message -->
+  	<?php if (isset($_SESSION['success'])) : ?>
+      <div class="error success" >
+      	<h3>
+          <?php 
+          	echo $_SESSION['success'];
+            unset($_SESSION["success"]);
+          ?>
+      	</h3>
+      </div>
+  	<?php endif ?>
       <div class="container-fluid">
-    <?php include ('../errors.php'); ?>
         <div class="row">
-          <?php echo $_SESSION['message'];?>
           <div class="col-lg-6">
             <div class="card">
               <div class="card-body">
@@ -247,9 +256,9 @@
                             </form>
                           </td>
                           <td>
-                            <form name="rootremove" action="./index.php" method="post">
+                            <form action="./index.php" method="post">
                               <input type="hidden" name="rootremove" value="<?php htmlspecialchars($row['categoryid']);?>"/>
-                              <input type="submit" value="remove brand"/>
+                              <button type="submit" name="rootremove" class="btn btn-danger btn-block">Remove root</button>
                             </form>
                           </td>        
                      <?php };
@@ -294,9 +303,9 @@
                             </form>
                           </td>
                           <td>
-                            <form name="childremove" action="./index.php" method="post">
+                            <form action="./index.php" method="post">
                               <input type="hidden" name="childremove" value="<?php htmlspecialchars($row1['childcategoryID']);?>"/>
-                              <input type="submit" value="remove brand"/>
+                              <button type="submit" name="childremove" class="btn btn-danger btn-block">Remove child</button>
                             </form>
                           </td>        
                      <?php };
@@ -311,7 +320,7 @@
               <div class="card-header">
                 <h3 class="card-title">Add Rootcategory</h3>
               </div>
-              <form name="rootadd" action="./index.php" method="post">
+              <form action="./index.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="rootname">Root category name</label>
@@ -326,7 +335,7 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Add Root</button>
+                  <button type="submit" name="rootadd" class="btn btn-primary btn-block">Add Root</button>
                 </div>
               </form>
             </div>
@@ -334,7 +343,7 @@
               <div class="card-header">
                 <h3 class="card-title">Add Childcategory</h3>
               </div>
-              <form name="childadd" action="./index.php" method="post">
+              <form action="./index.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="childname">Child category name</label>
@@ -357,7 +366,7 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Add Child</button>
+                  <button type="submit" name="childadd" class="btn btn-primary btn-block">Add Child</button>
                 </div>
               </form>
             </div>

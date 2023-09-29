@@ -242,21 +242,21 @@
                           <td class="text-center"><?php echo htmlspecialchars($row['last_name']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
                           <td>
-                            <form name="userdetails" action="./details.php" method="post">
+                            <form action="./details.php" method="post">
                               <input type="hidden" name="userdetails" value="<?php echo htmlspecialchars($row['userid']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <input type="submit" value="View User"/>
                             </form>
                           </td>
                           <td>
-                            <form name="useredit" action="./edit.php" method="post">
+                            <form action="./edit.php" method="post">
                               <input type="hidden" name="useredit" value="<?php echo htmlspecialchars($row['userid']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <input type="submit" value="Edit user"/>
                             </form>
                           </td>
                           <td>
-                            <form name="userremove" action="./index.php" method="post">
+                            <form action="./index.php" method="post">
                               <input type="hidden" name="userremove" value="<?php htmlspecialchars($row['userid']);?>"/>
-                              <input type="submit" value="remove brand"/>
+                              <button type="submit" class="btn btn-danger btn-block" name="remove_user">Remove User</button>
                             </form>
                           </td>
                       </tr>    
@@ -272,7 +272,7 @@
               <div class="card-header">
                 <h3 class="card-title">Add User</h3>
               </div>
-              <form name="admin_reg_user" action="./index.php" method="post">
+              <form action="./index.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="userfirstname">Name</label>
@@ -322,7 +322,7 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Add User</button>
+                  <button type="submit" name="admin_reg_user" class="btn btn-primary">Add User</button>
                 </div>
               </form>
             </div>

@@ -6,8 +6,8 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
+  include('../authentication.php');
   include('../server.php');
-  $_SESSION['message'] = '';
 
   //if (!isset($_SESSION['email'])) {
    // $_SESSION['msg'] = "You must log in first";
@@ -103,7 +103,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/" class="nav-link active">
+			<a href="./" class="nav-link active">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Brands
@@ -111,7 +111,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/contacts/" class="nav-link">
+			<a href="./contact/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -206,10 +206,19 @@
 
     <!-- Main content -->
     <div class="content">
+          <!-- notification message -->
+  	<?php if (isset($_SESSION['success'])) : ?>
+      <div class="error success" >
+      	<h3>
+          <?php 
+          	echo $_SESSION['success'];
+            unset($_SESSION["success"]);
+          ?>
+      	</h3>
+      </div>
+  	<?php endif ?>
       <div class="container-fluid">
-    <?php include ('../errors.php'); ?>
         <div class="row">
-          <?php echo $_SESSION['message'];?>
           <div class="col-lg-6">
             <div class="card">
               <div class="card-body table-responsive p-0">
@@ -244,9 +253,9 @@
                             </form>
                           </td>
                           <td>
-                            <form name="brandremove" action="./index.php" method="post">
+                            <form action="./index.php" method="post">
                               <input type="hidden" name="brandremove" value="<?php htmlspecialchars($row['brandID']);?>"/>
-                              <input type="submit" value="remove brand"/>
+                              <button type="submit" class="btn btn-primary btn-block" name="brandremove">Remove brand</button>
                             </form>
                           </td>        
                      <?php };
@@ -261,7 +270,7 @@
               <div class="card-header">
                 <h3 class="card-title">Add Brand</h3>
               </div>
-              <form name="brandadd" action="./index.php" method="post">
+              <form action="./index.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="brandname">Brand name</label>
@@ -288,7 +297,7 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Add Brand</button>
+                  <button type="submit" name="brandadd" class="btn btn-primary btn-block">Add Brand</button>
                 </div>
               </form>
             </div>

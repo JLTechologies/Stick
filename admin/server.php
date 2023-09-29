@@ -1,95 +1,8 @@
 <?php
-session_start();
+//connect to the database
+include('./config.php');
 
-// initializing variables
-$username = "";
-$email    = "";
-$errors = array(); 
-
-// connect to the database
-include('../config.php');
-
-// ADD USER
-if (isset($_POST['admin_reg_user'])) {
-  // receive all input values from the form
-  $userfirstname = mysqli_real_escape_string($db, $_POST['userfirstname']);
-  $userlastname = mysqli_real_escape_string($db, $_POST['userlastname']);
-  $useremail = mysqli_real_escape_string($db, $_POST['useremail']);
-  $userphone = mysqli_real_escape_string($db, $_POST['userphone']);
-  $useractive = mysqli_real_escape_string($db, $_POST['useractive']);
-  $usergroup = mysqli_real_escape_string($db, $_POST['usergroup']);
-  $password1 = mysqli_real_escape_string($db, $_POST['password1']);
-  $password2 = mysqli_real_escape_string($db, $_POST['password2']);
-  $created_on = new DateTime('now');
-
-  // form validation: ensure that the form is correctly filled ...
-  // by adding (array_push()) corresponding error unto $errors array
-  if (empty($userfirstname)) { array_push($errors, "First name is required"); }
-  if (empty($userlastname)) { array_push($erros, "Last name is required"); }
-  if (empty($useremail)) { array_push($errors, "Phone number is required"); }
-  if (empty($userphone)) { array_push($errors, "Email is required"); }
-  if (empty($useractive)) { array_push($errors, "Active status is required"); }
-  if (empty($usergroup)) { array_push($errors, "Group selection is required"); }
-  if (empty($password1)) { array_push($errors, "Password is required"); }
-  if ($password1 != $password2) {
-	array_push($errors, "The two passwords do not match");
-  }
-
-  // first check the database to make sure 
-  // a user does not already exist with the same username and/or email
-  $user_check_query = "SELECT * FROM users WHERE first_name='$userfirstname' OR last_name='$userlastname' OR email='$useremail' LIMIT 1";
-  $result = mysqli_query($conn, $user_check_query);
-  $user = mysqli_fetch_assoc($result);
-  
-  if ($user) { // if user exists
-    if ($user['email'] === $useremail) {
-      array_push($errors, "Email is already used by another account.");
-    }
-
-    if ($user['first_name'] === $userfirstname && ['last_name'] === $userlastname) {
-      array_push($errors, "Person already exists.");
-    }
-  }
-
-  // Finally, register user if there are no errors in the form
-  if (count($errors) == 0) {
-  	$password = md5($password_1);//encrypt the password before saving in the database
-
-  	$query = "INSERT INTO users (first_name, last_name, groupID email, phone, active, created_on, password) 
-  			  VALUES('$userfirstname', '$userlastname', '$usergroup', '$useremail', '$userphone', '$useractive', '$created_on', '$password')";
-  	mysqli_query($conn, $query);
-  	$_SESSION['success'] = "$userlastname $userfirtname is now registered";
-  	header('location: ./index.php');
-  }
-}
-
-// LOGIN USER
-if (isset($_POST['login_user'])) {
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = mysqli_real_escape_string($conn, $_POST['password']);
-  
-    if (empty($email)) {
-        array_push($errors, "Email is required");
-    }
-    if (empty($password)) {
-        array_push($errors, "Password is required");
-    }
-  
-    if (count($errors) == 0) {
-        $hashed_password = md5($password);
-        $query = "SELECT * FROM users WHERE email='$email' AND password='$hashed_password'";
-        $results = mysqli_query($conn, $query);
-        if (mysqli_num_rows($results) == 1) {
-          $_SESSION['email'] = $email;
-          $_SESSION['success'] = "Welcome $email.";
-          header('location: ./index.php');
-        }else {
-            array_push($errors, "Wrong email or password combination");
-        }
-    }
-  }
-
-  // RESET PASSWORD
+// RESET PASSWORD
   if (isset($_POST['reset_password'])) {
   
   }
@@ -101,33 +14,56 @@ if (isset($_POST['login_user'])) {
 
   // REMOVE USER
   if (isset($_POST['remove_user'])) {
+    $userid = mysqli_real_escape_string($conn, $_POST['userremove']);
 
+    if (empty($userid)) {
+      array_push($errors, "There was a problem removing the selected user. Contact your System Administrator.");
+    }
+
+    if (count($errors) === 0) {
+      $removeuser = "DELETE FROM users WHERE userid = '$userid'";
+
+      if ($conn->query($removeuser) === true) {
+      $_SESSION['success'] = "Selected user has been removed.";
+      header('location: /index.php');
+      }
+      else {
+        $_SESSION['succes'] = "Something went wrong";
+        header('location: /index.php');
+      }
+    }
   }
 
   // ADD GROUP
-  if (isset($_POST['add_group'])) {
-    $groupname = mysqli_real_escape_string($conn, $_POST['groupname']);
-
-    if (empty($groupname)) {
+if (isset($_POST['add_group'])) {
+    $gname = mysqli_real_escape_string($conn, $_POST['groupname']);
+  
+    if (empty($gname)) {
       array_push($errors, "Groupname is required");
     }
-
-    if (count($errors) == 0) {
-      $groupadd = "INSERT INTO groups (name) VALUES ('$groupname')";
-      mysqli_query($conn, $groupadd);
+  
+    if (count($errors) === 0) {
+      $groupadd = "INSERT INTO groups (groupname)" ."VALUES ('$gname')";      
+      
+      if ($conn->query($groupadd) === true) {
       $_SESSION['success'] = "New group created";
       header('location: ./index.php');      
+    }  
+    else {
+        $_SESSION['success'] = "Something went wrong";
+        header('location: ../index.php');
     }
+    mysqli_close('$conn');
+}
   }
-
-  // REMOVE GROUP
-  if (isset($_POST['groupremove'])) {
-    $groupid = mysqli_real_escape_string($conn, $_POST['groupID']);
   
-  $groupremovequery = "DELETE from brands WHERE groupID = '$groupid'";
-  mysqli_query($conn, $groupremovequery);
-  $_SESSION['success'] = "Group has been removed";
-  header('location: ./index.php');
+  // REMOVE GROUP
+  if (isset($_POST['group_remove'])) {
+    $groupid2 = mysqli_real_escape_string($conn, $_POST['groupremove']);
+    $groupremove = "DELETE FROM groups WHERE groupID = '$groupid2'";
+    mysqli_query($conn, $groupremove);
+    $_SESSION['success'] = "Group has been removed";
+    header('location: ./index.php');
   }
 
   // ADD ITEM
@@ -231,24 +167,24 @@ if (isset($_POST['login_user'])) {
   // ADD LOCATION
   if (isset($_POST['locationadd'])) {
     $locationname = mysqli_real_escape_string($conn,$_POST['locationname']);
-    $locationstreet = mysqli_real_escape_string($conn,$_POST['locationname']);
-    $locationnumber = mysqli_real_escape_string($conn,$_POST['locationname']);
-    $locationaddition = mysqli_real_escape_string($conn,$_POST['locationname']);
-    $locationzipcode = mysqli_real_escape_string($conn,$_POST['locationname']);
-    $lcoationcity = mysqli_real_escape_string($conn,$_POST['locationname']);
-    $locationstate = mysqli_real_escape_string($conn,$_POST['locationname']);
-    $locationcountry = mysqli_real_escape_string($conn,$_POST['locationname']);
+    $locationstreet = mysqli_real_escape_string($conn,$_POST['locationstreet']);
+    $locationnumber = mysqli_real_escape_string($conn,$_POST['locationnumber']);
+    $locationaddition = mysqli_real_escape_string($conn,$_POST['locationaddition']);
+    $locationzipcode = mysqli_real_escape_string($conn,$_POST['locationzipcode']);
+    $lcoationcity = mysqli_real_escape_string($conn,$_POST['locationcity']);
+    $locationstate = mysqli_real_escape_string($conn,$_POST['locationstate']);
+    $locationcountry = mysqli_real_escape_string($conn,$_POST['locationcountry']);
     if (empty($locationaddition)) {
-      $locationaddquery = "INSERT INTO locationsn(name, street, number, zipcode, city, state, countryID) 
-          VALUES ('$locationname', '$locationstreet', '$locationnumber', '$locationzipcode', '$locationcity', '$locationstate', '$locationcountry')";
+      $locationaddquery = "INSERT INTO locations(name, street, number, zipcode, city, state, countryID)
+      VALUES ('$locationname', '$locationstreet', '$locationnumber', '$locationzipcode', '$locationcity', '$locationstate', '$locationcountry')";
       mysqli_query($conn, $locationaddquery);
       $_SESSION['success'] = "Location has been added";
       header("location: ./index.php");
     }
     else {
-      $locationaddquery2 = "INSERT INTO locations(name, street, number, addition, zipcode, city, state, countryID) 
+      $locationaddquery2 = "INSERT INTO locations(name, street, number, addition, zipcode, city, state, countryID)
           VALUES ('$locationname', '$locationstreet', '$locationnumber', '$locationaddition', '$locationzipcode', '$locationcity', '$locationstate', '$locationcountry')";
-      mysqli_query($conn, $locationaddquery);
+      mysqli_query($conn, $locationaddquery2);
       $_SESSION['success'] = "Location has been added";
       header("location: ./index.php");
     }
@@ -258,8 +194,8 @@ if (isset($_POST['login_user'])) {
   if (isset($_POST['locationremove'])) {
     $locationid = mysqli_real_escape_string($conn, $_POST['locationremove']);
   
-    $locationremove = "DELETE from locations WHERE locationID = '$locationid'";
-    mysqli_query($conn, $locationremove);
+    $locationdelete = "DELETE from locations WHERE locationID = '$locationid'";
+    mysqli_query($conn, $locationdelete);
     $_SESSION['success'] = "Location has been removed";
     header('location: ./index.php');
   }

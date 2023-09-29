@@ -6,9 +6,8 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
-  $_SESSION['message'] = '';
-
   include('../queries.php');
+  include('../../authentication.php');
   include('../server.php');
 
   $name = mysqli_query($conn, $sitename);
@@ -103,7 +102,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/contacts/" class="nav-link">
+			<a href="../brands/contact/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -207,18 +206,18 @@
 
     <!-- Main content -->
     <div class="content">
-      <div class="container-fluid">
-        <?php include ('../errors.php');?>
           <!-- notification message -->
   	<?php if (isset($_SESSION['success'])) : ?>
       <div class="error success" >
       	<h3>
           <?php 
           	echo $_SESSION['success'];
+            unset($_SESSION["success"]);
           ?>
       	</h3>
       </div>
   	<?php endif ?>
+      <div class="container-fluid">
         <div class="row">
           <div class="col-lg-12">
             <div class="card-body table-responsive p-0">
@@ -259,9 +258,9 @@
                         </form>
                       </td>
                       <td>
-                        <form name="itemremove" action="./index.php" method="post">
+                        <form action="./index.php" method="post">
                           <input type="hidden" name="itemremove" value="<?php htmlspecialchars($row['itemID']);?>"/>
-                          <input type="submit" value="remove brand"/>
+                          <button type="submit" name="itemremove" class="btn btn-danger btn-block">Remove Item</button>
                         </form>
                       </td>
                     </tr>
