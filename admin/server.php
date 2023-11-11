@@ -1,6 +1,6 @@
 <?php
 //connect to the database
-include('./config.php');
+include('../config.php');
 
 // RESET PASSWORD
   if (isset($_POST['reset_password'])) {
@@ -87,7 +87,7 @@ if (isset($_POST['add_group'])) {
       array_push($errors, "Root category name is required");
     }
 
-    if (count($errors) == 0) {
+    if (count($errors) === 0) {
       $rootaddsuery = "INSERT INTO rootcategories (active, name) VALUES ('$rootactive', '$rootname')";
       mysqli_query($conn, $rootaddsuery);
       $_SESSION['success'] = "New rootcategory has been created";
@@ -97,7 +97,7 @@ if (isset($_POST['add_group'])) {
 
   // REMOVE ROOTCATEGORY
   if (isset($_POST['rootremove'])) {
-    $rootid = mysqli_real_escape_string($conn, $_POST['rootid']);
+    $rootid = mysqli_real_escape_string($conn, $_POST['root_remove']);
 
     $rootremove = "DELETE FROM rootcategories WHERE categoryid = '$rootid'";
     mysqli_query($conn, $rootremove);
@@ -107,8 +107,8 @@ if (isset($_POST['add_group'])) {
 
   // ADD CHILDCATEGORY
   if (isset($_POST['childadd'])) {
-    $childname = mysqli_real_escape_string($conn, $_POST['childname']);
-    $rootcat = mysqli_real_escape_string($conn, $_POST['selectroot']);
+    $childname = mysqli_real_escape_string($conn, $_POST['child_name']);
+    $rootcat = mysqli_real_escape_string($conn, $_POST['select_root']);
 
     if (empty($childname)) {
       array_push($errors, "Root category name is required");
@@ -124,7 +124,7 @@ if (isset($_POST['add_group'])) {
 
   // REMOVE CHILDCATEGORY
   if (isset($_POST['childremove'])) {
-    $childid = mysqli_real_escape_string($conn, $_POST['childid']);
+    $childid = mysqli_real_escape_string($conn, $_POST['child_remove']);
 
     $childremove = "DELETE FROM childcategories WHERE childcategoryID = '$childid'";
     mysqli_query($conn, $chileremove);

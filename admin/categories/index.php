@@ -75,7 +75,7 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-accordion="false">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
@@ -126,7 +126,7 @@
 				</p>
 			</a>
 			</li>
-      <ul class="nav nav-treeview">
+      <ul class="nav nav-treeview" data-widget="treeview" role="menu">
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -137,7 +137,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><p><?php echo htmlspecialchars($row2['name']);?></p></a>
             </li>
           <?php };
           ?>
@@ -257,7 +257,7 @@
                           </td>
                           <td>
                             <form action="./index.php" method="post">
-                              <input type="hidden" name="rootremove" value="<?php htmlspecialchars($row['categoryid']);?>"/>
+                              <input type="hidden" name="root_remove" value="<?php echo htmlspecialchars($row['categoryid']);?>"/>
                               <button type="submit" name="rootremove" class="btn btn-danger btn-block">Remove root</button>
                             </form>
                           </td>        
@@ -304,7 +304,7 @@
                           </td>
                           <td>
                             <form action="./index.php" method="post">
-                              <input type="hidden" name="childremove" value="<?php htmlspecialchars($row1['childcategoryID']);?>"/>
+                              <input type="hidden" name="child_remove" value="<?php echo htmlspecialchars($row1['childcategoryID']);?>"/>
                               <button type="submit" name="childremove" class="btn btn-danger btn-block">Remove child</button>
                             </form>
                           </td>        
@@ -324,13 +324,13 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="rootname">Root category name</label>
-                    <input type="text" class="form-control" id="rootname" placeholder="Enter Root Name">
+                    <input type="text" class="form-control" name="rootname" placeholder="Enter Root Name">
                   </div>
                   <div class="form-group">
                     <label for="rootactive">Root Active</label>
-                    <select class="custom-select form-control border border-width-2" id="rootactive">
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
+                    <select class="custom-select form-control border border-width-2" name="rootactive">
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
                     </select>
                   </div>
                 </div>
@@ -347,11 +347,11 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="childname">Child category name</label>
-                    <input type="text" class="form-control" id="childname" placeholder="Enter Child Name">
+                    <input type="text" class="form-control" name="child_name" placeholder="Enter Child Name">
                   </div>
                   <div class="form-group">
                     <label for="selectroot">Root Category</label>
-                    <select class="custom-select form-control border border-width-2" id="selectroot">
+                    <select class="custom-select form-control border border-width-2" name="select_root">
                       <?php
                         $getrootselect = mysqli_query($conn, $rootcategories);
 
@@ -359,7 +359,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row2 = mysqli_fetch_assoc($getrootselect)) {?>
-                          <option value="<?php htmlspecialchars($row2['categoryid']) ;?>"><?php echo htmlspecialchars($row2['name']);?></option>
+                          <option value="<?php echo htmlspecialchars($row2['categoryid']) ;?>"><?php echo htmlspecialchars($row2['name']);?></option>
                         <?php };
                         ?>
                     </select>
