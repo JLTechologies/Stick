@@ -199,6 +199,9 @@
 
     <!-- Main content -->
     <div class="content">
+      <div class="container-fluid">
+        <?php include ('../errors.php'); ?>
+        <div class="row">
           <!-- notification message -->
   	<?php if (isset($_SESSION['success'])) : ?>
       <div class="error success" >
@@ -210,8 +213,6 @@
       	</h3>
       </div>
   	<?php endif ?>
-      <div class="container-fluid">
-        <div class="row">
      <div class="col-lg-6">
             <div class="card">
               <div class="card-body table-responsive p-0">
@@ -248,7 +249,7 @@
                           <td>
                             <form action="./index.php" method="post">
                               <input type="hidden" name="locationremove" value="<?php htmlspecialchars($row['locationID']);?>"/>
-                              <button type="submit" class="btn btn-primary btn-block" name="locationremove">Remove Location</button>
+                              <input type="submit" value="remove brand"/>
                             </form>
                           </td>        
                      <?php };

@@ -245,9 +245,9 @@
                             </form>
                           </td>
                           <td>
-                            <form action="./index.php" method="post">
-                              <input type="hidden" name="groupremove" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
-                              <button type="submit" class="btn btn-danger btn-block" name="group_remove">Remove Group</button>
+                            <form name="groupremove" action="./index.php" method="post">
+                              <input type="hidden" name="groupremove" value="<?php htmlspecialchars($row['measureID']);?>"/>
+                              <input type="submit" value="remove group"/>
                             </form>
                           </td>        
                      <?php };
