@@ -3,7 +3,6 @@
 include('../config.php');
 
 // RESET PASSWORD
-// RESET PASSWORD
   if (isset($_POST['reset_password'])) {
   
   }
@@ -262,7 +261,29 @@ if (isset($_POST['add_group'])) {
     $removemeasurement = "DELETE FROM measure WHERE measureID = '$measureID'";
     mysqli_query($conn, $removemeasurement);
     $_SESSION['success'] = "Measurement has been succesfully deleted";
-    header('location: .index.php');
+    header('location: ./index.php');
   }
+
+  //ADJUST SITENAME
+    if (isset($_POST['setting_sitename'])) {
+      $setting_sitename = mysqli_real_escape_string($conn, $_POST['new_sitename']);
+      $updatesitename = "UPDATE settings SET sitename = '$setting_sitename'";
+      mysqli_query($conn, $updatesitename);
+      $_SESSION['success'] = "Sitename has been updated";
+      header('location: ./settings.php');
+    }
+
+  //ADJUST SITEACTIVITY
+    if (isset($_POST['setting_siteactive'])) {
+      $setting_active = mysqli_real_escape_string($conn, $_POST['setting_siteactive']);
+      $updatesiteactive = "UPDATE settings SET siteactive = '$setting_active'";
+      mysqli_query($conn, $updatesiteactive);
+      $_SESSION['success'] = "Site active status has been changed";
+      header('location: ./settings.php');
+    }
+
+  //ADJUST EMAILDETAILS
+
+  //LOGGING
   
   ?>
