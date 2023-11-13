@@ -115,7 +115,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="./brands/contacts/" class="nav-link">
+			<a href="./brands/contact/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -199,7 +199,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="./">Admin</a></li>
-              <li class="breadcrumb-item"><a href="./"></a>Dashbboard</li>
+              <li class="breadcrumb-item"><a href="./">Dashbboard</a></li>
               <li class="breadcrumb-item active">Settings</li>
             </ol>
           </div><!-- /.col -->
@@ -233,7 +233,7 @@
 
             while($row3 = mysqli_fetch_assoc($getsettings)) {
               $sitename2 = htmlspecialchars($row3['sitename']);
-              $sitenameactive = htmlspecialchars($row3['siteactive']);
+              $active = htmlspecialchars($row3['siteactive']);
               $sitefavicon = htmlspecialchars($row3['favicon']);
               $emailhost = htmlspecialchars($row3['emailhost']);
               $emailuser = htmlspecialchars($row3['emailuser']);
@@ -249,6 +249,25 @@
                       <label for="new_sitename">Site Name</label>
                       <input type="text" class="form-control" name="new_sitename" id="new_sitename" placeholder="<?php echo $sitename2;?>">
                       <button type="submit" name="setting_sitename" class="btn btn-primary btn-block">Update</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card card-primary">
+                  <div class="card-body">
+                    <div class="form-group">
+                      <label for="new_active" class="control-label">Site Active</label>
+                      <select name="new_active" class="form-control">
+                        <?php
+                        if($active == "true") {?>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                        <?php }
+                        else {?>
+                          <option value="false">No</option>
+                          <option value="true">Yes</option>
+                        <?php } ?>
+                      </select>
+                      <button type="submit" name="setting_siteactive" class="btn btn-primary btn-block">Update</button>
                     </div>
                   </div>
                 </div>

@@ -275,7 +275,7 @@ if (isset($_POST['add_group'])) {
 
   //ADJUST SITEACTIVITY
     if (isset($_POST['setting_siteactive'])) {
-      $setting_active = mysqli_real_escape_string($conn, $_POST['setting_siteactive']);
+      $setting_active = mysqli_real_escape_string($conn, $_POST['new_active']);
       $updatesiteactive = "UPDATE settings SET siteactive = '$setting_active'";
       mysqli_query($conn, $updatesiteactive);
       $_SESSION['success'] = "Site active status has been changed";
