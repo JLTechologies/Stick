@@ -267,10 +267,15 @@ if (isset($_POST['add_group'])) {
   //ADJUST SITENAME
     if (isset($_POST['setting_sitename'])) {
       $setting_sitename = mysqli_real_escape_string($conn, $_POST['new_sitename']);
+      if (empty($setting_sitename)) {
+        array_push($errors, "Site name has not been filled in!");
+      }
+      if (count($errors == 0)) {
       $updatesitename = "UPDATE settings SET sitename = '$setting_sitename'";
       mysqli_query($conn, $updatesitename);
       $_SESSION['success'] = "Sitename has been updated";
       header('location: ./settings.php');
+      }
     }
 
   //ADJUST SITEACTIVITY
@@ -283,7 +288,14 @@ if (isset($_POST['add_group'])) {
     }
 
   //ADJUST EMAILDETAILS
+    if (isset($_POST['setting_email'])) {
+      $setting_host = mysqli_real_escape_string($conn, $_POST['emailhost']);
+      $setting_user = mysqli_real_escape_string($conn, $_POST['emailuser']);
+      $setting_password = mysqli_real_escape_string($conn, $_POST['emailpassword']);
+      $setting_port = mysqli_real_escape_string($conn, $_POST['emailport']);
 
+      $updatemailsettingsfull = "UPDATE settings SET emailhost = '$setting_host', emailuser = '$setting_user', emailpassword = '$setting_password', emailport = '$setting_port'";
+    }
   //LOGGING
   
   ?>

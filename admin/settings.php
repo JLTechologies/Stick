@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
+  <link rel="shortcut icon" href="./favicon.jpg" type="image/x-icon">
   <?php
   include('../config.php');
   include('./authentication.php');
@@ -242,38 +242,69 @@
             }
             ?>
             <form action="settings.php" method="post">
-              <div>
-                <div class="card card-primary">
-                  <div class="card-body">
-                    <div class="form-group">
-                      <label for="new_sitename">Site Name</label>
-                      <input type="text" class="form-control" name="new_sitename" id="new_sitename" placeholder="<?php echo $sitename2;?>">
-                      <button type="submit" name="setting_sitename" class="btn btn-primary btn-block">Update</button>
-                    </div>
-                  </div>
-                </div>
-                <div class="card card-primary">
-                  <div class="card-body">
-                    <div class="form-group">
-                      <label for="new_active" class="control-label">Site Active</label>
-                      <select name="new_active" class="form-control">
-                        <?php
-                        if($active == "true") {?>
-                        <option value="true">Yes</option>
-                        <option value="false">No</option>
-                        <?php }
-                        else {?>
-                          <option value="false">No</option>
-                          <option value="true">Yes</option>
-                        <?php } ?>
-                      </select>
-                      <button type="submit" name="setting_siteactive" class="btn btn-primary btn-block">Update</button>
-                    </div>
+              <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Sitename Settings</h3>
+              </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="new_sitename">Site Name</label>
+                    <input type="text" class="form-control" name="new_sitename" id="new_sitename" placeholder="<?php echo $sitename2;?>">
+                    <button type="submit" name="setting_sitename" class="btn btn-primary btn-block">Update</button>
                   </div>
                 </div>
               </div>
-          </form>
-            
+              <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Active Settings</h3>
+              </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="new_active" class="control-label">Site Active</label>
+                    <select name="new_active" class="form-control">
+                      <?php
+                        if($active == "true") {?>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      <?php }
+                      else {?>
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                      <?php } ?>
+                    </select>
+                    <button type="submit" name="setting_siteactive" class="btn btn-primary btn-block">Update</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-lg-6">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Email Settings</h3>
+              </div>
+              <form action="./settings.php" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="emailhost">Email Host</label>
+                    <input type="text" class="form-control" id="emailhost" name="emailhost" placeholder="<?php echo $emailhost;?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="emailuser">Email User</label>
+                    <input type="text" class="form-control" id="emailuser" name="emailuser" placeholder="<?php echo $emailuser;?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="emailpassword">Email Host</label>
+                    <input type="password" class="form-control" id="emailpassword" name="emailpassword" placeholder="<?php echo $emailpassword;?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="emailport">Email Host</label>
+                    <input type="number" class="form-control" id="emailport" name="emailport" placeholder="<?php echo $emailport;?>">
+                  </div>
+                  <button type="submit" name="setting_email" class="btn btn-primary btn-block">Update</button>
+                </div>
+              </form>
+            </div>
           </div>
           
         </div>
