@@ -294,11 +294,11 @@
                     <input type="text" class="form-control" id="emailuser" name="emailuser" placeholder="<?php echo $emailuser;?>">
                   </div>
                   <div class="form-group">
-                    <label for="emailpassword">Email Host</label>
+                    <label for="emailpassword">Email Password</label>
                     <input type="password" class="form-control" id="emailpassword" name="emailpassword" placeholder="<?php echo $emailpassword;?>">
                   </div>
                   <div class="form-group">
-                    <label for="emailport">Email Host</label>
+                    <label for="emailport">Email Port</label>
                     <input type="number" class="form-control" id="emailport" name="emailport" placeholder="<?php echo $emailport;?>">
                   </div>
                   <button type="submit" name="setting_email" class="btn btn-primary btn-block">Update</button>
