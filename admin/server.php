@@ -295,7 +295,17 @@ if (isset($_POST['add_group'])) {
       $setting_port = mysqli_real_escape_string($conn, $_POST['emailport']);
 
       $updatemailsettingsfull = "UPDATE settings SET emailhost = '$setting_host', emailuser = '$setting_user', emailpassword = '$setting_password', emailport = '$setting_port'";
+
+      if (empty($setting_host) || empty($setting_port) || empty($setting_user) || empty($setting_password)) {
+          array_push($errors, "Not all details have been filled in");
+        }
+      if (count($errors == 0)) {
+        mysqli_query($conn, $updatemailsettingsfull);
+        $_SESSION['success'] = "All mailsettings have been updated.";
+        header('lcoation: ./settings.php');
+      }
     }
+    
   //LOGGING
   
   ?>
