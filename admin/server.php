@@ -247,7 +247,7 @@ if (isset($_POST['add_group'])) {
     if (empty($measureshortcode)) {
       array_push($errors, "Shortcode is required");
     }
-    if (count($errors == 0)) {
+    if (count($errors === 0)) {
       $measureadd = "INSERT INTO measure (name, shortcode) VALUES ('$measurename', '$measureshortcode')";
       mysqli_query($conn, $measureadd);
       $_SESSION['success'] = "New measurement has been created";
@@ -270,7 +270,7 @@ if (isset($_POST['add_group'])) {
       if (empty($setting_sitename)) {
         array_push($errors, "Site name has not been filled in!");
       }
-      if (count($errors == 0)) {
+      if (count($errors === 0)) {
       $updatesitename = "UPDATE settings SET sitename = '$setting_sitename'";
       mysqli_query($conn, $updatesitename);
       $_SESSION['success'] = "Sitename has been updated";
@@ -299,7 +299,7 @@ if (isset($_POST['add_group'])) {
       if (empty($setting_host) || empty($setting_port) || empty($setting_user) || empty($setting_password)) {
           array_push($errors, "Not all details have been filled in");
         }
-      if (count($errors == 0)) {
+      if (count($errors === 0)) {
         mysqli_query($conn, $updatemailsettingsfull);
         $_SESSION['success'] = "All mailsettings have been updated.";
         header('lcoation: ./settings.php');
