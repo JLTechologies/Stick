@@ -252,13 +252,13 @@
                           <td>
                             <form name="locationedit" action="./edit.php" method="post">
                               <input type="hidden" name="locationedit" value="<?php echo htmlspecialchars($row['locationID']);?>"/>
-                              <input type="submit" value="edit location"/>
+                              <button type="submit" class="btn btn-primary btn-block" name="locationedit">Edit Location</button>
                             </form>
                           </td>
                           <td>
                             <form action="./index.php" method="post">
                               <input type="hidden" name="locationremove" value="<?php htmlspecialchars($row['locationID']);?>"/>
-                              <input type="submit" value="remove brand"/>
+                              <button type="submit" class="btn btn-warning btn-block" name="locationremove">Remove Location</button>
                             </form>
                           </td>        
                      <?php };
@@ -277,35 +277,35 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="locationname">Name</label>
-                    <input type="text" class="form-control" id="locationname" placeholder="Enter Location Name">
+                    <input type="text" class="form-control" id="locationname" name="locationname" placeholder="Enter Location Name">
                   </div>
                   <div class="form-group">
                     <label for="locationstreet">Street</label>
-                    <input type="text" class="form-control" id="locationstreet" placeholder="Enter Location Street">
+                    <input type="text" class="form-control" id="locationstreet" name="locationstreet" placeholder="Enter Location Street">
                   </div>
                   <div class="form-group">
                     <label for="locationnumber">Number</label>
-                    <input type="text" class="form-control" id="locationnumber" placeholder="Enter Location Number">
+                    <input type="text" class="form-control" id="locationnumber" name="locationnumber" placeholder="Enter Location Number">
                   </div> 
                   <div class="form-group">
                     <label for="locationaddition">Addition</label>
-                    <input type="text" class="form-control" id="locationaddition" placeholder="Enter Location Addition">
+                    <input type="text" class="form-control" id="locationaddition" name="locationaddition" placeholder="Enter Location Addition">
                   </div> 
                   <div class="form-group">
                     <label for="locationzipcode">Zipcode</label>
-                    <input type="text" class="form-control" id="lcoationzipcode" placeholder="Enter Location Zipcode">
+                    <input type="text" class="form-control" id="locationzipcode" name="locationzipcode" placeholder="Enter Location Zipcode">
                   </div> 
                   <div class="form-group">
                     <label for="locationcity">City</label>
-                    <input type="text" class="form-control" id="locationcity" placeholder="Enter Location City">
+                    <input type="text" class="form-control" id="locationcity" name="locationcity" placeholder="Enter Location City">
                   </div> 
                   <div class="form-group">
                     <label for="locationstate">State</label>
-                    <input type="text" class="form-control" id="locationstate" placeholder="Enter Location State">
+                    <input type="text" class="form-control" id="locationstate" name="locationstate" placeholder="Enter Location State">
                   </div>
                   <div class="form-group">
                     <label for="locationcountry">Country</label>
-                    <select class="custom-select form-control border border-width-2" id="locationcountry">
+                    <select class="custom-select form-control border border-width-2" id="locationcountry" name="locationcountry">
                       <?php
                         $getcountries = mysqli_query($conn, $countries);
 
@@ -313,7 +313,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getcountries)) {?>
-                          <option value="<?php htmlspecialchars($row1['countryid']) ;?>"><?php echo htmlspecialchars($row1['nicename']);?></option>
+                          <option value="<?php echo htmlspecialchars($row1['countryid']) ;?>"><?php echo htmlspecialchars($row1['nicename']);?></option>
                         <?php };
                         ?>
                     </select>

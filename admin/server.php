@@ -1,6 +1,7 @@
 <?php
 //connect to the database
 include('../config.php');
+$errors = array(); 
 
 // RESET PASSWORD
   if (isset($_POST['reset_password'])) {
@@ -42,7 +43,7 @@ if (isset($_POST['add_group'])) {
       array_push($errors, "Groupname is required");
     }
   
-    if (count($errors) === 0) {
+    if (count($errors) == 0) {
       $groupadd = "INSERT INTO groups (groupname)" ."VALUES ('$gname')";      
       
       if ($conn->query($groupadd) === true) {
@@ -67,6 +68,29 @@ if (isset($_POST['add_group'])) {
   }
 
   // ADD ITEM
+  if (isset($_POST['add_item'])) {
+    $itemname = mysqli_real_escape_string($conn, $_POST['item_name']);
+    $itemprice = mysqli_real_escape_string($conn, $_POST['item_price']);
+    $itembrand = mysqli_real_escape_string($conn, $_POST['item_brand']);
+    $itemcategory = mysqli_real_escape_string($conn, $_POST['item_category']);
+    $itemcreatedby = mysqli_real_escape_string($conn, $_SESSION['email']);
+    $itemmeasure = mysqli_real_escape_string($conn, $_POST['item_measure']);
+    $itemminamount = mysqli_real_escape_string($conn, $_POST['item_minamount']);
+
+    if (empty($itemname)) {
+      array_push($errors, "Itemname is required");
+    }
+    if (empty($itemminamount)) {
+      array_push($errors, "Minimum amount is required as thresshold for the stock notifications");
+    }
+
+    if (count($errors) == 0) {
+      $itemadd = "INSERT INTO items (name, price, brandID, min_amount, childcategoryId, createdby, measureID) VALUES ('$itemname','$itemprice','$itembrand','$itemminamount','$itemcategory','$itemcreatedby','$itemmeasure')";
+      mysqli_query($conn, $itemadd);
+      $_SESSION['success'] = "New item $itemname has been succesfully added to the system";
+      header('location: ./new.php');
+    }
+  }
 
   // REMOVE ITEM
   if (isset($_POST['itemremove'])) {
@@ -87,7 +111,7 @@ if (isset($_POST['add_group'])) {
       array_push($errors, "Root category name is required");
     }
 
-    if (count($errors) === 0) {
+    if (count($errors) == 0) {
       $rootaddsuery = "INSERT INTO rootcategories (active, name) VALUES ('$rootactive', '$rootname')";
       mysqli_query($conn, $rootaddsuery);
       $_SESSION['success'] = "New rootcategory has been created";
@@ -171,18 +195,18 @@ if (isset($_POST['add_group'])) {
     $locationnumber = mysqli_real_escape_string($conn,$_POST['locationnumber']);
     $locationaddition = mysqli_real_escape_string($conn,$_POST['locationaddition']);
     $locationzipcode = mysqli_real_escape_string($conn,$_POST['locationzipcode']);
-    $lcoationcity = mysqli_real_escape_string($conn,$_POST['locationcity']);
+    $locationcity = mysqli_real_escape_string($conn,$_POST['locationcity']);
     $locationstate = mysqli_real_escape_string($conn,$_POST['locationstate']);
     $locationcountry = mysqli_real_escape_string($conn,$_POST['locationcountry']);
     if (empty($locationaddition)) {
-      $locationaddquery = "INSERT INTO locations(name, street, number, zipcode, city, state, countryID)
+      $locationaddquery = "INSERT INTO locations(locationname, street, number, zipcode, city, state, countryID)
       VALUES ('$locationname', '$locationstreet', '$locationnumber', '$locationzipcode', '$locationcity', '$locationstate', '$locationcountry')";
       mysqli_query($conn, $locationaddquery);
       $_SESSION['success'] = "Location has been added";
       header("location: ./index.php");
     }
     else {
-      $locationaddquery2 = "INSERT INTO locations(name, street, number, addition, zipcode, city, state, countryID)
+      $locationaddquery2 = "INSERT INTO locations(locationname, street, number, addition, zipcode, city, state, countryID)
           VALUES ('$locationname', '$locationstreet', '$locationnumber', '$locationaddition', '$locationzipcode', '$locationcity', '$locationstate', '$locationcountry')";
       mysqli_query($conn, $locationaddquery2);
       $_SESSION['success'] = "Location has been added";
@@ -247,7 +271,7 @@ if (isset($_POST['add_group'])) {
     if (empty($measureshortcode)) {
       array_push($errors, "Shortcode is required");
     }
-    if (count($errors === 0)) {
+    if (count($errors) == 0) {
       $measureadd = "INSERT INTO measure (name, shortcode) VALUES ('$measurename', '$measureshortcode')";
       mysqli_query($conn, $measureadd);
       $_SESSION['success'] = "New measurement has been created";
@@ -270,7 +294,7 @@ if (isset($_POST['add_group'])) {
       if (empty($setting_sitename)) {
         array_push($errors, "Site name has not been filled in!");
       }
-      if (count($errors === 0)) {
+      if (count($errors) == 0) {
       $updatesitename = "UPDATE settings SET sitename = '$setting_sitename'";
       mysqli_query($conn, $updatesitename);
       $_SESSION['success'] = "Sitename has been updated";
@@ -294,12 +318,12 @@ if (isset($_POST['add_group'])) {
       $setting_password = mysqli_real_escape_string($conn, $_POST['emailpassword']);
       $setting_port = mysqli_real_escape_string($conn, $_POST['emailport']);
 
-      $updatemailsettingsfull = "UPDATE settings SET emailhost = '$setting_host', emailuser = '$setting_user', emailpassword = '$setting_password', emailport = '$setting_port'";
-
       if (empty($setting_host) || empty($setting_port) || empty($setting_user) || empty($setting_password)) {
           array_push($errors, "Not all details have been filled in");
         }
-      if (count($errors === 0)) {
+
+      if (count($errors) == 0) {
+        $updatemailsettingsfull = "UPDATE settings SET emailhost = '$setting_host', emailuser = '$setting_user', emailpassword = '$setting_password', emailport = '$setting_port'";
         mysqli_query($conn, $updatemailsettingsfull);
         $_SESSION['success'] = "All mailsettings have been updated.";
         header('lcoation: ./settings.php');
