@@ -9,6 +9,7 @@
   $_SESSION['message'] = '';
 
   include('../queries.php');
+  
   include('../server.php');
   $id = $_GET['id'];
 
@@ -59,7 +60,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="../index.php" class="brand-link">
-      <img src="./favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="../favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $site; ?></span>
     </a>
 
@@ -237,7 +238,7 @@
                 </thead>
                 <tbody>
                   <?php
-                    $itemlistbycat = "SELECT * FROM items INNER JOIN measure ON items.measureID = measure.measureID INNER JOIN amount ON items.itemID = amount.itemID INNER JOIN locations on amount.locationsId = locations.locationID INNER JOIN brands on items.brandID = brands.brandID INNER JOIN childcategories ON childcategories.childcategoryID = items.childcategoryID INNER JOIN rootcategories ON childcategories.rootcategoryID = rootcategories.categoryid GROUP BY childcategories.rootcategoryID, items.childcategoryID WHERE rootcategories.categoryid = '$id'";
+                    $itemlistbycat = "SELECT * FROM items INNER JOIN measure ON items.measureID = measure.measureID INNER JOIN amount ON items.itemID = amount.itemID INNER JOIN locations on amount.locationID = locations.locationID INNER JOIN brands on items.brandID = brands.brandID INNER JOIN childcategories ON childcategories.childcategoryID = items.childcategoryID INNER JOIN rootcategories ON childcategories.rootcategoryID = rootcategories.categoryid WHERE categoryid = $id GROUP BY childcategories.rootcategoryID, items.childcategoryID";
                      $getitemlistbycat = mysqli_query($conn, $itemlistbycat);
             
                     if (! $getitemlistbycat) {
