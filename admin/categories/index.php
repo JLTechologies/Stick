@@ -261,7 +261,7 @@
                           <td>
                             <form name="rootedit" action="./edit.php" method="post">
                               <input type="hidden" name="rootedit" value="<?php echo htmlspecialchars($row['categoryid']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <button type="submit"  name="rootedit" class="btn btn-warning btn-block">Edit root</button>
                             </form>
                           </td>
                           <td>
@@ -308,7 +308,7 @@
                           <td>
                             <form name="childedit" action="./edit.php" method="post">
                               <input type="hidden" name="childedit" value="<?php echo htmlspecialchars($row1['childcategoryID']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <button type="submit" value="edit brand" class="btn btn-warning btn-block">Edit child</button>
                             </form>
                           </td>
                           <td>

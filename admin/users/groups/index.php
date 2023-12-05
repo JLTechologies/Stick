@@ -230,7 +230,9 @@
                     <tr>
                       <th>Index</th>
                       <th>Name</th>
+                      <th>Active</th>
                       <th>Edit</th>
+                      <th>Permissions</th>
                       <th>Remove</th>
                     </tr>
                   </thead>
@@ -247,18 +249,25 @@
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['groupID']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['groupname']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['active']);?></td>
                           <td>
-                            <form name="group_edit" action="./edit.php" method="post">
+                            <form name="group_edit" action="./edit.php?id=<?php echo htmlspecialchars($row['groupID']);?>)" method="post">
                               <input type="hidden" name="groupedit" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
-                              <input type="submit" value="edit group"/>
+                              <button type="submit" class="btn btn-warning btn-block" value="edit group"></button>
                             </form>
                           </td>
                           <td>
-                            <form name="groupremove" action="./index.php" method="post">
-                              <input type="hidden" name="groupremove" value="<?php htmlspecialchars($row['measureID']);?>"/>
-                              <input type="submit" value="remove group"/>
+                            <form name="groupperms" action="./perms.php" method="post">
+                              <input type="hidden" name="groupperms" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
+                              <button type="submit" class="btn btn-warning btn-block" value="edit groupperms"></button>
                             </form>
-                          </td>        
+                          </td>  
+                          <td>
+                            <form name="groupremove" action="./index.php" method="post">
+                              <input type="hidden" name="groupremove" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
+                              <button type="submit" class="btn btn-danger btn-block" value="remove group"></button>
+                            </form>
+                          </td> 
                      <?php };
                     ?>
                   </tbody>
@@ -276,6 +285,13 @@
                   <div class="form-group">
                     <label for="groupname" class="control-label">Name</label>
                     <input type="text" class="form-control" name="groupname" placeholder="Enter Name">
+                  </div>
+                  <div class="form-group">
+                    <label for="groupactive">Group Active</label>
+                    <select class="custom-select form-control border border-width-2" name="groupactive">
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
+                    </select>
                   </div>
                 </div>
                 <div class="card-footer">

@@ -28,6 +28,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="../plugins/toastr/toastr.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../css/adminlte.min.css">
 </head>
@@ -250,15 +254,15 @@
                           <td class="text-center"><?php echo htmlspecialchars($row['locationname']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['street']);?> <?php echo htmlspecialchars($row['number']);?> / <?php echo htmlspecialchars($row['addition']);?> , <?php echo htmlspecialchars($row['zipcode']);?> <?php echo htmlspecialchars($row['city']);?> <?php echo htmlspecialchars($row['nicename']);?></td>
                           <td>
-                            <form name="locationedit" action="./edit.php" method="post">
-                              <input type="hidden" name="locationedit" value="<?php echo htmlspecialchars($row['locationID']);?>"/>
-                              <button type="submit" class="btn btn-primary btn-block" name="locationedit">Edit Location</button>
+                            <form action="./edit.php?id=<?php echo htmlspecialchars($row['locationID']);?>" method="post">
+                              <input type="hidden" name="editlocation" value="<?php echo htmlspecialchars($row['locationID']);?>"/>
+                              <button type="submit" class="btn btn-warning btn-block" name="editlocation">Edit Location</button>
                             </form>
                           </td>
                           <td>
                             <form action="./index.php" method="post">
-                              <input type="hidden" name="locationremove" value="<?php htmlspecialchars($row['locationID']);?>"/>
-                              <button type="submit" class="btn btn-warning btn-block" name="locationremove">Remove Location</button>
+                              <input type="hidden" name="locationremove" value="<?php echo htmlspecialchars($row['locationID']);?>"/>
+                              <button type="submit" class="btn btn-danger btn-block" name="locationremove">Remove Location</button>
                             </form>
                           </td>        
                      <?php };
@@ -327,6 +331,98 @@
           </div>
         </div>
       </div><!-- /.container-fluid -->
+      <div class="modal fade" id="editlocation">
+        <div class="modal-dialog">
+          <div class="modal-content bg-warning">
+            <div class="modal-header">
+              <h4 class="modal-title">Edit Location</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+            <form action="./index.php" method="post">
+              <?php if (isset($_POST['passedit'])) {
+                $editlocationid = mysqli_real_escape_string($conn, $_POST['passedit']);
+
+                $getlocationinfo = "SELECT * FROM locations WHERE locationID = $editlocationid";
+                $getinfo = mysqli_query($conn, $getlocationinfo);
+                if (! $getinfo) {
+                  die('Could not fetch data:' .mysqli_error($conn));
+                }
+                while ($row4 = mysqli_fetch_assoc($getinfo)) {
+                  $locationname2 = htmlspecialchars($row4['locationname']);
+                  $locationstreet2 = htmlspecialchars($row4['street']);
+                  $locationnumber2 = htmlspecailchars($row4['number']);
+                  $locationaddition2 = htmlspecialchars($row4['addition']);
+                  $locationzipcode2 = htmlspecialchars($row4['zipcode']);
+                  $locationcity2 = htmlspecialchars($row4['city']);
+                  $locationstate2 =htmlspecialchars($row4['state']);
+                  $locationcountry2 = htmlspecialchars($row4['countryID']);
+                  ?>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="locationname">Name</label>
+                    <input type="text" class="form-control" id="locationname" name="locationname" placeholder="<?php echo $locationname2;?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="locationstreet">Street</label>
+                    <input type="text" class="form-control" id="locationstreet" name="locationstreet" placeholder="<?php echo $locationstreet2;?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="locationnumber">Number</label>
+                    <input type="text" class="form-control" id="locationnumber" name="locationnumber" placeholder="<?php echo $locationnumber2;?>">
+                  </div> 
+                  <div class="form-group">
+                    <label for="locationaddition">Addition</label>
+                    <input type="text" class="form-control" id="locationaddition" name="locationaddition" placeholder="<?php echo $locationaddition2;?>">
+                  </div> 
+                  <div class="form-group">
+                    <label for="locationzipcode">Zipcode</label>
+                    <input type="text" class="form-control" id="locationzipcode" name="locationzipcode" placeholder="<?php echo $locationzipcode2;?>">
+                  </div> 
+                  <div class="form-group">
+                    <label for="locationcity">City</label>
+                    <input type="text" class="form-control" id="locationcity" name="locationcity" placeholder="<?php echo $locationcity2;?>">
+                  </div> 
+                  <div class="form-group">
+                    <label for="locationstate">State</label>
+                    <input type="text" class="form-control" id="locationstate" name="locationstate" placeholder="<?php echo $locationstate2;?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="locationcountry">Country</label>
+                    <select class="custom-select form-control border border-width-2" id="locationcountry" name="locationcountry">
+                      <?php
+                        $getcountries = mysqli_query($conn, $countries);
+
+                        if (! $getcountries) {
+                          die('Could not fetch data: '.mysqli_error($conn));
+                        }
+                        while ($row3 = mysqli_fetch_assoc($getcountries)) {?>
+                          <option value="<?php echo htmlspecialchars($row3['countryid']) ;?>"><?php echo htmlspecialchars($row3['nicename']);?></option>
+                        <?php };
+                        ?>
+                    </select>
+                  </div>
+                </div>
+                <?php }
+
+              }
+              ?>
+              </form>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-outline-dark" name="edit_location">Save changes</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
+
     </div>
     <!-- /.content -->
   </div>
@@ -346,6 +442,10 @@
 <script src="../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
+<!-- Toastr -->
+<script src="../plugins/toastr/toastr.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../js/adminlte.min.js"></script>
 </body>
