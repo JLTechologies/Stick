@@ -259,6 +259,7 @@
                           <td>
                             <form name="groupperms" action="./perms.php" method="post">
                               <input type="hidden" name="groupperms" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
+                              <input type="hidden" name="groupperms" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
                               <button type="submit" class="btn btn-warning btn-block" value="edit groupperms"></button>
                             </form>
                           </td>  
