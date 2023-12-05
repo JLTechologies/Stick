@@ -61,7 +61,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="../index.php" class="brand-link">
-      <img src="./logo.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="../favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $site; ?></span>
     </a>
 
@@ -70,7 +70,7 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
@@ -122,7 +122,7 @@
 			</a>
 			</li>
 		  <li class="nav-item menu-open">
-        <a href="#" class="nav-link">
+        <a href="#" class="nav-link active">
           <i class="nav-icon fas fa-tree"></i>
             <p>
               Items
@@ -200,7 +200,8 @@
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="../">Admin</a></li>
               <li class="breadcrumb-item"><a href="../">Dashboard</a></li>
-              <li class="breadcrumb-item">Items</li>
+              <li class="breadcrumb-item"><a href="./index.php">Items</a></li>
+              <li class="breadcrumb-item">Edit Item</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->

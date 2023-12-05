@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
--- Host:                         flanderscraft.ddns.net
--- Server versie:                11.0.2-MariaDB-1:11.0.2+maria~ubu2204 - mariadb.org binary distribution
+-- Host:                         stock.jl-tech.be
+-- Server versie:                11.0.3-MariaDB-1:11.0.3+maria~ubu2204 - mariadb.org binary distribution
 -- Server OS:                    debian-linux-gnu
--- HeidiSQL Versie:              12.0.0.6468
+-- HeidiSQL Versie:              12.5.0.6677
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -14,14 +14,9 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-
--- Databasestructuur van stock wordt geschreven
-CREATE DATABASE IF NOT EXISTS `stock` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
-USE `stock`;
-
 -- Structuur van  tabel stock.amount wordt geschreven
 CREATE TABLE IF NOT EXISTS `amount` (
-  `amountID` int(11) NOT NULL,
+  `amountID` int(11) NOT NULL AUTO_INCREMENT,
   `itemID` int(11) DEFAULT NULL,
   `locationID` int(11) DEFAULT NULL,
   `amount` int(11) DEFAULT NULL,
@@ -32,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `amount` (
 
 -- Structuur van  tabel stock.brandcontact wordt geschreven
 CREATE TABLE IF NOT EXISTS `brandcontact` (
-  `brandcontactID` int(10) NOT NULL,
+  `brandcontactID` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `phone` int(10) NOT NULL,
@@ -51,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `brandcontact` (
 
 -- Structuur van  tabel stock.brands wordt geschreven
 CREATE TABLE IF NOT EXISTS `brands` (
-  `brandID` int(10) NOT NULL,
+  `brandID` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `image` longtext DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
@@ -85,7 +80,7 @@ CREATE TABLE IF NOT EXISTS `countries` (
 
 -- Dumpen data van tabel stock.countries: 239 rows
 /*!40000 ALTER TABLE `countries` DISABLE KEYS */;
-INSERT IGNORE INTO `countries` (`countryid`, `iso`, `name`, `nicename`, `iso3`, `numcode`, `phonecode`) VALUES
+REPLACE INTO `countries` (`countryid`, `iso`, `name`, `nicename`, `iso3`, `numcode`, `phonecode`) VALUES
 	(1, 'AF', 'AFGHANISTAN', 'Afghanistan', 'AFG', 4, 93),
 	(2, 'AL', 'ALBANIA', 'Albania', 'ALB', 8, 355),
 	(3, 'DZ', 'ALGERIA', 'Algeria', 'DZA', 12, 213),
@@ -329,8 +324,9 @@ INSERT IGNORE INTO `countries` (`countryid`, `iso`, `name`, `nicename`, `iso3`, 
 
 -- Structuur van  tabel stock.groups wordt geschreven
 CREATE TABLE IF NOT EXISTS `groups` (
-  `groupID` int(11) NOT NULL,
-  `name` char(255) DEFAULT NULL,
+  `groupID` int(11) NOT NULL AUTO_INCREMENT,
+  `groupname` varchar(50) DEFAULT NULL,
+  `active` char(50) NOT NULL DEFAULT 'false',
   PRIMARY KEY (`groupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -338,9 +334,9 @@ CREATE TABLE IF NOT EXISTS `groups` (
 
 -- Structuur van  tabel stock.items wordt geschreven
 CREATE TABLE IF NOT EXISTS `items` (
-  `itemID` int(10) NOT NULL,
+  `itemID` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `price` int(10) NOT NULL,
+  `price` varchar(50) NOT NULL DEFAULT '0',
   `brandID` int(10) NOT NULL,
   `image` longtext DEFAULT NULL,
   `min_amount` int(10) NOT NULL DEFAULT 5,
@@ -356,12 +352,12 @@ CREATE TABLE IF NOT EXISTS `items` (
 
 -- Structuur van  tabel stock.locations wordt geschreven
 CREATE TABLE IF NOT EXISTS `locations` (
-  `locationID` int(10) NOT NULL,
-  `name` char(255) NOT NULL,
+  `locationID` int(10) NOT NULL AUTO_INCREMENT,
+  `locationname` char(255) NOT NULL,
   `street` varchar(255) NOT NULL,
-  `number` int(10) NOT NULL,
+  `number` varchar(50) NOT NULL,
   `addition` char(255) DEFAULT NULL,
-  `zipcode` int(10) NOT NULL,
+  `zipcode` varchar(50) NOT NULL,
   `city` char(255) NOT NULL,
   `state` varchar(255) NOT NULL,
   `countryID` int(10) NOT NULL,
@@ -372,7 +368,7 @@ CREATE TABLE IF NOT EXISTS `locations` (
 
 -- Structuur van  tabel stock.measure wordt geschreven
 CREATE TABLE IF NOT EXISTS `measure` (
-  `measureID` int(11) NOT NULL,
+  `measureID` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `shortcode` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`measureID`)
@@ -382,14 +378,61 @@ CREATE TABLE IF NOT EXISTS `measure` (
 
 -- Structuur van  tabel stock.permissions wordt geschreven
 CREATE TABLE IF NOT EXISTS `permissions` (
-  `permissionID` int(11) NOT NULL,
-  `userID` int(11) DEFAULT NULL,
+  `permissionsID` int(11) NOT NULL AUTO_INCREMENT,
+  `setting` char(50) NOT NULL DEFAULT 'false',
   `groupID` int(11) DEFAULT NULL,
-  `permission` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`permissionID`)
+  `permissionID` int(10) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`permissionsID`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Dumpen data van tabel stock.permissions: ~0 rows (ongeveer)
+
+-- Structuur van  tabel stock.permissionslist wordt geschreven
+CREATE TABLE IF NOT EXISTS `permissionslist` (
+  `permissionID` int(10) NOT NULL AUTO_INCREMENT,
+  `permissionname` varchar(255) NOT NULL,
+  PRIMARY KEY (`permissionID`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumpen data van tabel stock.permissionslist: ~37 rows (ongeveer)
+REPLACE INTO `permissionslist` (`permissionID`, `permissionname`) VALUES
+	(1, 'admin_access'),
+	(2, 'can_view_prices'),
+	(3, 'can_view_logs'),
+	(4, 'can_add_location'),
+	(5, 'can_edit_location'),
+	(6, 'can_remove_location'),
+	(7, 'can_add_item'),
+	(8, 'can_edit_item'),
+	(9, 'can_update_item'),
+	(10, 'can_remove_item'),
+	(11, 'can_add_brand'),
+	(12, 'can_remove_brand'),
+	(13, 'can_edit_brand'),
+	(14, 'can_add_contact'),
+	(15, 'can_remove_contact'),
+	(16, 'can_edit_contact'),
+	(17, 'can_add_measurement'),
+	(18, 'can_edit_measurement'),
+	(19, 'can_remove_measurement'),
+	(20, 'can_add_root'),
+	(21, 'can_remove_root'),
+	(22, 'can_edit_root'),
+	(23, 'can_add_child'),
+	(24, 'can_remove_child'),
+	(25, 'can_edit_child'),
+	(26, 'can_change_mail'),
+	(27, 'can_edit_account'),
+	(28, 'can_edit_settings'),
+	(29, 'can_edit_mailsettings'),
+	(30, 'can_edit_activestate'),
+	(31, 'can_edit_groups'),
+	(32, 'can_remove_groups'),
+	(33, 'can_add_groups'),
+	(34, 'can_edit_user'),
+	(35, 'can_add_user'),
+	(36, 'can_remove_user'),
+	(37, 'can_export_itemslist');
 
 -- Structuur van  tabel stock.rootcategories wordt geschreven
 CREATE TABLE IF NOT EXISTS `rootcategories` (
@@ -399,7 +442,7 @@ CREATE TABLE IF NOT EXISTS `rootcategories` (
   PRIMARY KEY (`categoryid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.rootcategories: ~0 rows (ongeveer)
+-- Dumpen data van tabel stock.rootcategories: ~1 rows (ongeveer)
 
 -- Structuur van  tabel stock.settings wordt geschreven
 CREATE TABLE IF NOT EXISTS `settings` (
@@ -407,7 +450,6 @@ CREATE TABLE IF NOT EXISTS `settings` (
   `sitename` varchar(255) DEFAULT NULL,
   `siteactive` char(255) DEFAULT 'true',
   `favicon` longtext DEFAULT NULL,
-  `image` longtext DEFAULT NULL,
   `emailhost` varchar(50) NOT NULL DEFAULT 'localhost',
   `emailuser` varchar(50) NOT NULL,
   `emailpassword` longtext NOT NULL,
@@ -415,13 +457,13 @@ CREATE TABLE IF NOT EXISTS `settings` (
   PRIMARY KEY (`settingID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.settings: ~1 rows (ongeveer)
-INSERT IGNORE INTO `settings` (`settingID`, `sitename`, `siteactive`, `favicon`, `image`, `emailhost`, `emailuser`, `emailpassword`, `emailport`) VALUES
-	(1, 'Power-Installation', 'true', NULL, NULL, 'localhost', 'admin@localhost.be', 'none', 587);
+-- Dumpen data van tabel stock.settings: ~0 rows (ongeveer)
+REPLACE INTO `settings` (`settingID`, `sitename`, `siteactive`, `favicon`, `emailhost`, `emailuser`, `emailpassword`, `emailport`) VALUES
+	(1, 'Power-Installation', 'true', NULL, 'localhost', 'admin@localhost.be', 'Test123', 587);
 
 -- Structuur van  tabel stock.users wordt geschreven
 CREATE TABLE IF NOT EXISTS `users` (
-  `userid` int(10) NOT NULL,
+  `userid` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `last_name` varchar(255) DEFAULT NULL,
   `groupID` int(10) DEFAULT NULL,

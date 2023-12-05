@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
+  <link rel="shortcut icon" href="../../favicon.jpg" type="image/x-icon">
   <?php
   include('../../../config.php');
   include('../../authentication.php');
@@ -66,7 +66,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="../index.php" class="brand-link">
-      <img src="./logo.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="../../favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $site; ?></span>
     </a>
 
@@ -75,7 +75,7 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
@@ -103,7 +103,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/" class="nav-link">
+			<a href="../" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Brands
@@ -126,7 +126,15 @@
 				</p>
 			</a>
 			</li>
-      <ul class="nav nav-treeview">
+      <li class="nav-item menu-closed">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-tree"></i>
+            <p>
+              Items
+              <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -142,6 +150,7 @@
           <?php };
           ?>
         </ul>
+      </li>
 		  <li class="nav-item">
 			<a href="../../users/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>

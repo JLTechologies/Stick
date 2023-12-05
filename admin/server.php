@@ -1,15 +1,15 @@
 <?php
 //connect to the database
 include('../config.php');
+$errors = array(); 
 
-// RESET PASSWORD
 // RESET PASSWORD
   if (isset($_POST['reset_password'])) {
   
   }
 
-  // ADD USER
-  if (isset($_POST['reg_user'])) {
+  // UPDATE USER
+  if (isset($_POST['update_user'])) {
 
   }
 
@@ -21,7 +21,7 @@ include('../config.php');
       array_push($errors, "There was a problem removing the selected user. Contact your System Administrator.");
     }
 
-    if (count($errors) === 0) {
+    if (count($errors) == 0) {
       $removeuser = "DELETE FROM users WHERE userid = '$userid'";
 
       if ($conn->query($removeuser) === true) {
@@ -38,15 +38,35 @@ include('../config.php');
   // ADD GROUP
 if (isset($_POST['add_group'])) {
     $gname = mysqli_real_escape_string($conn, $_POST['groupname']);
+    $gactive = mysqli_real_escape_string($conn, $_POST['groupactive']);
   
-    if (empty($gname)) {
+    if (empty($gactive)){
+      if (empty($gname)) {
+        array_push($errors, "Groupname is required");
+      }
+    
+      if (count($errors) == 0) {
+        $groupadd = "INSERT INTO groups (groupname)" ."VALUES ('$gname')";
+        
+        if ($conn->query($groupadd) === true) {
+        $_SESSION['success'] = "New group created";
+        header('location: ./index.php');      
+      }  
+      else {
+          $_SESSION['success'] = "Something went wrong";
+          header('location: ../index.php');
+      }
+      mysqli_close('$conn');
+      }
+    }
+    elseif (empty($gname)) {
       array_push($errors, "Groupname is required");
     }
   
-    if (count($errors) === 0) {
-      $groupadd = "INSERT INTO groups (groupname)" ."VALUES ('$gname')";      
+    if (count($errors) == 0) {
+      $groupadd2 = "INSERT INTO groups (groupname, active)" ."VALUES ('$gname', '$gactive')";
       
-      if ($conn->query($groupadd) === true) {
+      if ($conn->query($groupadd2) === true) {
       $_SESSION['success'] = "New group created";
       header('location: ./index.php');      
     }  
@@ -67,7 +87,48 @@ if (isset($_POST['add_group'])) {
     header('location: ./index.php');
   }
 
+  //UPDATE GROUP
+  if (isset($_POST['edit_group'])) {
+    $groupid3 = mysqli_real_escape_string($conn, $_POST['id']);
+    $newgroupname = mysqli_real_escape_string($conn, $_POST['groupname']);
+    $newgroupactive = mysqli_real_escape_string($conn, $_POST['new_active']);
+    
+    if (empty($newgroupname)) {
+      array_push($errors, "Groupname is required to be filled in");
+    }
+
+    if (count($errors) == 0) {
+      $updategroup = "UPDATE groups SET groupname = $newgroupname, active = $newgroupactive WHERE groupID = $groupid3";
+      mysqli_query($conn, $updategroup);
+      $_SESSION['success'] = "Group $newgroupname has been updated";
+      header('location: ./index.php');
+    }
+  }
+
   // ADD ITEM
+  if (isset($_POST['add_item'])) {
+    $itemname = mysqli_real_escape_string($conn, $_POST['item_name']);
+    $itemprice = mysqli_real_escape_string($conn, $_POST['item_price']);
+    $itembrand = mysqli_real_escape_string($conn, $_POST['item_brand']);
+    $itemcategory = mysqli_real_escape_string($conn, $_POST['item_category']);
+    $itemcreatedby = mysqli_real_escape_string($conn, $_SESSION['email']);
+    $itemmeasure = mysqli_real_escape_string($conn, $_POST['item_measure']);
+    $itemminamount = mysqli_real_escape_string($conn, $_POST['item_minamount']);
+
+    if (empty($itemname)) {
+      array_push($errors, "Itemname is required");
+    }
+    if (empty($itemminamount)) {
+      array_push($errors, "Minimum amount is required as thresshold for the stock notifications");
+    }
+
+    if (count($errors) == 0) {
+      $itemadd = "INSERT INTO items (name, price, brandID, min_amount, childcategoryId, createdby, measureID) VALUES ('$itemname','$itemprice','$itembrand','$itemminamount','$itemcategory','$itemcreatedby','$itemmeasure')";
+      mysqli_query($conn, $itemadd);
+      $_SESSION['success'] = "New item $itemname has been succesfully added to the system";
+      header('location: ./new.php');
+    }
+  }
 
   // REMOVE ITEM
   if (isset($_POST['itemremove'])) {
@@ -88,7 +149,7 @@ if (isset($_POST['add_group'])) {
       array_push($errors, "Root category name is required");
     }
 
-    if (count($errors) === 0) {
+    if (count($errors) == 0) {
       $rootaddsuery = "INSERT INTO rootcategories (active, name) VALUES ('$rootactive', '$rootname')";
       mysqli_query($conn, $rootaddsuery);
       $_SESSION['success'] = "New rootcategory has been created";
@@ -172,18 +233,18 @@ if (isset($_POST['add_group'])) {
     $locationnumber = mysqli_real_escape_string($conn,$_POST['locationnumber']);
     $locationaddition = mysqli_real_escape_string($conn,$_POST['locationaddition']);
     $locationzipcode = mysqli_real_escape_string($conn,$_POST['locationzipcode']);
-    $lcoationcity = mysqli_real_escape_string($conn,$_POST['locationcity']);
+    $locationcity = mysqli_real_escape_string($conn,$_POST['locationcity']);
     $locationstate = mysqli_real_escape_string($conn,$_POST['locationstate']);
     $locationcountry = mysqli_real_escape_string($conn,$_POST['locationcountry']);
     if (empty($locationaddition)) {
-      $locationaddquery = "INSERT INTO locations(name, street, number, zipcode, city, state, countryID)
+      $locationaddquery = "INSERT INTO locations(locationname, street, number, zipcode, city, state, countryID)
       VALUES ('$locationname', '$locationstreet', '$locationnumber', '$locationzipcode', '$locationcity', '$locationstate', '$locationcountry')";
       mysqli_query($conn, $locationaddquery);
       $_SESSION['success'] = "Location has been added";
       header("location: ./index.php");
     }
     else {
-      $locationaddquery2 = "INSERT INTO locations(name, street, number, addition, zipcode, city, state, countryID)
+      $locationaddquery2 = "INSERT INTO locations(locationname, street, number, addition, zipcode, city, state, countryID)
           VALUES ('$locationname', '$locationstreet', '$locationnumber', '$locationaddition', '$locationzipcode', '$locationcity', '$locationstate', '$locationcountry')";
       mysqli_query($conn, $locationaddquery2);
       $_SESSION['success'] = "Location has been added";
@@ -199,6 +260,31 @@ if (isset($_POST['add_group'])) {
     mysqli_query($conn, $locationdelete);
     $_SESSION['success'] = "Location has been removed";
     header('location: ./index.php');
+  }
+
+  //EDIT LOCATION
+  if (isset($_POST['locationedit'])) {
+    $newlocationid = mysqli_real_escape_string($conn,$_POST('locationid'));
+    $newlocationname = mysqli_real_escape_string($conn,$_POST('locationame'));
+    $newlocationstreet = mysqli_real_escape_string($conn,$_POST('locationstreet'));
+    $newlocationnumber = mysqli_real_escape_string($conn,$_POST('locationnumber'));
+    $newlocationaddition = mysqli_real_escape_string($conn,$_POST('locationaddition'));
+    $newlocationzipcode = mysqli_real_escape_string($conn,$_POST('locationzipcode'));
+    $newlocationcity = mysqli_real_escape_string($conn,$_POST('locationcity'));
+    $newlocationstate = mysqli_real_escape_string($conn,$_POST('locationstate'));
+    $newlocationcountry = mysqli_real_escape_string($conn,$_POST('locationcountry'));
+    if (empty($newlocationaddition)) {
+      $updatelocationquery = "UPDATE locations SET locationname = '$newlocationname', street = '$newlocationstreet', number = '$newlocationnumber', zipcode = '$newlocationzipcode', city = '$newlocationcity', state = '$newlocationstate', countryID = '$newlocationcountry' WHERE locationID = '$newlocationid'";
+      mysqli_query($conn,$updatelocationquery);
+      $_SESSION['success'] = "Location $newlocationname has been updated";
+      header('location: ./index.php');
+    }
+    else {
+      $updatelocationquery2 = "UPDATE locations SET locationname = '$newlocationname', street = '$newlocationstreet', number = '$newlocationnumber', addition = '$newlocationaddition', zipcode = '$newlocationzipcode', city = '$newlocationcity', state = '$newlocationstate', countryID = '$newlocationcountry' WHERE locationID = '$newlocationid'";
+      mysqli_query($conn,$updatelocationquery2);
+      $_SESSION['success'] = "Location $newlocationname has been updated";
+      header('location: ./index.php');
+    }
   }
 
   // ADD BRANDCONTACT
@@ -219,14 +305,14 @@ if (isset($_POST['add_group'])) {
             VALUES ('$contactname', '$contactlastname', '$contactphone', '$contactemail', '$contactstreet', '$contactnumber', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
       mysqli_query($conn, $contactaddquery);
       $_SESSION['success'] = "Contact has been created";
-      header("location: ./index.php");
+      header('location: ./index.php');
     }
     else {
       $contactaddquery2 = "INSERT INTO brandcontact (name, last_name, phone, email, street, number, addition, zipcode, city, state, countryID) 
             VALUES ('$contactname', '$contactlastname', '$contactphone', '$contactemail', '$contactstreet', '$contactnumber', '$contactaddition', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
       mysqli_query($conn, $contactaddquery2);
       $_SESSION['success'] = "Contact has been created";
-      header("location: ./index.php");
+      header('location: ./index.php');
     }
   }
 
@@ -248,7 +334,7 @@ if (isset($_POST['add_group'])) {
     if (empty($measureshortcode)) {
       array_push($errors, "Shortcode is required");
     }
-    if (count($errors == 0)) {
+    if (count($errors) == 0) {
       $measureadd = "INSERT INTO measure (name, shortcode) VALUES ('$measurename', '$measureshortcode')";
       mysqli_query($conn, $measureadd);
       $_SESSION['success'] = "New measurement has been created";
@@ -262,7 +348,48 @@ if (isset($_POST['add_group'])) {
     $removemeasurement = "DELETE FROM measure WHERE measureID = '$measureID'";
     mysqli_query($conn, $removemeasurement);
     $_SESSION['success'] = "Measurement has been succesfully deleted";
-    header('location: .index.php');
+    header('location: ./index.php');
   }
-  
+
+  //ADJUST SITENAME
+    if (isset($_POST['setting_sitename'])) {
+      $setting_sitename = mysqli_real_escape_string($conn, $_POST['new_sitename']);
+      if (empty($setting_sitename)) {
+        array_push($errors, "Site name has not been filled in!");
+      }
+      if (count($errors) == 0) {
+      $updatesitename = "UPDATE settings SET sitename = '$setting_sitename'";
+      mysqli_query($conn, $updatesitename);
+      $_SESSION['success'] = "Sitename has been updated";
+      header('location: ./settings.php');
+      }
+    }
+
+  //ADJUST SITEACTIVITY
+    if (isset($_POST['setting_siteactive'])) {
+      $setting_active = mysqli_real_escape_string($conn, $_POST['new_active']);
+      $updatesiteactive = "UPDATE settings SET siteactive = '$setting_active'";
+      mysqli_query($conn, $updatesiteactive);
+      $_SESSION['success'] = "Site active status has been changed";
+      header('location: ./settings.php');
+    }
+
+  //ADJUST EMAILDETAILS
+    if (isset($_POST['setting_email'])) {
+      $setting_host = mysqli_real_escape_string($conn, $_POST['emailhost']);
+      $setting_user = mysqli_real_escape_string($conn, $_POST['emailuser']);
+      $setting_password = mysqli_real_escape_string($conn, $_POST['emailpassword']);
+      $setting_port = mysqli_real_escape_string($conn, $_POST['emailport']);
+
+      if (empty($setting_host) || empty($setting_port) || empty($setting_user) || empty($setting_password)) {
+          array_push($errors, "Not all details have been filled in");
+        }
+
+      if (count($errors) == 0) {
+        $updatemailsettingsfull = "UPDATE settings SET emailhost = '$setting_host', emailuser = '$setting_user', emailpassword = '$setting_password', emailport = '$setting_port'";
+        mysqli_query($conn, $updatemailsettingsfull);
+        $_SESSION['success'] = "All mailsettings have been updated.";
+        header('lcoation: ./settings.php');
+      }
+    }  
   ?>

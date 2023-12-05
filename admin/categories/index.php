@@ -126,7 +126,15 @@
 				</p>
 			</a>
 			</li>
-      <ul class="nav nav-treeview" data-widget="treeview" role="menu">
+      <li class="nav-item menu-closed">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-tree"></i>
+            <p>
+              Items
+              <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -137,11 +145,12 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><p><?php echo htmlspecialchars($row2['name']);?></p></a>
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
         </ul>
+      </li>
 		  <li class="nav-item">
 			<a href="../users/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
@@ -252,7 +261,7 @@
                           <td>
                             <form name="rootedit" action="./edit.php" method="post">
                               <input type="hidden" name="rootedit" value="<?php echo htmlspecialchars($row['categoryid']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <button type="submit"  name="rootedit" class="btn btn-warning btn-block">Edit root</button>
                             </form>
                           </td>
                           <td>
@@ -299,7 +308,7 @@
                           <td>
                             <form name="childedit" action="./edit.php" method="post">
                               <input type="hidden" name="childedit" value="<?php echo htmlspecialchars($row1['childcategoryID']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <button type="submit" value="edit brand" class="btn btn-warning btn-block">Edit child</button>
                             </form>
                           </td>
                           <td>

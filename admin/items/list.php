@@ -9,6 +9,7 @@
   $_SESSION['message'] = '';
 
   include('../queries.php');
+  
   include('../server.php');
   $id = $_GET['id'];
 
@@ -59,7 +60,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="../index.php" class="brand-link">
-      <img src="./logo.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="../favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $site; ?></span>
     </a>
 
@@ -68,7 +69,7 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
@@ -104,7 +105,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../contacts/" class="nav-link">
+			<a href="../contact/contact/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -216,6 +217,7 @@
       	<h3>
           <?php 
           	echo $_SESSION['success'];
+            unset($_SESSION['success']);
           ?>
       	</h3>
       </div>
@@ -236,13 +238,14 @@
                 </thead>
                 <tbody>
                   <?php
-                     $getitemlist = mysqli_query($conn, $itemlist1);
+                    $itemlistbycat = "SELECT * FROM items INNER JOIN measure ON items.measureID = measure.measureID INNER JOIN amount ON items.itemID = amount.itemID INNER JOIN locations on amount.locationID = locations.locationID INNER JOIN brands on items.brandID = brands.brandID INNER JOIN childcategories ON childcategories.childcategoryID = items.childcategoryID INNER JOIN rootcategories ON childcategories.rootcategoryID = rootcategories.categoryid WHERE categoryid = $id GROUP BY childcategories.rootcategoryID, items.childcategoryID";
+                     $getitemlistbycat = mysqli_query($conn, $itemlistbycat);
             
-                    if (! $getitemlist) {
+                    if (! $getitemlistbycat) {
                      die('Could not fetch data: '.mysqli_error($conn));
                     }
             
-                     while ($row = mysqli_fetch_assoc($getitemlist)) { ?>
+                     while ($row = mysqli_fetch_assoc($getitemlistbycat)) { ?>
                     <tr class="align-middle">
                       <td class="text-center"><?php echo htmlspecialchars($row['itemID']);?></td>
                       <td class="text-center"><?php echo htmlspecialchars($row['items.name']);?></td>
@@ -260,7 +263,7 @@
                         </form>
                       </td>
                       <td>
-                        <form name="itemremove" action="./index.php" method="post">
+                        <form name="itemremove" action="./list.php" method="post">
                           <input type="hidden" name="itemremove" value="<?php htmlspecialchars($row['itemID']);?>"/>
                           <input type="submit" value="remove brand"/>
                         </form>

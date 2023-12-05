@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
+  <link rel="shortcut icon" href="./favicon.jpg" type="image/x-icon">
   <?php
   include('../config.php');
   include('./authentication.php');
@@ -79,7 +79,7 @@
     <div class="sidebar">
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
@@ -115,7 +115,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="./brands/contacts/" class="nav-link">
+			<a href="./brands/contact/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -130,7 +130,15 @@
 				</p>
 			</a>
 			</li>
-      <ul class="nav nav-treeview">
+      <li class="nav-item menu-closed">
+        <a href="#" class="nav-link">
+          <i class="nav-icon fas fa-tree"></i>
+            <p>
+              Items
+              <i class="fas fa-angle-left right"></i>
+            </p>
+        </a>
+        <ul class="nav nav-treeview">
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -141,11 +149,12 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
         </ul>
+      </li>
 		  <li class="nav-item">
 			<a href="./users/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
@@ -199,7 +208,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="./">Admin</a></li>
-              <li class="breadcrumb-item"><a href="./"></a>Dashbboard</li>
+              <li class="breadcrumb-item"><a href="./">Dashbboard</a></li>
               <li class="breadcrumb-item active">Settings</li>
             </ol>
           </div><!-- /.col -->
@@ -224,88 +233,89 @@
       <div class="container-fluid">
         <div class="row">
           <div class="col-lg-6">
-            <div class="card">
-              <div class="card-body table-responsive p-0">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Index</th>
-                      <th>Image</th>
-                      <th>Name</th>
-                      <th>Edit</th>
-                      <th>Remove</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php
-                      $getbrandlist = mysqli_query($conn, $brandlist);
+            <?php
+            $getsettings = mysqli_query($conn, $settings);
 
-                      if (! $getbrandlist) {
-                        die('Could not fetch data: '.mysqli_error($conn));
-                      }
+            if (! $getsettings) {
+              die('Could not fetch data: '.mysqli_error($conn));
+            }
 
-                      while($row = mysqli_fetch_assoc($getbrandlist)) {
-                        ?>
-                        <tr class="align-middle">
-                          <td class="text-center"><?php echo htmlspecialchars($row['brandID']);?></td>
-                          <td class="text-center"><img src="<?php echo htmlspecialchars($row['image']);?>" alt="brandimage" style="width:50px;height:50px;"></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
-                          <td>
-                            <form name="brandedit" action="./edit.php" method="post">
-                              <input type="hidden" name="brandedit" value="<?php echo htmlspecialchars($row['brandID']);?>"/>
-                              <input type="submit" value="edit brand"/>
-                            </form>
-                          </td>
-                          <td>
-                            <form action="./index.php" method="post">
-                              <input type="hidden" name="brandremove" value="<?php htmlspecialchars($row['brandID']);?>"/>
-                              <button type="submit" class="btn btn-primary btn-block" name="brandremove">Remove brand</button>
-                            </form>
-                          </td>        
-                     <?php };
-                    ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card card-primary">
+            while($row3 = mysqli_fetch_assoc($getsettings)) {
+              $sitename2 = htmlspecialchars($row3['sitename']);
+              $active = htmlspecialchars($row3['siteactive']);
+              $sitefavicon = htmlspecialchars($row3['favicon']);
+              $emailhost = htmlspecialchars($row3['emailhost']);
+              $emailuser = htmlspecialchars($row3['emailuser']);
+              $emailpassword = htmlspecialchars($row3['emailpassword']);
+              $emailport = htmlspecialchars($row3['emailport']);
+            }
+            ?>
+            <form action="settings.php" method="post">
+              <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add Brand</h3>
+                <h3 class="card-title">Sitename Settings</h3>
               </div>
-              <form action="./index.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="brandname">Brand name</label>
-                    <input type="text" class="form-control" id="brandname" placeholder="Enter Brand Name">
-                  </div>
-                  <div class="form-group">
-                    <label for="brandimage">Brand Image</label>
-                    <input type="text" class="form-control" id="brandimage" placeholder="Enter Brand Name">
-                  </div>
-                  <div class="form-group">
-                    <label for="brandcontact">Brand Contact</label>
-                    <select class="custom-select form-control border border-width-2" id="brandcontact" placeholder="Please select a contact">
-                      <?php
-                        $getcontact = mysqli_query($conn, $brandcontactlist);
-
-                        if (! $getcontact) {
-                          die('Could not fetch data: '.mysqli_error($conn));
-                        }
-                        while ($row1 = mysqli_fetch_assoc($getcontact)) {?>
-                          <option value="<?php htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['name']);?> <?php echo htmlspecialchars($row1['last_name']);?> </option>
-                        <?php };
-                        ?>
-                    </select>
+                    <label for="new_sitename">Site Name</label>
+                    <input type="text" class="form-control" name="new_sitename" id="new_sitename" placeholder="<?php echo $sitename2;?>">
+                    <button type="submit" name="setting_sitename" class="btn btn-primary btn-block">Update</button>
                   </div>
                 </div>
-                <div class="card-footer">
-                  <button type="submit" name="brandadd" class="btn btn-primary btn-block">Add Brand</button>
+              </div>
+              <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Active Settings</h3>
+              </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="new_active" class="control-label">Site Active</label>
+                    <select name="new_active" class="form-control">
+                      <?php
+                        if($active == "true") {?>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      <?php }
+                      else {?>
+                        <option value="false">No</option>
+                        <option value="true">Yes</option>
+                      <?php } ?>
+                    </select>
+                    <button type="submit" name="setting_siteactive" class="btn btn-primary btn-block">Update</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-lg-6">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Email Settings</h3>
+              </div>
+              <form action="./settings.php" method="post">
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="emailhost">Email Host</label>
+                    <input type="text" class="form-control" id="emailhost" name="emailhost" placeholder="<?php echo $emailhost;?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="emailuser">Email User</label>
+                    <input type="text" class="form-control" id="emailuser" name="emailuser" placeholder="<?php echo $emailuser;?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="emailpassword">Email Password</label>
+                    <input type="password" class="form-control" id="emailpassword" name="emailpassword" placeholder="<?php echo $emailpassword;?>">
+                  </div>
+                  <div class="form-group">
+                    <label for="emailport">Email Port</label>
+                    <input type="number" class="form-control" id="emailport" name="emailport" placeholder="<?php echo $emailport;?>">
+                  </div>
+                  <button type="submit" name="setting_email" class="btn btn-primary btn-block">Update</button>
                 </div>
               </form>
             </div>
           </div>
+          
         </div>
       </div><!-- /.container-fluid -->
     </div>
