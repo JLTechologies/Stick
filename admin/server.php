@@ -39,45 +39,51 @@ $errors = array();
 if (isset($_POST['add_group'])) {
     $gname = mysqli_real_escape_string($conn, $_POST['groupname']);
     $gactive = mysqli_real_escape_string($conn, $_POST['groupactive']);
-  
-    if (empty($gactive)){
-      if (empty($gname)) {
-        array_push($errors, "Groupname is required");
-      }
-    
-      if (count($errors) == 0) {
-        $groupadd = "INSERT INTO groups (groupname)" ."VALUES ('$gname')";
-        
-        if ($conn->query($groupadd) === true) {
-        $_SESSION['success'] = "New group created";
-        header('location: ./index.php');      
-      }  
-      else {
-          $_SESSION['success'] = "Something went wrong";
-          header('location: ../index.php');
-      }
-      mysqli_close('$conn');
-      }
-    }
-    elseif (empty($gname)) {
+
+    if (empty($gname)) {
       array_push($errors, "Groupname is required");
     }
   
     if (count($errors) == 0) {
       $groupadd2 = "INSERT INTO groups (groupname, active)" ."VALUES ('$gname', '$gactive')";
-      
-      if ($conn->query($groupadd2) === true) {
-      $_SESSION['success'] = "New group created";
-      header('location: ./index.php');      
-    }  
-    else {
-        $_SESSION['success'] = "Something went wrong";
-        header('location: ../index.php');
+      mysqli_query($conn,$groupadd2);      
+      add_perm($gname, $conn);
+
+      if (isset($result) && $result == "done") {
+        $_SESSION['success'] = "New group created";
+      header('location: ./index.php');
+      }
     }
-    mysqli_close('$conn');
-}
   }
   
+  //FUNCTION ADD PERMS PER GROUP
+  function add_perm($gname, $conn) {
+    $newgroupadd = "SELECT groupID FROM groups WHERE groupname = '$gname'";
+      $amountperm = "SELECT COUNT(permissionID) as aantalperms FROM permissionslist";
+
+      $getnewgroupadd = mysqli_query($conn, $newgroupadd);
+      $getamountperm = mysqli_query($conn, $amountperm);
+
+      while ($row3 = mysqli_fetch_assoc($getnewgroupadd)) {
+        $newgroupaddID = htmlspecialchars($row3['groupID']);
+      }
+
+      while ($row4 = mysqli_fetch_assoc($getamountperm)) {
+        $getamountperms = htmlspecialchars($row4['aantalperms']);
+      }
+      
+      for ($i = 0; $i <= $getamountperms; $i++) {
+        $addgroupperm = "INSERT INTO permissions (setting, groupID, permissionID)" ."VALUES ('false','$newgroupaddID','$i')";
+        mysqli_query($conn,$addgroupperm);
+      }
+      if ($i === $getamountperms) {
+        unset($i, $newgroupadd);
+        $result = "done";
+        return $result;
+      }
+
+  }
+
   // REMOVE GROUP
   if (isset($_POST['group_remove'])) {
     $groupid2 = mysqli_real_escape_string($conn, $_POST['groupremove']);
@@ -389,7 +395,18 @@ if (isset($_POST['add_group'])) {
         $updatemailsettingsfull = "UPDATE settings SET emailhost = '$setting_host', emailuser = '$setting_user', emailpassword = '$setting_password', emailport = '$setting_port'";
         mysqli_query($conn, $updatemailsettingsfull);
         $_SESSION['success'] = "All mailsettings have been updated.";
-        header('lcoation: ./settings.php');
+        header('location: ./settings.php');
       }
-    }  
+    }
+  
+  //UPDATE GROUP PERM
+    if (isset($_POST['edit_perm'])) {
+      $permid = mysqli_real_escape_string($conn, $_POST['permid']);
+      $newstatus = mysqli_real_escape_string($conn, $_POST['new_status']);
+
+      $updateperm = "UPDATE permissions SET setting = '$newstatus' WHERE permissionsID = $permid";
+      mysqli_query($conn, $updateperm);
+      $_SESSION['success'] = "Permission has been updated";
+      header("location: ./perms.php?id='$id'");
+    }
   ?>

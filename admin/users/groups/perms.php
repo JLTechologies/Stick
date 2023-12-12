@@ -9,7 +9,7 @@
   include('../../authentication.php');
   $_SESSION['message'] = '';
   $id = $_GET['id'];
-  $getgroupperms = "SELECT * FROM permissions INNER JOIN permissionslist on permissions.permissionID = permissionslist.permissionID INNER JOIN groups ON permissions.groupID = groups.groupID WHERE groups.groupID = $id";
+  $getgroupperms = "SELECT * FROM permissions INNER JOIN permissionslist on permissions.permissionID = permissionslist.permissionID INNER JOIN groups ON permissions.groupID = groups.groupID WHERE groups.groupID = $id AND permissions.groupID = $id";
 
   if (isset($_GET['logout'])) {
     session_destroy();
@@ -225,7 +225,7 @@
   	<?php endif ?>
       <div class="container-fluid">
         <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-12">
             <div class="card">
               <div class="card-body table-responsive p-0">
                 <table class="table">
@@ -233,42 +233,40 @@
                     <tr>
                       <th>Index</th>
                       <th>Name</th>
-                      <th>Active</th>
-                      <th>Edit</th>
-                      <th>Permissions</th>
-                      <th>Remove</th>
+                      <th>Description</th>
+                      <th>Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php
-                      $getgroups = mysqli_query($conn, $grouplist);
+                      $getperms = mysqli_query($conn, $getgroupperms);
 
-                      if (! $getgroups) {
+                      if (! $getperms) {
                         die('Could not fetch data: '.mysqli_error($conn));
                       }
 
-                      while($row = mysqli_fetch_assoc($getgroups)) {
+                      while($row = mysqli_fetch_assoc($getperms)) {
                         ?>
                         <tr class="align-middle">
-                          <td class="text-center"><?php echo htmlspecialchars($row['groupID']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['groupname']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['active']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['permissionID']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['permissionname']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['description']);?></td>
                           <td>
-                            <form name="group_edit" action="./edit.php?id=<?php echo htmlspecialchars($row['groupID']);?>)" method="post">
-                              <input type="hidden" name="groupedit" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
-                              <button type="submit" class="btn btn-warning btn-block" value="edit group"></button>
-                            </form>
-                          </td>
-                          <td>
-                            <form name="groupperms" action="./perms.php" method="post">
-                              <input type="hidden" name="groupperms" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
-                              <button type="submit" class="btn btn-warning btn-block" value="edit groupperms"></button>
-                            </form>
-                          </td>  
-                          <td>
-                            <form name="groupremove" action="./index.php" method="post">
-                              <input type="hidden" name="groupremove" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
-                              <button type="submit" class="btn btn-danger btn-block" value="remove group"></button>
+                            <form name="edit_perm" action="./perms.php?id=<?php echo htmlspecialchars($id);?>)" method="post">
+                            <input type="hidden" name="permid" value="<?php echo htmlspecialchars($row['permissionID']);?>">
+                            <label for="new_status" class="control-label">Site Active</label>
+                              <select name="new_status" class="form-control">
+                                <?php
+                                  if($active == "true") {?>
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                  <?php }
+                                  else {?>
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                  <?php } ?>
+                                </select>
+                              <button type="submit" class="btn btn-warning btn-block" value="edit permission">Update Perm</button>
                             </form>
                           </td> 
                      <?php };
@@ -276,31 +274,6 @@
                   </tbody>
                 </table>
               </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card card-primary input-group">
-              <div class="card-header">
-                <h3 class="card-title">Add Group</h3>
-              </div>
-              <form action="./index.php" method="post">
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="groupname" class="control-label">Name</label>
-                    <input type="text" class="form-control" name="groupname" placeholder="Enter Name">
-                  </div>
-                  <div class="form-group">
-                    <label for="groupactive">Group Active</label>
-                    <select class="custom-select form-control border border-width-2" name="groupactive">
-                      <option value="true">Yes</option>
-                      <option value="false">No</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block" name="add_group">Add Group</button>
-                </div>
-              </form>
             </div>
           </div>
         </div>
@@ -327,7 +300,7 @@
 <!-- AdminLTE App -->
 <script src="../../js/adminlte.min.js"></script>
 <!-- Toaster -->
-<script src="../../plguins/toastr/toastr.min.js"></script>
+<script src="../../plugins/toastr/toastr.min.js"></script>
 <!-- Sweetalert -->
 <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
 

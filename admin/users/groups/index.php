@@ -252,21 +252,20 @@
                           <td class="text-center"><?php echo htmlspecialchars($row['active']);?></td>
                           <td>
                             <form name="group_edit" action="./edit.php?id=<?php echo htmlspecialchars($row['groupID']);?>)" method="post">
-                              <input type="hidden" name="groupedit" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
-                              <button type="submit" class="btn btn-warning btn-block" value="edit group"></button>
+                              <input type="hidden" name="group_edit" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
+                              <button type="submit" class="btn btn-warning btn-block">Edit Group</button>
                             </form>
                           </td>
                           <td>
-                            <form name="groupperms" action="./perms.php" method="post">
+                            <form name="groupperms" action="./perms.php?id=<?php echo htmlspecialchars($row['groupID']);?>" method="post">
                               <input type="hidden" name="groupperms" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
-                              <input type="hidden" name="groupperms" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
-                              <button type="submit" class="btn btn-warning btn-block" value="edit groupperms"></button>
+                              <button type="submit" class="btn btn-warning btn-block">Edit Perms</button>
                             </form>
                           </td>  
                           <td>
-                            <form name="groupremove" action="./index.php" method="post">
+                            <form action="./index.php" method="post">
                               <input type="hidden" name="groupremove" value="<?php echo htmlspecialchars($row['groupID']);?>"/>
-                              <button type="submit" class="btn btn-danger btn-block" value="remove group"></button>
+                              <button type="submit" name="group_remove" class="btn btn-danger btn-block">Remove Group</button>
                             </form>
                           </td> 
                      <?php };
@@ -325,7 +324,7 @@
 <!-- AdminLTE App -->
 <script src="../../js/adminlte.min.js"></script>
 <!-- Toaster -->
-<script src="../../plguins/toastr/toastr.min.js"></script>
+<script src="../../plugins/toastr/toastr.min.js"></script>
 <!-- Sweetalert -->
 <script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
 
