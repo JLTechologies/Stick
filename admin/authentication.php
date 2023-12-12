@@ -7,7 +7,7 @@ $email    = "";
 $errors = array(); 
 
 // connect to the database
-include('../config.php');
+include('./config.php');
 
 // ADD USER
 if (isset($_POST['admin_reg_user'])) {
