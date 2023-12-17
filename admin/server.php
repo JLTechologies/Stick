@@ -409,4 +409,40 @@ if (isset($_POST['add_group'])) {
       $_SESSION['success'] = "Permission has been updated";
       header("location: ./perms.php?id='$id'");
     }
+
+  //ADD COWCODE SITE
+  if (isset($_POST['siteadd'])) {
+    $cowcode = mysqli_real_escape_string($conn,$_POST['sitename']);
+    $cowcodestreet = mysqli_real_escape_string($conn,$_POST['sitestreet']);
+    $cowcodenumber = mysqli_real_escape_string($conn,$_POST['sitenumber']);
+    $cowcodeaddition = mysqli_real_escape_string($conn,$_POST['siteaddition']);
+    $cowcodezipcode = mysqli_real_escape_string($conn,$_POST['sitezipcode']);
+    $cowcodecity = mysqli_real_escape_string($conn,$_POST['sitecity']);
+    $cowcodestate = mysqli_real_escape_string($conn,$_POST['sitestate']);
+    $cowcodecountry = mysqli_real_escape_string($conn,$_POST['sitecountry']);
+    if (empty($cowcodeaddition)) {
+      $cowcodeadd = "INSERT INTO locations(locationname, street, number, zipcode, city, state, countryID)
+      VALUES ('$cowcode', '$cowcodestreet', '$cowcodenumber', '$cowcodezipcode', '$cowcodecity', '$cowcodestate', '$cowcodecountry')";
+      mysqli_query($conn, $cowcodeadd);
+      $_SESSION['success'] = "Site with code '$cowcode' has been added";
+      header("location: ./cowcodes.php");
+    }
+    else {
+      $cowcodeadd2 = "INSERT INTO locations(locationname, street, number, addition, zipcode, city, state, countryID)
+          VALUES ('$cowcode', '$cowcodestreet', '$cowcodenumber','$cowcodeaddition' ,'$cowcodezipcode', '$cowcodecity', '$cowcodestate', '$cowcodecountry')";
+      mysqli_query($conn, $cowcodeadd2);
+      $_SESSION['success'] = "Site with code '$cowcode' has been added";
+      header("location: ./cowcodes.php");
+    }
+  }
+
+  //REMOVE COWCODE SITE
+  if (isset($_POST['siteremove'])) {
+    $cowcodeID = mysqli_real_escape_string($conn, $_POST['siteremove']);
+  
+    $cowcoderemove = "DELETE from sites WHERE siteID = '$cowcodeID'";
+    mysqli_query($conn, $cowcoderemove);
+    $_SESSION['success'] = "Site has been removed";
+    header('location: ./cowcodes.php');
+  }
   ?>

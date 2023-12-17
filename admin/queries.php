@@ -15,4 +15,5 @@ $itemlist = "SELECT * FROM items INNER JOIN measure on items.measureID = measure
 $itemlist1 = "SELECT * FROM items INNER JOIN brands on items.brandID = brands.brandID";
 $settings = "SELECT * FROM settings";
 $permissionslist = "SELECT * FROM permissionslist";
+$sites = "SELECT * FROM sites INNER JOIN countries ON sites.countryID = countries.countryid";
 ?>

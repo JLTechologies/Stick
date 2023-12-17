@@ -6,10 +6,14 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
-  $_SESSION['message'] = '';
+  include('../authentication.php');
+  include('../server.php');
+
+  if (isset($_GET['logout'])) {
+    session_destroy();
+  }
 
   include('../queries.php');
-  include('../server.php');
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -24,9 +28,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
-  <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="../plugins/toastr/toastr.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../css/adminlte.min.css">
 </head>
@@ -79,7 +84,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations.php" class="nav-link">
+            <a href="./" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Locations
@@ -87,7 +92,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations/cowcodes.php" class="nav-link">
+            <a href="./cowcodes.php" class="nav-link active">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Cow-Codes
@@ -111,7 +116,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/contacts/" class="nav-link">
+			<a href="../brands/contact/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -126,8 +131,8 @@
 				</p>
 			</a>
 			</li>
-		  <li class="nav-item menu-open">
-        <a href="#" class="nav-link active">
+      <li class="nav-item menu-closed">
+        <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
               Items
@@ -145,13 +150,13 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
         </ul>
       </li>
-		  <li class="nav-item">
+      <li class="nav-item">
 			<a href="../users/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
@@ -203,10 +208,10 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="../">Admin</a></li>
+              <li class="breadcrumb-item"><a href="./">Admin</a></li>
               <li class="breadcrumb-item"><a href="../">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="./index.php">Items</a></li>
-              <li class="breadcrumb-item">New Item</li>
+              <li class="breadcrumb-item"><a href="./">Locations</a></li>
+              <li class="breadcrumb-item active">Cow-Codes</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -217,86 +222,118 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-        <?php include ('../errors.php');?>
+        <?php include ('../errors.php'); ?>
+        <div class="row">
           <!-- notification message -->
   	<?php if (isset($_SESSION['success'])) : ?>
       <div class="error success" >
       	<h3>
           <?php 
           	echo $_SESSION['success'];
-            unset($_SESSION['success']);
+            unset($_SESSION["success"]);
           ?>
       	</h3>
       </div>
   	<?php endif ?>
-        <div class="row">
-          <div class="col-lg-12">
+     <div class="col-lg-6">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Add Item</h3>
-                </div>
-                <form name="add_item" action="./new.php" method="post">
+              <div class="card-body table-responsive p-0">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Index</th>
+                      <th>COW-Code</th>
+                      <th>Address</th>
+                      <th>Edit</th>
+                      <th>Remove</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                      $getCOWinfo = mysqli_query($conn, $sites);
+
+                      if (! $getCOWinfo) {
+                        die('Could not fetch data: '.mysqli_error($conn));
+                      }
+
+                      while($row = mysqli_fetch_assoc($getCOWinfo)) {
+                        ?>
+                        <tr class="align-middle">
+                          <td class="text-center"><?php echo htmlspecialchars($row['siteID']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['cowcode']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['street']);?> <?php echo htmlspecialchars($row['number']);?> / <?php echo htmlspecialchars($row['addition']);?> , <?php echo htmlspecialchars($row['zipcode']);?> <?php echo htmlspecialchars($row['city']);?> <?php echo htmlspecialchars($row['nicename']);?></td>
+                          <td>
+                            <form action="./editcowcode.php?id=<?php echo htmlspecialchars($row['siteID']);?>" method="post">
+                              <input type="hidden" name="editcowcode" value="<?php echo htmlspecialchars($row['siteID']);?>"/>
+                              <button type="submit" class="btn btn-warning btn-block" name="editcowcode">Edit Site</button>
+                            </form>
+                          </td>
+                          <td>
+                            <form action="./cowcodes.php" method="post">
+                              <input type="hidden" name="siteremove" value="<?php echo htmlspecialchars($row['siteID']);?>"/>
+                              <button type="submit" class="btn btn-danger btn-block" name="siteremove">Remove Site</button>
+                            </form>
+                          </td>        
+                     <?php };
+                    ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Add Site</h3>
+              </div>
+              <form action="./cowcodes.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="itemname">Name</label>
-                    <input type="text" class="form-control" id="itemname" name="item_name">
+                    <label for="sitename">COW-Code</label>
+                    <input type="text" class="form-control" id="sitename" name="sitename" placeholder="Enter Site Name">
                   </div>
                   <div class="form-group">
-                    <label for="itemprice">Price</label>
-                    <input type="text" class="form-control" id="itemprice" name="item_price">
-                  </div>                  
+                    <label for="sitestreet">Street</label>
+                    <input type="text" class="form-control" id="sitestreet" name="sitestreet" placeholder="Enter Site Street">
+                  </div>
                   <div class="form-group">
-                    <label for="usergroup">Category</label>
-                    <select class="custom-select form-control border border-width-2" id="usergroup">
+                    <label for="sitenumber">Number</label>
+                    <input type="text" class="form-control" id="sitenumber" name="sitenumber" placeholder="Enter Site Number">
+                  </div> 
+                  <div class="form-group">
+                    <label for="siteaddition">Addition</label>
+                    <input type="text" class="form-control" id="siteaddition" name="siteaddition" placeholder="Enter Site Addition">
+                  </div> 
+                  <div class="form-group">
+                    <label for="sitezipcode">Zipcode</label>
+                    <input type="text" class="form-control" id="sitezipcode" name="sitezipcode" placeholder="Enter Site Zipcode">
+                  </div> 
+                  <div class="form-group">
+                    <label for="sitecity">City</label>
+                    <input type="text" class="form-control" id="sitecity" name="sitecity" placeholder="Enter Site City">
+                  </div> 
+                  <div class="form-group">
+                    <label for="sitestate">State</label>
+                    <input type="text" class="form-control" id="sitestate" name="sitestate" placeholder="Enter Site State">
+                  </div>
+                  <div class="form-group">
+                    <label for="sitecountry">Country</label>
+                    <select class="custom-select form-control border border-width-2" id="sitecountry" name="sitecountry">
                       <?php
-                        $getchildcategories = mysqli_query($conn, $childcategories);
+                        $getcountries = mysqli_query($conn, $countries);
 
-                        if (! $getchildcategories) {
+                        if (! $getcountries) {
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
-                        while ($row1 = mysqli_fetch_assoc($getchildcategories)) {?>
-                          <option value="<?php htmlspecialchars($row1['groupID']) ;?>"><?php echo htmlspecialchars($row1['name']);?></option>
-                        <?php };
-                        ?>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="min_amount">Minimum amount </label>
-                    <input type="text" class="form-control" id="min_amount" placeholder="<?php echo $itemmin_amount;?>">
-                  </div>
-                  <div class="form-group">
-                    <label for="usergroup">Brand</label>
-                    <select class="custom-select form-control border border-width-2" id="usergroup">
-                      <?php
-                        $getbrands = mysqli_query($conn, $brandlist);
-
-                        if (! $getbrands) {
-                          die('Could not fetch data: '.mysqli_error($conn));
-                        }
-                        while ($row2 = mysqli_fetch_assoc($getbrands)) {?>
-                          <option value="<?php htmlspecialchars($row2['groupID']) ;?>"><?php echo htmlspecialchars($row2['name']);?></option>
-                        <?php };
-                        ?>
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="usergroup">Measurement</label>
-                    <select class="custom-select form-control border border-width-2" id="usergroup">
-                      <?php
-                        $getmeasurements = mysqli_query($conn, $measurements);
-
-                        if (! $getmeasurements) {
-                          die('Could not fetch data: '.mysqli_error($conn));
-                        }
-                        while ($row1 = mysqli_fetch_assoc($getmeasurements)) {?>
-                          <option value="<?php htmlspecialchars($row3['groupID']) ;?>"><?php echo htmlspecialchars($row3['name']);?></option>
+                        while ($row1 = mysqli_fetch_assoc($getcountries)) {?>
+                          <option value="<?php echo htmlspecialchars($row1['countryid']) ;?>"><?php echo htmlspecialchars($row1['nicename']);?></option>
                         <?php };
                         ?>
                     </select>
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Add Item</button>
+                  <button type="submit" class="btn btn-primary btn-block" name="siteadd">Add Site</button>
                 </div>
               </form>
             </div>
@@ -322,6 +359,10 @@
 <script src="../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
+<!-- Toastr -->
+<script src="../plugins/toastr/toastr.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../js/adminlte.min.js"></script>
 </body>
