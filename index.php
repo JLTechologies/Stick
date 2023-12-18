@@ -3,19 +3,21 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="shortcut icon" href="../../favicon.jpg" type="image/x-icon">
+  <link rel="shortcut icon" href="./favicon.jpg" type="image/x-icon">
   <?php
-  include('../../../config.php');
-  include('../../authentication.php');
-  $_SESSION['message'] = '';
-  $id = $_GET['id'];
-  $getgroupperms = "SELECT * FROM permissions INNER JOIN permissionslist on permissions.permissionID = permissionslist.permissionID INNER JOIN groups ON permissions.groupID = groups.groupID WHERE groups.groupID = $id AND permissions.groupID = $id";
+  include('./config.php');
+  include('./server.php');
+  include('./authentication.php');
 
   if (isset($_GET['logout'])) {
     session_destroy();
   }
-  include('../../queries.php');
-  include('../../server.php');
+
+  include('./queries.php');
+  $getcountitems = mysqli_query($conn, $countitems);
+  $getcountusers = mysqli_query($conn, $countusers);
+  $getcountlocations = mysqli_query($conn, $countlocations);
+  $getcountcowcodes = mysqli_query($conn, $countcowcodes);
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -29,10 +31,9 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="../../plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="./plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../../css/adminlte.min.css">
-  
+  <link rel="stylesheet" href="./css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -61,21 +62,20 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="../index.php" class="brand-link">
-      <img src="../../favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <a href="./index.php" class="brand-link">
+      <img src="./favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $site; ?></span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
-
       <!-- Sidebar Menu -->
       <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="../../" class="nav-link">
+            <a href="./" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -83,7 +83,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../../locations/" class="nav-link">
+            <a href="./locations" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Locations
@@ -91,7 +91,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../../locations/cowcodes.php" class="nav-link">
+            <a href="./locations/cowcodes.php" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Cow-Codes
@@ -99,7 +99,7 @@
             </a>
           </li>
           <li class="nav-item">
-			<a href="../../categories/" class="nav-link">
+			<a href="./categories/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Categories
@@ -107,7 +107,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../../brands/" class="nav-link">
+			<a href="./brands/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Brands
@@ -115,7 +115,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../../brands/contact/" class="nav-link">
+			<a href="./brands/contacts/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -123,7 +123,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../../measurements/" class="nav-link">
+			<a href="./measurements/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Measurements
@@ -149,14 +149,14 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
         </ul>
       </li>
 		  <li class="nav-item">
-			<a href="../" class="nav-link">
+			<a href="./users/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Users
@@ -164,7 +164,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="./" class="nav-link active">
+			<a href="./users/groups" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Groups
@@ -172,7 +172,7 @@
 			</a>
 			</li>
 			<li class="nav-item">
-			<a href="../../settings.php" class="nav-link">
+			<a href="./settings.php" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Settings
@@ -207,10 +207,8 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="../../">Admin</a></li>
-              <li class="breadcrumb-item"><a href="../../">Dashboard</a></li>
-              <li class="breadcrumb-item"><a href="../">Users</a></li>
-              <li class="breadcrumb-item active">Groups</li>
+              <li class="breadcrumb-item"><a href="./">Admin</a></li>
+              <li class="breadcrumb-item active">Dashboard</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -220,71 +218,96 @@
 
     <!-- Main content -->
     <div class="content">
-          <!-- notification message -->
-  	<?php if (isset($_SESSION['success'])) : ?>
-      <div class="error success" >
-      	<h3>
-          <?php 
-          	echo $_SESSION['success'];
-            unset($_SESSION["success"]);
-          ?>
-      	</h3>
-      </div>
-  	<?php endif ?>
       <div class="container-fluid">
         <div class="row">
-    <div class="col-lg-12">
-            <div class="card">
-              <div class="card-body table-responsive p-0">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Index</th>
-                      <th>Name</th>
-                      <th>Description</th>
-                      <th>Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php
-                      $getperms = mysqli_query($conn, $getgroupperms);
+          <!-- notification message -->
+  	      <?php if (isset($_SESSION['success'])) : ?>
+            <div class="error success" >
+      	      <h3>
+                <?php 
+          	      echo $_SESSION['success'];
+                  unset($_SESSION['success']);
+                ?>
+              </h3>
+            </div>
+  	      <?php endif ?>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php 
+                if (! $getcountcowcodes) {
+                  die('Could not fetch data: '.mysqli_error($conn));
+                }
+                while ($row3 = mysqli_fetch_assoc($getcountcowcodes)) {
+                  echo htmlspecialchars($row3['amountsites']);
+                } ?></h3>
 
-                      if (! $getperms) {
-                        die('Could not fetch data: '.mysqli_error($conn));
-                      }
-
-                      while($row = mysqli_fetch_assoc($getperms)) {
-                        ?>
-                        <tr class="align-middle">
-                          <td class="text-center"><?php echo htmlspecialchars($row['permissionID']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['permissionname']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['description']);?></td>
-                          <td>
-                            <form name="edit_perm" action="./perms.php?id=<?php echo htmlspecialchars($id);?>)" method="post">
-                            <input type="hidden" name="permid" value="<?php echo htmlspecialchars($row['permissionID']);?>">
-                            <label for="new_status" class="control-label">Site Active</label>
-                              <select name="new_status" class="form-control">
-                                <?php
-                                  if($active == "true") {?>
-                                    <option value="true">Yes</option>
-                                    <option value="false">No</option>
-                                  <?php }
-                                  else {?>
-                                    <option value="false">No</option>
-                                    <option value="true">Yes</option>
-                                  <?php } ?>
-                                </select>
-                              <button type="submit" class="btn btn-warning btn-block" value="edit permission">Update Perm</button>
-                            </form>
-                          </td> 
-                     <?php };
-                    ?>
-                  </tbody>
-                </table>
+                <p>Cow-Codes</p>
               </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="./locations/cowcodes.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php 
+                if (! $getcountitems) {
+                  die('Could not fetch data: '.mysqli_error($conn));
+                }
+                while ($row4 = mysqli_fetch_assoc($getcountitems)) {
+                  echo htmlspecialchars($row4['amountitems']);
+                } ?></h3>
+                <p>Items</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="./items/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php 
+                if (! $getcountusers) {
+                  die('Could not fetch data: '.mysqli_error($conn));
+                }
+                while ($row5 = mysqli_fetch_assoc($getcountusers)) {
+                  echo htmlspecialchars($row5['amountusers']);
+                } ?></h3>
+
+                <p>Users</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="./users/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php 
+                if (! $getcountlocations) {
+                  die('Could not fetch data: '.mysqli_error($conn));
+                }
+                while ($row3 = mysqli_fetch_assoc($getcountlocations)) {
+                  echo htmlspecialchars($row3['amountlocations']);
+                } ?></h3>
+
+                <p>Locations</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="./locations/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
+        <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
@@ -294,7 +317,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('../../footer.php'); ?>
+	<?php include('./footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->
@@ -302,17 +325,10 @@
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src="../../plugins/jquery/jquery.min.js"></script>
+<script src="./plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="./plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="../../js/adminlte.min.js"></script>
-<!-- Toaster -->
-<script src="../../plugins/toastr/toastr.min.js"></script>
-<!-- Sweetalert -->
-<script src="../../plugins/sweetalert2/sweetalert2.min.js"></script>
-
-<!-- Required php code -->
-
+<script src="./js/adminlte.min.js"></script>
 </body>
 </html>

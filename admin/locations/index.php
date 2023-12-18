@@ -91,6 +91,14 @@
               </p>
             </a>
           </li>
+		  <li class="nav-item">
+            <a href="./cowcodes.php" class="nav-link">
+              <i class="nav-icon fas fa-users-cog"></i>
+              <p>
+                Cow-Codes
+              </p>
+            </a>
+          </li>
           <li class="nav-item">
 			<a href="../categories/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
