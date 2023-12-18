@@ -1,6 +1,6 @@
 -- --------------------------------------------------------
 -- Host:                         stock.jl-tech.be
--- Server versie:                11.0.3-MariaDB-1:11.0.3+maria~ubu2204 - mariadb.org binary distribution
+-- Server versie:                11.0.4-MariaDB-1:11.0.4+maria~ubu2204 - mariadb.org binary distribution
 -- Server OS:                    debian-linux-gnu
 -- HeidiSQL Versie:              12.5.0.6677
 -- --------------------------------------------------------
@@ -13,6 +13,11 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+
+-- Databasestructuur van stock wordt geschreven
+CREATE DATABASE IF NOT EXISTS `stock` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci */;
+USE `stock`;
 
 -- Structuur van  tabel stock.amount wordt geschreven
 CREATE TABLE IF NOT EXISTS `amount` (
@@ -63,8 +68,6 @@ CREATE TABLE IF NOT EXISTS `childcategories` (
   `childname` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`childcategoryID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumpen data van tabel stock.childcategories: ~0 rows (ongeveer)
 
 -- Structuur van  tabel stock.countries wordt geschreven
 CREATE TABLE IF NOT EXISTS `countries` (
@@ -345,6 +348,7 @@ CREATE TABLE IF NOT EXISTS `items` (
   `created_on` datetime NOT NULL,
   `measureID` int(10) NOT NULL,
   `updated_on` datetime DEFAULT NULL,
+  `reference` int(20) NOT NULL,
   PRIMARY KEY (`itemID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -363,8 +367,6 @@ CREATE TABLE IF NOT EXISTS `locations` (
   `countryID` int(10) NOT NULL,
   PRIMARY KEY (`locationID`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumpen data van tabel stock.locations: ~0 rows (ongeveer)
 
 -- Structuur van  tabel stock.measure wordt geschreven
 CREATE TABLE IF NOT EXISTS `measure` (
@@ -391,48 +393,52 @@ CREATE TABLE IF NOT EXISTS `permissions` (
 CREATE TABLE IF NOT EXISTS `permissionslist` (
   `permissionID` int(10) NOT NULL AUTO_INCREMENT,
   `permissionname` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`permissionID`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.permissionslist: ~37 rows (ongeveer)
-REPLACE INTO `permissionslist` (`permissionID`, `permissionname`) VALUES
-	(1, 'admin_access'),
-	(2, 'can_view_prices'),
-	(3, 'can_view_logs'),
-	(4, 'can_add_location'),
-	(5, 'can_edit_location'),
-	(6, 'can_remove_location'),
-	(7, 'can_add_item'),
-	(8, 'can_edit_item'),
-	(9, 'can_update_item'),
-	(10, 'can_remove_item'),
-	(11, 'can_add_brand'),
-	(12, 'can_remove_brand'),
-	(13, 'can_edit_brand'),
-	(14, 'can_add_contact'),
-	(15, 'can_remove_contact'),
-	(16, 'can_edit_contact'),
-	(17, 'can_add_measurement'),
-	(18, 'can_edit_measurement'),
-	(19, 'can_remove_measurement'),
-	(20, 'can_add_root'),
-	(21, 'can_remove_root'),
-	(22, 'can_edit_root'),
-	(23, 'can_add_child'),
-	(24, 'can_remove_child'),
-	(25, 'can_edit_child'),
-	(26, 'can_change_mail'),
-	(27, 'can_edit_account'),
-	(28, 'can_edit_settings'),
-	(29, 'can_edit_mailsettings'),
-	(30, 'can_edit_activestate'),
-	(31, 'can_edit_groups'),
-	(32, 'can_remove_groups'),
-	(33, 'can_add_groups'),
-	(34, 'can_edit_user'),
-	(35, 'can_add_user'),
-	(36, 'can_remove_user'),
-	(37, 'can_export_itemslist');
+-- Dumpen data van tabel stock.permissionslist: ~40 rows (ongeveer)
+REPLACE INTO `permissionslist` (`permissionID`, `permissionname`, `description`) VALUES
+	(1, 'admin_access', NULL),
+	(2, 'can_view_prices', NULL),
+	(3, 'can_view_logs', NULL),
+	(4, 'can_add_location', NULL),
+	(5, 'can_edit_location', NULL),
+	(6, 'can_remove_location', NULL),
+	(7, 'can_add_item', NULL),
+	(8, 'can_edit_item', NULL),
+	(9, 'can_update_item', NULL),
+	(10, 'can_remove_item', NULL),
+	(11, 'can_add_brand', NULL),
+	(12, 'can_remove_brand', NULL),
+	(13, 'can_edit_brand', NULL),
+	(14, 'can_add_contact', NULL),
+	(15, 'can_remove_contact', NULL),
+	(16, 'can_edit_contact', NULL),
+	(17, 'can_add_measurement', NULL),
+	(18, 'can_edit_measurement', NULL),
+	(19, 'can_remove_measurement', NULL),
+	(20, 'can_add_root', NULL),
+	(21, 'can_remove_root', NULL),
+	(22, 'can_edit_root', NULL),
+	(23, 'can_add_child', NULL),
+	(24, 'can_remove_child', NULL),
+	(25, 'can_edit_child', NULL),
+	(26, 'can_change_mail', NULL),
+	(27, 'can_edit_account', NULL),
+	(28, 'can_edit_settings', NULL),
+	(29, 'can_edit_mailsettings', NULL),
+	(30, 'can_edit_activestate', NULL),
+	(31, 'can_edit_groups', NULL),
+	(32, 'can_remove_groups', NULL),
+	(33, 'can_add_groups', NULL),
+	(34, 'can_edit_user', NULL),
+	(35, 'can_add_user', NULL),
+	(36, 'can_remove_user', NULL),
+	(37, 'can_export_itemslist', NULL),
+	(38, 'can_remove_site', NULL),
+	(39, 'can_edit_site', NULL),
+	(40, 'can_add_site', NULL);
 
 -- Structuur van  tabel stock.rootcategories wordt geschreven
 CREATE TABLE IF NOT EXISTS `rootcategories` (
@@ -441,8 +447,6 @@ CREATE TABLE IF NOT EXISTS `rootcategories` (
   `name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`categoryid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumpen data van tabel stock.rootcategories: ~1 rows (ongeveer)
 
 -- Structuur van  tabel stock.settings wordt geschreven
 CREATE TABLE IF NOT EXISTS `settings` (
@@ -457,9 +461,24 @@ CREATE TABLE IF NOT EXISTS `settings` (
   PRIMARY KEY (`settingID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.settings: ~0 rows (ongeveer)
+-- Dumpen data van tabel stock.settings: ~1 rows (ongeveer)
 REPLACE INTO `settings` (`settingID`, `sitename`, `siteactive`, `favicon`, `emailhost`, `emailuser`, `emailpassword`, `emailport`) VALUES
 	(1, 'Power-Installation', 'true', NULL, 'localhost', 'admin@localhost.be', 'Test123', 587);
+
+-- Structuur van  tabel stock.sites wordt geschreven
+CREATE TABLE IF NOT EXISTS `sites` (
+  `siteID` int(10) NOT NULL AUTO_INCREMENT,
+  `cowcode` varchar(50) NOT NULL DEFAULT '',
+  `street` varchar(255) NOT NULL DEFAULT '',
+  `number` int(10) NOT NULL,
+  `addition` varchar(50) DEFAULT NULL,
+  `zipcode` varchar(10) NOT NULL DEFAULT '',
+  `city` varchar(255) NOT NULL DEFAULT '',
+  `countryID` int(10) NOT NULL,
+  PRIMARY KEY (`siteID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumpen data van tabel stock.sites: ~0 rows (ongeveer)
 
 -- Structuur van  tabel stock.users wordt geschreven
 CREATE TABLE IF NOT EXISTS `users` (
