@@ -16,4 +16,8 @@ $itemlist1 = "SELECT * FROM items INNER JOIN brands on items.brandID = brands.br
 $settings = "SELECT * FROM settings";
 $permissionslist = "SELECT * FROM permissionslist";
 $sites = "SELECT * FROM sites INNER JOIN countries ON sites.countryID = countries.countryid";
+$countcowcodes = "SELECT COUNT(cowcode) 'amountsites' FROM sites";
+$countusers = "SELECT COUNT(name) 'amountusers' FROM users";
+$countitems = "SELECT COUNT(name) 'amountitems' FROM items";
+$countlocations = "SELECT COUNT(locationname) 'amountlocations' FROM locations";
 ?>

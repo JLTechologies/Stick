@@ -5,14 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="./favicon.jpg" type="image/x-icon">
   <?php
-  include('../config.php');
-  session_start();
+  include('./config.php');
+  include('./server.php');
+  include('./authentication.php');
 
   if (isset($_GET['logout'])) {
     session_destroy();
   }
 
   include('./queries.php');
+  $getcountitems = mysqli_query($conn, $countitems);
+  $getcountusers = mysqli_query($conn, $countusers);
+  $getcountlocations = mysqli_query($conn, $countlocations);
+  $getcountcowcodes = mysqli_query($conn, $countcowcodes);
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -216,15 +221,91 @@
       <div class="container-fluid">
         <div class="row">
           <!-- notification message -->
-  	<?php if (isset($_SESSION['success'])) : ?>
-      <div class="error success" >
-      	<h3>
-          <?php 
-          	echo $_SESSION['success'];
-          ?>
-      	</h3>
-      </div>
-  	<?php endif ?>
+  	      <?php if (isset($_SESSION['success'])) : ?>
+            <div class="error success" >
+      	      <h3>
+                <?php 
+          	      echo $_SESSION['success'];
+                  unset($_SESSION['success']);
+                ?>
+              </h3>
+            </div>
+  	      <?php endif ?>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php 
+                if (! $getcountcowcodes) {
+                  die('Could not fetch data: '.mysqli_error($conn));
+                }
+                while ($row3 = mysqli_fetch_assoc($getcountcowcodes)) {
+                  echo htmlspecialchars($row3['amountsites']);
+                } ?></h3>
+
+                <p>Cow-Codes</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="./locations/cowcodes.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php 
+                if (! $getcountitems) {
+                  die('Could not fetch data: '.mysqli_error($conn));
+                }
+                while ($row4 = mysqli_fetch_assoc($getcountitems)) {
+                  echo htmlspecialchars($row4['amountitems']);
+                } ?></h3>
+                <p>Items</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="./items/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php 
+                if (! $getcountusers) {
+                  die('Could not fetch data: '.mysqli_error($conn));
+                }
+                while ($row5 = mysqli_fetch_assoc($getcountusers)) {
+                  echo htmlspecialchars($row5['amountusers']);
+                } ?></h3>
+
+                <p>Users</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="./users/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?php 
+                if (! $getcountlocations) {
+                  die('Could not fetch data: '.mysqli_error($conn));
+                }
+                while ($row3 = mysqli_fetch_assoc($getcountlocations)) {
+                  echo htmlspecialchars($row3['amountlocations']);
+                } ?></h3>
+
+                <p>Locations</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-bag"></i>
+              </div>
+              <a href="./locations/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
