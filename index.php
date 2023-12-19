@@ -15,7 +15,6 @@
 
   include('./queries.php');
   $getcountitems = mysqli_query($conn, $countitems);
-  $getcountusers = mysqli_query($conn, $countusers);
   $getcountlocations = mysqli_query($conn, $countlocations);
   $getcountcowcodes = mysqli_query($conn, $countcowcodes);
 
@@ -272,12 +271,12 @@
             <div class="small-box bg-info">
               <div class="inner">
                 <h3><?php 
-                if (! $getcountusers) {
-                  die('Could not fetch data: '.mysqli_error($conn));
-                }
-                while ($row5 = mysqli_fetch_assoc($getcountusers)) {
-                  echo htmlspecialchars($row5['amountusers']);
-                } ?></h3>
+            //    if (! $getcountusers) {
+            //      die('Could not fetch data: '.mysqli_error($conn));
+            //    }
+            //    while ($row5 = mysqli_fetch_assoc($getcountusers)) {
+            //      echo htmlspecialchars($row5['amountusers']);
+            //    }?></h3>
 
                 <p>Users</p>
               </div>
@@ -317,7 +316,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('./footer.php'); ?>
+	<?php include('./admin/footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->

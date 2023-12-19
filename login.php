@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="./favicon.jpg" type="image/x-icon">
     <?php
-        include ('../config.php');
+        include ('./config.php');
         include ('./server.php');
+        include('./authentication.php');
 		
 	include('./queries.php');
 	
