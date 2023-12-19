@@ -9,6 +9,7 @@
   $_SESSION['message'] = '';
 
   include('../queries.php');
+  include('../authentication.php');
   include('../server.php');
 
   $name = mysqli_query($conn, $sitename);
@@ -87,6 +88,14 @@
             </a>
           </li>
 		  <li class="nav-item">
+            <a href="./cowcodes.php" class="nav-link">
+              <i class="nav-icon fas fa-users-cog"></i>
+              <p>
+                Cow-Codes
+              </p>
+            </a>
+          </li>
+		  <li class="nav-item">
             <a href="../locations/cowcodes.php" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
@@ -135,6 +144,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="./" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -145,7 +157,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>

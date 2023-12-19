@@ -131,9 +131,41 @@ if (isset($_POST['add_group'])) {
     if (count($errors) == 0) {
       $itemadd = "INSERT INTO items (name, price, brandID, min_amount, childcategoryId, createdby, measureID) VALUES ('$itemname','$itemprice','$itembrand','$itemminamount','$itemcategory','$itemcreatedby','$itemmeasure')";
       mysqli_query($conn, $itemadd);
+      add_amount($itemname, $conn);
+
+      if (isset($resultamount) && $resultamount == "tada") {
       $_SESSION['success'] = "New item $itemname has been succesfully added to the system";
       header('location: ./new.php');
+      }
     }
+  }
+
+  //FUNCTION ADD MINIMUMAMOUNTFIELD PER LOCATION
+  function add_amount($itemname, $conn) {
+    $newitemadd = "SELECT itemID FROM items WHERE name = '$itemname'";
+      $amountlocations = "SELECT COUNT(locationID) as aantallocations FROM locations";
+
+      $getnewitemadd = mysqli_query($conn, $newitemadd);
+      $getamountlocations = mysqli_query($conn, $amountlocations);
+
+      while ($row3 = mysqli_fetch_assoc($getnewitemadd)) {
+        $newitemaddID = htmlspecialchars($row3['itemID']);
+      }
+
+      while ($row4 = mysqli_fetch_assoc($getamountlocations)) {
+        $getamountlocs = htmlspecialchars($row4['aantallocations']);
+      }
+      
+      for ($i = 0; $i <= $getamountlocs; $i++) {
+        $additemmin = "INSERT INTO amount (itemID, locationID, amount)" ."VALUES ('$newitemaddID','$i','0')";
+        mysqli_query($conn,$additemmin);
+      }
+      if ($i === $getamountlocs) {
+        unset($i, $newitemaddID);
+        $resultamount = "tada";
+        return $resultamount;
+      }
+
   }
 
   // REMOVE ITEM
@@ -259,7 +291,7 @@ if (isset($_POST['add_group'])) {
   }
 
   // REMOVE LOCATION
-  if (isset($_POST['locationremove'])) {
+  if (isset($_POST['location_remove'])) {
     $locationid = mysqli_real_escape_string($conn, $_POST['locationremove']);
   
     $locationdelete = "DELETE from locations WHERE locationID = '$locationid'";
@@ -411,24 +443,24 @@ if (isset($_POST['add_group'])) {
     }
 
   //ADD COWCODE SITE
-  if (isset($_POST['siteadd'])) {
-    $cowcode = mysqli_real_escape_string($conn,$_POST['sitename']);
-    $cowcodestreet = mysqli_real_escape_string($conn,$_POST['sitestreet']);
-    $cowcodenumber = mysqli_real_escape_string($conn,$_POST['sitenumber']);
-    $cowcodeaddition = mysqli_real_escape_string($conn,$_POST['siteaddition']);
-    $cowcodezipcode = mysqli_real_escape_string($conn,$_POST['sitezipcode']);
-    $cowcodecity = mysqli_real_escape_string($conn,$_POST['sitecity']);
-    $cowcodestate = mysqli_real_escape_string($conn,$_POST['sitestate']);
-    $cowcodecountry = mysqli_real_escape_string($conn,$_POST['sitecountry']);
+  if (isset($_POST['site_add'])) {
+    $cowcode = mysqli_real_escape_string($conn,$_POST['site_name']);
+    $cowcodestreet = mysqli_real_escape_string($conn,$_POST['site_street']);
+    $cowcodenumber = mysqli_real_escape_string($conn,$_POST['site_number']);
+    $cowcodeaddition = mysqli_real_escape_string($conn,$_POST['site_addition']);
+    $cowcodezipcode = mysqli_real_escape_string($conn,$_POST['site_zipcode']);
+    $cowcodecity = mysqli_real_escape_string($conn,$_POST['site_city']);
+    $cowcodestate = mysqli_real_escape_string($conn,$_POST['site_state']);
+    $cowcodecountry = mysqli_real_escape_string($conn,$_POST['site_country']);
     if (empty($cowcodeaddition)) {
-      $cowcodeadd = "INSERT INTO locations(locationname, street, number, zipcode, city, state, countryID)
+      $cowcodeadd = "INSERT INTO sites (cowcode, street, number, zipcode, city, state, countryID)
       VALUES ('$cowcode', '$cowcodestreet', '$cowcodenumber', '$cowcodezipcode', '$cowcodecity', '$cowcodestate', '$cowcodecountry')";
       mysqli_query($conn, $cowcodeadd);
       $_SESSION['success'] = "Site with code '$cowcode' has been added";
       header("location: ./cowcodes.php");
     }
     else {
-      $cowcodeadd2 = "INSERT INTO locations(locationname, street, number, addition, zipcode, city, state, countryID)
+      $cowcodeadd2 = "INSERT INTO sites (cowcode, street, number, addition, zipcode, city, state, countryID)
           VALUES ('$cowcode', '$cowcodestreet', '$cowcodenumber','$cowcodeaddition' ,'$cowcodezipcode', '$cowcodecity', '$cowcodestate', '$cowcodecountry')";
       mysqli_query($conn, $cowcodeadd2);
       $_SESSION['success'] = "Site with code '$cowcode' has been added";
@@ -437,7 +469,7 @@ if (isset($_POST['add_group'])) {
   }
 
   //REMOVE COWCODE SITE
-  if (isset($_POST['siteremove'])) {
+  if (isset($_POST['site_remove'])) {
     $cowcodeID = mysqli_real_escape_string($conn, $_POST['siteremove']);
   
     $cowcoderemove = "DELETE from sites WHERE siteID = '$cowcodeID'";

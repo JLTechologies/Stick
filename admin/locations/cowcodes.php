@@ -32,7 +32,9 @@
   <link rel="stylesheet" href="../plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
   <!-- Toastr -->
   <link rel="stylesheet" href="../plugins/toastr/toastr.min.css">
-  <!-- Theme style -->
+  <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <link rel="stylesheet" href="../css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
@@ -132,7 +134,7 @@
 			</a>
 			</li>
       <li class="nav-item menu-closed">
-        <a href="#" class="nav-link">
+        <a href="../items" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
               Items
@@ -140,6 +142,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="../items" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -238,7 +243,7 @@
      <div class="col-lg-6">
             <div class="card">
               <div class="card-body table-responsive p-0">
-                <table class="table">
+                <table class="table table-borderd table-stripe" id="main">
                   <thead>
                     <tr>
                       <th>Index</th>
@@ -271,7 +276,7 @@
                           <td>
                             <form action="./cowcodes.php" method="post">
                               <input type="hidden" name="siteremove" value="<?php echo htmlspecialchars($row['siteID']);?>"/>
-                              <button type="submit" class="btn btn-danger btn-block" name="siteremove">Remove Site</button>
+                              <button type="submit" class="btn btn-danger btn-block" name="site_remove">Remove Site</button>
                             </form>
                           </td>        
                      <?php };
@@ -290,35 +295,35 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="sitename">COW-Code</label>
-                    <input type="text" class="form-control" id="sitename" name="sitename" placeholder="Enter Site Name">
+                    <input type="text" class="form-control" id="sitename" name="site_name" placeholder="Enter Site Name">
                   </div>
                   <div class="form-group">
                     <label for="sitestreet">Street</label>
-                    <input type="text" class="form-control" id="sitestreet" name="sitestreet" placeholder="Enter Site Street">
+                    <input type="text" class="form-control" id="sitestreet" name="site_street" placeholder="Enter Site Street">
                   </div>
                   <div class="form-group">
                     <label for="sitenumber">Number</label>
-                    <input type="text" class="form-control" id="sitenumber" name="sitenumber" placeholder="Enter Site Number">
+                    <input type="text" class="form-control" id="sitenumber" name="site_number" placeholder="Enter Site Number">
                   </div> 
                   <div class="form-group">
                     <label for="siteaddition">Addition</label>
-                    <input type="text" class="form-control" id="siteaddition" name="siteaddition" placeholder="Enter Site Addition">
+                    <input type="text" class="form-control" id="siteaddition" name="site_addition" placeholder="Enter Site Addition">
                   </div> 
                   <div class="form-group">
                     <label for="sitezipcode">Zipcode</label>
-                    <input type="text" class="form-control" id="sitezipcode" name="sitezipcode" placeholder="Enter Site Zipcode">
+                    <input type="text" class="form-control" id="sitezipcode" name="site_zipcode" placeholder="Enter Site Zipcode">
                   </div> 
                   <div class="form-group">
                     <label for="sitecity">City</label>
-                    <input type="text" class="form-control" id="sitecity" name="sitecity" placeholder="Enter Site City">
+                    <input type="text" class="form-control" id="sitecity" name="site_city" placeholder="Enter Site City">
                   </div> 
                   <div class="form-group">
                     <label for="sitestate">State</label>
-                    <input type="text" class="form-control" id="sitestate" name="sitestate" placeholder="Enter Site State">
+                    <input type="text" class="form-control" id="sitestate" name="site_state" placeholder="Enter Site State">
                   </div>
                   <div class="form-group">
                     <label for="sitecountry">Country</label>
-                    <select class="custom-select form-control border border-width-2" id="sitecountry" name="sitecountry">
+                    <select class="custom-select form-control border border-width-2" id="sitecountry" name="site_country">
                       <?php
                         $getcountries = mysqli_query($conn, $countries);
 
@@ -333,7 +338,7 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary btn-block" name="siteadd">Add Site</button>
+                  <button type="submit" class="btn btn-primary btn-block" name="site_add">Add Site</button>
                 </div>
               </form>
             </div>
@@ -359,10 +364,40 @@
 <script src="../plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="../plugins/jszip/jszip.min.js"></script>
+<script src="../plugins/pdfmake/pdfmake.min.js"></script>
+<script src="../plugins/pdfmake/vfs_fonts.js"></script>
+<script src="../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="../plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <!-- SweetAlert2 -->
 <script src="../plugins/sweetalert2/sweetalert2.min.js"></script>
 <!-- Toastr -->
 <script src="../plugins/toastr/toastr.min.js"></script>
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $("#main").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": [""]
+    }).buttons().container().appendTo('#main_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
 <!-- AdminLTE App -->
 <script src="../js/adminlte.min.js"></script>
 </body>

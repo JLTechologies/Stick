@@ -140,6 +140,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="../items" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -269,7 +272,7 @@
                           </td>
                           <td>
                             <form action="./index.php" method="post">
-                              <input type="hidden" name="locationremove" value="<?php echo htmlspecialchars($row['locationID']);?>"/>
+                              <input type="hidden" name="location_remove" value="<?php echo htmlspecialchars($row['locationID']);?>"/>
                               <button type="submit" class="btn btn-danger btn-block" name="locationremove">Remove Location</button>
                             </form>
                           </td>        
