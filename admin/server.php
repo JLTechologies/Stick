@@ -77,7 +77,7 @@ if (isset($_POST['add_group'])) {
         mysqli_query($conn,$addgroupperm);
       }
       if ($i === $getamountperms) {
-        unset($i, $newgroupadd);
+        unset($i, $newgroupadd, $getamountperms);
         $result = "done";
         return $result;
       }
@@ -161,7 +161,7 @@ if (isset($_POST['add_group'])) {
         mysqli_query($conn,$additemmin);
       }
       if ($i === $getamountlocs) {
-        unset($i, $newitemaddID);
+        unset($i, $newitemaddID,$getamountlocs);
         $resultamount = "tada";
         return $resultamount;
       }

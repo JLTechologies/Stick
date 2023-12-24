@@ -267,7 +267,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getchildcategories)) {?>
-                          <option value="<?php htmlspecialchars($row1['groupID']) ;?>"><?php echo htmlspecialchars($row1['name']);?></option>
+                          <option value="<?php echo htmlspecialchars($row1['childcategoryID']) ;?>"><?php echo htmlspecialchars($row1['childname']);?></option>
                         <?php };
                         ?>
                     </select>

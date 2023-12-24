@@ -242,12 +242,16 @@
                     <input type="text" class="form-control" id="itemname" name="item_name">
                   </div>
                   <div class="form-group">
+                    <label for="reference">External Reference</label>
+                    <input type="text" class="form-control" id="reference" name="external_ref">
+                  </div>
+                  <div class="form-group">
                     <label for="itemprice">Price</label>
                     <input type="text" class="form-control" id="itemprice" name="item_price">
                   </div>                  
                   <div class="form-group">
-                    <label for="usergroup">Category</label>
-                    <select class="custom-select form-control border border-width-2" id="usergroup">
+                    <label for="categoryid">Category</label>
+                    <select class="custom-select form-control border border-width-2" id="categoryid" name="categoryid">
                       <?php
                         $getchildcategories = mysqli_query($conn, $childcategories);
 
@@ -255,41 +259,56 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getchildcategories)) {?>
-                          <option value="<?php htmlspecialchars($row1['groupID']) ;?>"><?php echo htmlspecialchars($row1['name']);?></option>
+                          <option value="<?php echo htmlspecialchars($row1['childcategoryID']) ;?>"><?php echo htmlspecialchars($row1['childname']);?></option>
                         <?php };
                         ?>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label for="min_amount">Minimum amount </label>
-                    <input type="text" class="form-control" id="min_amount" placeholder="<?php echo $itemmin_amount;?>">
+                    <label for="minamount">Minimum amount </label>
+                    <input type="text" class="form-control" id="minamount" name="min_amount">
                   </div>
                   <div class="form-group">
-                    <label for="usergroup">Brand</label>
-                    <select class="custom-select form-control border border-width-2" id="usergroup">
+                    <label for="brand">Brand</label>
+                    <select class="custom-select form-control border border-width-2" id="brand" name="brand_name">
                       <?php
                         $getbrands = mysqli_query($conn, $brandlist);
 
                         if (! $getbrands) {
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
-                        while ($row2 = mysqli_fetch_assoc($getbrands)) {?>
-                          <option value="<?php htmlspecialchars($row2['groupID']) ;?>"><?php echo htmlspecialchars($row2['name']);?></option>
+                        while ($row3 = mysqli_fetch_assoc($getbrands)) {?>
+                          <option value="<?php echo htmlspecialchars($row3['brandID']) ;?>"><?php echo htmlspecialchars($row3['name']);?></option>
                         <?php };
                         ?>
                     </select>
                   </div>
                   <div class="form-group">
-                    <label for="usergroup">Measurement</label>
-                    <select class="custom-select form-control border border-width-2" id="usergroup">
+                    <label for="measure">Measurement</label>
+                    <select class="custom-select form-control border border-width-2" id="measure" name="measure_select">
                       <?php
                         $getmeasurements = mysqli_query($conn, $measurements);
 
                         if (! $getmeasurements) {
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
-                        while ($row1 = mysqli_fetch_assoc($getmeasurements)) {?>
-                          <option value="<?php htmlspecialchars($row3['groupID']) ;?>"><?php echo htmlspecialchars($row3['name']);?></option>
+                        while ($row4 = mysqli_fetch_assoc($getmeasurements)) {?>
+                          <option value="<?php echo htmlspecialchars($row4['measureID']) ;?>"><?php echo htmlspecialchars($row4['name']);?> / <?php echo htmlspecialchars($row4['shortcode']);?></option>
+                        <?php };
+                        ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="sorting">Sorting</label>
+                    <select class="custom-select form-control border border-width-2" id="sorting" name="sorting_select">
+                      <?php
+                        $getsorting = mysqli_query($conn, $sortings);
+
+                        if (! $getsorting) {
+                          die('Could not fetch data: '.mysqli_error($conn));
+                        }
+                        while ($row5 = mysqli_fetch_assoc($getsorting)) {?>
+                          <option value="<?php echo htmlspecialchars($row5['sortingID']) ;?>"><?php echo htmlspecialchars($row5['peramount']);?></option>
                         <?php };
                         ?>
                     </select>
