@@ -151,7 +151,11 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
@@ -310,7 +314,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getmeasurements)) {?>
-                          <option value="<?php htmlspecialchars($row3['groupID']) ;?>"><?php echo htmlspecialchars($row3['name']);?></option>
+                          <option value="<?php  htmlspecialchars($row3['groupID']) ;?>"><?php echo htmlspecialchars($row3['name']);?></option>
                         <?php };
                         ?>
                     </select>

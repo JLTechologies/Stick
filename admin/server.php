@@ -234,9 +234,9 @@ if (isset($_POST['add_group'])) {
 
   // ADD BRAND
   if (isset($_POST['brandadd'])) {
-    $brandname = mysqli_real_escape_string($conn, $_POST['brandname']);
-    $brandimage = mysqli_real_escape_string($conn, $_POST['brandimage']);
-    $brandcontact = mysqli_real_escape_string($conn, $POST['brandcontact']);
+    $brandname = mysqli_real_escape_string($conn, $_POST['brand_name']);
+    $brandurl = mysqli_real_escape_string($conn, $_POST['brand_url']);
+    $brandcontact = mysqli_real_escape_string($conn, $POST['brand_contact']);
 
     if (empty($brandname)) {
       array_push($errors, "Name of the brand can not be empty!");
@@ -246,12 +246,24 @@ if (isset($_POST['add_group'])) {
     }
 
     if (count($errors) == 0) {
-      $brandaddquery = "INSERT INTO brands (name, image, brandcontactID) VALUES ('$brandname', '$brandimage', '$brandcontact')";
+      $brandaddquery = "INSERT INTO brands (name, url, brandcontactID) VALUES ('$brandname', '$brandurl', '$brandcontact')";
       mysqli_query($conn, $brandaddquery);
       $_SESSION['success'] = "New brand created";
       header('location: ./index.php');
     }
+  }
 
+  //EDIT BRAND
+  if (isset($_POST['brandedit'])) {
+    $brandID = mysqli_real_escape_string($conn, $_POST['contactid']);
+    $brand_name = mysqli_real_escape_string($conn, $_POST['newbrandname']);
+    $brand_url = mysqli_real_escape_string($conn, $_POST['newbrandurl']);
+    $brand_contact = mysqli_real_escape_string($conn, $_POST['newbrandcontact']);
+
+    $updatebrand = "UPDATE brands SET name = '$brand_name', url = '$brand_url', brandcontactID = '$brand_contact' WHERE brandID = '$brandID'";
+    mysqli_query($conn,$updatebrand);
+    $_SESSION['success'] = "Brand $brand_name has been updated";
+    header('location: ./index.php');
   }
 
   // REMOVE BRAND
@@ -327,17 +339,17 @@ if (isset($_POST['add_group'])) {
 
   // ADD BRANDCONTACT
   if (isset($_POST['contactadd'])) {
-    $contactname = mysqli_real_escape_string($conn,$_POST['name']);
-    $contactlastname = mysqli_real_escape_string($conn,$_POST['lastname']);
-    $contactphone = mysqli_real_escape_string($conn,$_POST['phone']);
-    $contactemail = mysqli_real_escape_string($conn,$_POST['email']);
-    $contactstreet = mysqli_real_escape_string($conn,$_POST['street']);
-    $contactnumber = mysqli_real_escape_string($conn,$_POST['number']);
-    $contactaddition = mysqli_real_escape_string($conn,$_POST['addition']);
-    $contactzipcode = mysqli_real_escape_string($conn,$_POST['zipcode']);
-    $contactcity = mysqli_real_escape_string($conn,$_POST['city']);
-    $contactstate = mysqli_real_escape_string($conn,$_POST['state']);
-    $contactcountry = mysqli_real_escape_string($conn,$_POST['country']);
+    $contactname = mysqli_real_escape_string($conn,$_POST['contact_name']);
+    $contactlastname = mysqli_real_escape_string($conn,$_POST['contact_lastname']);
+    $contactphone = mysqli_real_escape_string($conn,$_POST['contact_phone']);
+    $contactemail = mysqli_real_escape_string($conn,$_POST['contact_email']);
+    $contactstreet = mysqli_real_escape_string($conn,$_POST['contact_street']);
+    $contactnumber = mysqli_real_escape_string($conn,$_POST['contact_number']);
+    $contactaddition = mysqli_real_escape_string($conn,$_POST['contact_addition']);
+    $contactzipcode = mysqli_real_escape_string($conn,$_POST['contact_zipcode']);
+    $contactcity = mysqli_real_escape_string($conn,$_POST['contact_city']);
+    $contactstate = mysqli_real_escape_string($conn,$_POST['contact_state']);
+    $contactcountry = mysqli_real_escape_string($conn,$_POST['contact_country']);
     if (empty($contactaddition)) {
       $contactaddquery = "INSERT INTO brandcontact (name, last_name, phone, email, street, number, zipcode, city, state, countryID) 
             VALUES ('$contactname', '$contactlastname', '$contactphone', '$contactemail', '$contactstreet', '$contactnumber', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
@@ -346,10 +358,38 @@ if (isset($_POST['add_group'])) {
       header('location: ./index.php');
     }
     else {
-      $contactaddquery2 = "INSERT INTO brandcontact (name, last_name, phone, email, street, number, addition, zipcode, city, state, countryID) 
+      $contactaddquery2 = "INSERT INTO (name, last_name, phone, email, street, number, addition, zipcode, city, state, countryID) 
             VALUES ('$contactname', '$contactlastname', '$contactphone', '$contactemail', '$contactstreet', '$contactnumber', '$contactaddition', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
       mysqli_query($conn, $contactaddquery2);
       $_SESSION['success'] = "Contact has been created";
+      header('location: ./index.php');
+    }
+  }
+
+  //UPDATE BRANDCONTACT
+  if (isset($_POST['contactupdate'])) {
+    $contactid = mysqli_real_escape_string($conn,$_POST('contactid'));
+    $contactname = mysqli_real_escape_string($conn,$_POST['contact_name']);
+    $contactlastname = mysqli_real_escape_string($conn,$_POST['contact_lastname']);
+    $contactphone = mysqli_real_escape_string($conn,$_POST['contact_phone']);
+    $contactemail = mysqli_real_escape_string($conn,$_POST['contact_email']);
+    $contactstreet = mysqli_real_escape_string($conn,$_POST['contact_street']);
+    $contactnumber = mysqli_real_escape_string($conn,$_POST['contact_number']);
+    $contactaddition = mysqli_real_escape_string($conn,$_POST['contact_addition']);
+    $contactzipcode = mysqli_real_escape_string($conn,$_POST['contact_zipcode']);
+    $contactcity = mysqli_real_escape_string($conn,$_POST['contact_city']);
+    $contactstate = mysqli_real_escape_string($conn,$_POST['contact_state']);
+    $contactcountry = mysqli_real_escape_string($conn,$_POST['contact_country']);
+    if (empty($contactaddition)) {
+      $contactupdatequery = "UPDATE brandcontact SET name = '$contactname', last_name = '$contactlastname', phone = '$contactphone', email = '$contactemail', street = '$contactstreet', number = '$contactnumber', zipcode = '$contactzipcode', city = '$contactcity', state = '$contactstate', countryID = '$contactcountry' WHERE brandcontactID = '$contactid'";
+      mysqli_query($conn, $contactupdatequery);
+      $_SESSION['success'] = "Contact has been updated";
+      header('location: ./index.php');
+    }
+    else {
+      $contactupdatequery2 = "UPDATE brandcontact SET name = '$contactname', last_name = '$contactlastname', phone = '$contactphone', email = '$contactemail', street = '$contactstreet', number = '$contactnumber', addition = '$contactaddition', zipcode = '$contactzipcode', city = '$contactcity', state = '$contactstate', countryID = '$contactcountry' WHERE brandcontactID = '$contactid'";
+      mysqli_query($conn, $contactupdatequery2);
+      $_SESSION['success'] = "Contact has been updated";
       header('location: ./index.php');
     }
   }
@@ -402,6 +442,16 @@ if (isset($_POST['add_group'])) {
       header('location: ./settings.php');
       }
     }
+
+  //ADJUST ROOT CATEGORY ACTIVE STATE
+  if(isset($_POST['rootcat_active'])) {
+    $setting_rootactive = mysqli_real_escape_string($conn, $_POST['new_active']);
+    $rootid = mysqli_real_escape_string($conn, $_POST['rootcatid']);
+    $updaterootactive = "UPDATE rootcategories SET active = '$setting_rootactive' WHERE categoryid = '$rootid'";
+    mysqli_query($conn, $updaterootactive);
+    $_SESSION['success'] = "Category active status has been changed";
+    header('location: ./index.php');
+  }
 
   //ADJUST SITEACTIVITY
     if (isset($_POST['setting_siteactive'])) {

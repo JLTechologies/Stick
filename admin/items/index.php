@@ -125,8 +125,8 @@
 				</p>
 			</a>
 			</li>
-      <li class="nav-item menu-open active">
-        <a href="./" class="nav-link">
+		  <li class="nav-item menu-open">
+        <a href="#" class="nav-link active">
           <i class="nav-icon fas fa-tree"></i>
             <p>
               Items
@@ -147,7 +147,11 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>

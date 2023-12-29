@@ -134,7 +134,7 @@
 				</p>
 			</a>
 			</li>
-      <li class="nav-item menu-closed">
+		  <li class="nav-item menu-open">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
@@ -144,7 +144,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="../../items" class="nav-link">Complete List</a>
+              <a href="./" class="nav-link">Complete List</a>
             </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
@@ -156,7 +156,11 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
@@ -215,7 +219,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="./">Admin</a></li>
-              <li class="breadcrumb-item"><a href ="../">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href ="../../">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="../">Brands</a></li>
               <li class="breadcrumb-item">Brand Contacts</li>
             </ol>
@@ -272,14 +276,14 @@
                           <td class="text-center"><?php echo htmlspecialchars($row['phone']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['email']);?></td>
                           <td>
-                            <form name="edit" action="./edit.php" method="post">
+                            <form name="edit" action="./edit.php?id=<?php echo htmlspecialchars($row['brandcontactID']);?>" method="post">
                               <input type="hidden" name="edit" value="<?php echo htmlspecialchars($row['brandcontactID']);?>"/>
                               <input type="submit" value="edit brand"/>
                             </form>
                           </td>
                           <td>
                             <form action="./index.php" method="post">
-                              <input type="hidden" name="brandremove" value="<?php htmlspecialchars($row['brandcontactID']);?>"/>
+                              <input type="hidden" name="brandremove" value="<?php echo htmlspecialchars($row['brandcontactID']);?>"/>
                               <button type="submit" class="btn btn-primary btn-block" name="contactremove">Remove contact</button>
                             </form>
                           </td>        
@@ -299,47 +303,47 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" placeholder="Enter Name" required>
+                    <input type="text" class="form-control" id="name" name="contact_name" placeholder="Enter Name" required>
                   </div>
                   <div class="form-group">
                     <label for="lastname">Last Name</label>
-                    <input type="text" class="form-control" id="lastname" placeholder="Enter Last Name" required>
+                    <input type="text" class="form-control" id="lastname" name="contact_lastname" placeholder="Enter Last Name" required>
                   </div>
                   <div class="form-group">
-                    <label for="phone">tel</label>
-                    <input type="text" class="form-control" id="phone" placeholder="Enter Phone Number" required>
+                    <label for="phone">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="contact_phone" placeholder="Enter Phone Number" required>
                   </div>
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                    <input type="email" class="form-control" id="email" name="contact_email" placeholder="Enter email" required>
                   </div>
                   <div class="form-group">
                     <label for="street">Street</label>
-                    <input type="text" class="form-control" id="street" placeholder="Enter Streetname" required>
+                    <input type="text" class="form-control" id="street" name="contact_street" placeholder="Enter Streetname" required>
                   </div>
                   <div class="form-group">
                     <label for="number">Number</label>
-                    <input type="number" class="form-control" id="number" placeholder="Enter Number" required>
+                    <input type="number" class="form-control" id="number" name="contact_number" placeholder="Enter Number" required>
                   </div>
                   <div class="form-group">
                     <label for="addition">Addition</label>
-                    <input type="text" class="form-control" id="addition" placeholder="Enter addition to number (optional)">
+                    <input type="text" class="form-control" id="addition" name="contact_addition" placeholder="Enter addition to number">
                   </div>
                   <div class="form-group">
                     <label for="zipcode">Zipcode</label>
-                    <input type="text" class="form-control" id="zipcode" placeholder="Enter Zipcode" required>
+                    <input type="text" class="form-control" id="zipcode" name="contact_zipcode" placeholder="Enter Zipcode" required>
                   </div>
                   <div class="form-group">
                     <label for="city">City</label>
-                    <input type="text" class="form-control" id="city" placeholder="Enter City" required>
+                    <input type="text" class="form-control" id="city" name="contact_city" placeholder="Enter City" required>
                   </div>
                   <div class="form-group">
                     <label for="state">State</label>
-                    <input type="text" class="form-control" id="state" placeholder="Enter State" required>
+                    <input type="text" class="form-control" id="state" name="contact_state" placeholder="Enter State" required>
                   </div>
                   <div class="form-group">
                     <label for="country">Country</label>
-                    <select class="custom-select form-control border border-width-2" id="country" required>
+                    <select class="custom-select form-control border border-width-2" id="country" name="contact_country" required>
                       <?php
                         $getcountries = mysqli_query($conn, $countries);
 
