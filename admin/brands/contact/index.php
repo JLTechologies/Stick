@@ -134,7 +134,7 @@
 				</p>
 			</a>
 			</li>
-		  <li class="nav-item menu-open">
+		  <li class="nav-item menu-closed">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
@@ -251,10 +251,9 @@
                   <thead>
                     <tr>
                       <th>Index</th>
+                      <th>Reference</th>
                       <th>Name</th>
-                      <th>Last Name</th>
                       <th>Phone</th>
-                      <th>Email</th>
                       <th>Edit</th>
                       <th>Remove</th>
                     </tr>
@@ -271,10 +270,9 @@
                         ?>
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['brandcontactID']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['reference']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['last_name']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['phone']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['email']);?></td>
                           <td>
                             <form name="edit" action="./edit.php?id=<?php echo htmlspecialchars($row['brandcontactID']);?>" method="post">
                               <input type="hidden" name="edit" value="<?php echo htmlspecialchars($row['brandcontactID']);?>"/>
@@ -302,20 +300,16 @@
               <form action="./index.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
+                    <label for="reference">Reference</label>
+                    <input type="text" class="form-control" id="reference" name="contact_reference" placeholder="Enter Reference" required>
+                  </div>
+                  <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" id="name" name="contact_name" placeholder="Enter Name" required>
                   </div>
                   <div class="form-group">
-                    <label for="lastname">Last Name</label>
-                    <input type="text" class="form-control" id="lastname" name="contact_lastname" placeholder="Enter Last Name" required>
-                  </div>
-                  <div class="form-group">
                     <label for="phone">Phone</label>
                     <input type="text" class="form-control" id="phone" name="contact_phone" placeholder="Enter Phone Number" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="contact_email" placeholder="Enter email" required>
                   </div>
                   <div class="form-group">
                     <label for="street">Street</label>

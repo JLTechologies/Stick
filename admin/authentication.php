@@ -4,6 +4,7 @@ session_start();
 // initializing variables
 $username = "";
 $email    = "";
+$groupid = "";
 $errors = array(); 
 
 // connect to the database
@@ -82,6 +83,7 @@ if (isset($_POST['login_user'])) {
         if (mysqli_num_rows($results) == 1) {
           session_start();
           $_SESSION['email'] = $email;
+          //$_SESSION['group'] = $groupid;
           $_SESSION['success'] = "Welcome $email.";
           header('location: ./index.php');
         }else {

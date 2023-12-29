@@ -137,7 +137,7 @@
 				</p>
 			</a>
 			</li>
-		  <li class="nav-item menu-open">
+		  <li class="nav-item menu-closed">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
@@ -239,10 +239,9 @@
         die('Could not load requested contact info: '.mysqli_error($conn));
     }
     while ($row1 = mysqli_fetch_assoc($geteditcontact)) {
-        $contactname = htmlspecialchars($row1['name']);
-        $contactlastname = htmlspecialchars($row1['last_name']);
+        $contactname = htmlspecialchars($row1['refernce']);
+        $contactlastname = htmlspecialchars($row1['name']);
         $contactphone = htmlspecialchars($row1['phone']);
-        $contactemail = htmlspecialchars($row1['email']);
         $contactstreet = htmlspecialchars($row1['street']);
         $contactnumber = htmlspecialchars($row1['number']);;
         $contactaddition = htmlspecialchars($row1['addition']);
@@ -273,21 +272,17 @@
               <form action="./index.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="name">Name</label>
+                    <label for="reference">Reference</label>
                     <input type="hidden" name="contactid" value="<?php echo htmlspecialchars($id);?>"/>
-                    <input type="text" class="form-control" id="name" name="contact_name" placeholder="<?php echo $contactname;?>" required>
+                    <input type="text" class="form-control" id="reference" name="contact_reference" placeholder="<?php echo $contactname;?>" required>
                   </div>
                   <div class="form-group">
-                    <label for="lastname">Last Name</label>
-                    <input type="text" class="form-control" id="lastname" name="contact_lastname" placeholder="<?php echo $contactlastname;?>" required>
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" name="contact_name" placeholder="<?php echo $contactlastname;?>" required>
                   </div>
                   <div class="form-group">
                     <label for="phone">Phone</label>
                     <input type="text" class="form-control" id="phone" name="contact_phone" placeholder="<?php echo $contactphone;?>" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="contact_email" placeholder="<?php echo $contactemail;?>" required>
                   </div>
                   <div class="form-group">
                     <label for="street">Street</label>
