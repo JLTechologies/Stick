@@ -242,19 +242,19 @@
                 <div class="card-header">
                     <h3 class="card-title">Add Item</h3>
                 </div>
-                <form name="add_item" action="./new.php" method="post">
+                <form action="./new.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="itemname">Name</label>
-                    <input type="text" class="form-control" id="itemname" name="item_name">
+                    <input type="text" class="form-control" id="itemname" name="itemname">
                   </div>
                   <div class="form-group">
                     <label for="reference">External Reference</label>
-                    <input type="text" class="form-control" id="reference" name="external_ref">
+                    <input type="text" class="form-control" id="reference" name="reference">
                   </div>
                   <div class="form-group">
                     <label for="itemprice">Price</label>
-                    <input type="text" class="form-control" id="itemprice" name="item_price">
+                    <input type="text" class="form-control" id="itemprice" name="itemprice">
                   </div>                  
                   <div class="form-group">
                     <label for="categoryid">Category</label>
@@ -273,11 +273,11 @@
                   </div>
                   <div class="form-group">
                     <label for="minamount">Minimum amount </label>
-                    <input type="text" class="form-control" id="minamount" name="min_amount">
+                    <input type="text" class="form-control" id="minamount" name="minamount">
                   </div>
                   <div class="form-group">
                     <label for="brand">Brand</label>
-                    <select class="custom-select form-control border border-width-2" id="brand" name="brand_name">
+                    <select class="custom-select form-control border border-width-2" id="brand" name="brand">
                       <?php
                         $getbrands = mysqli_query($conn, $brandlist);
 
@@ -292,7 +292,7 @@
                   </div>
                   <div class="form-group">
                     <label for="measure">Measurement</label>
-                    <select class="custom-select form-control border border-width-2" id="measure" name="measure_select">
+                    <select class="custom-select form-control border border-width-2" id="measure" name="measure">
                       <?php
                         $getmeasurements = mysqli_query($conn, $measurements);
 
@@ -307,7 +307,7 @@
                   </div>
                   <div class="form-group">
                     <label for="sorting">Sorting</label>
-                    <select class="custom-select form-control border border-width-2" id="sorting" name="sorting_select">
+                    <select class="custom-select form-control border border-width-2" id="sorting" name="sorting">
                       <?php
                         $getsorting = mysqli_query($conn, $sortings);
 

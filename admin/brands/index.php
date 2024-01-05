@@ -298,15 +298,15 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="brandname">Brand name</label>
-                    <input type="text" class="form-control" id="brandname" name="brand_name" placeholder="Enter Brand Name">
+                    <input type="text" class="form-control" id="brandname" name="brandname" placeholder="Enter Brand Name">
                   </div>
                   <div class="form-group">
                     <label for="brandurl">Brand URL</label>
-                    <input type="text" class="form-control" id="brandurl" name="brand_url" placeholder="Enter Brand URL">
+                    <input type="text" class="form-control" id="brandurl" name="brandurl" placeholder="Enter Brand URL">
                   </div>
                   <div class="form-group">
                     <label for="brandcontact">Brand Contact</label>
-                    <select class="custom-select form-control border border-width-2" id="brandcontact" name="brand_contact" placeholder="Please select a contact">
+                    <select class="custom-select form-control border border-width-2" id="brandcontact" name="brandcontact" placeholder="Please select a contact">
                       <?php
                         $getcontact = mysqli_query($conn, $brandcontactlist);
 
@@ -314,7 +314,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getcontact)) {?>
-                          <option value="<?php htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['name']);?> <?php echo htmlspecialchars($row1['last_name']);?> </option>
+                          <option value="<?php echo htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['name']);?></option>
                         <?php };
                         ?>
                     </select>

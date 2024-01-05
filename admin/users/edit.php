@@ -6,7 +6,6 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
-  session_start();
 
   if (isset($_GET['logout'])) {
     session_destroy();

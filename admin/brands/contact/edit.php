@@ -239,7 +239,7 @@
         die('Could not load requested contact info: '.mysqli_error($conn));
     }
     while ($row1 = mysqli_fetch_assoc($geteditcontact)) {
-        $contactname = htmlspecialchars($row1['refernce']);
+        $contactname = htmlspecialchars($row1['reference']);
         $contactlastname = htmlspecialchars($row1['name']);
         $contactphone = htmlspecialchars($row1['phone']);
         $contactstreet = htmlspecialchars($row1['street']);
@@ -274,23 +274,23 @@
                   <div class="form-group">
                     <label for="reference">Reference</label>
                     <input type="hidden" name="contactid" value="<?php echo htmlspecialchars($id);?>"/>
-                    <input type="text" class="form-control" id="reference" name="contact_reference" placeholder="<?php echo $contactname;?>" required>
+                    <input type="text" class="form-control" id="reference" name="contact_reference" placeholder="<?php echo $contactname;?>">
                   </div>
                   <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="contact_name" placeholder="<?php echo $contactlastname;?>" required>
+                    <input type="text" class="form-control" id="name" name="contact_name" placeholder="<?php echo $contactlastname;?>">
                   </div>
                   <div class="form-group">
                     <label for="phone">Phone</label>
-                    <input type="text" class="form-control" id="phone" name="contact_phone" placeholder="<?php echo $contactphone;?>" required>
+                    <input type="text" class="form-control" id="phone" name="contact_phone" placeholder="<?php echo $contactphone;?>">
                   </div>
                   <div class="form-group">
                     <label for="street">Street</label>
-                    <input type="text" class="form-control" id="street" name="contact_street" placeholder="<?php echo $contactstreet;?>" required>
+                    <input type="text" class="form-control" id="street" name="contact_street" placeholder="<?php echo $contactstreet;?>">
                   </div>
                   <div class="form-group">
                     <label for="number">Number</label>
-                    <input type="number" class="form-control" id="number" name="contact_number" placeholder="<?php echo $contactnumber;?>" required>
+                    <input type="number" class="form-control" id="number" name="contact_number" placeholder="<?php echo $contactnumber;?>">
                   </div>
                   <div class="form-group">
                     <label for="addition">Addition</label>
@@ -298,19 +298,19 @@
                   </div>
                   <div class="form-group">
                     <label for="zipcode">Zipcode</label>
-                    <input type="text" class="form-control" id="zipcode" name="contact_zipcode" placeholder="<?php echo $contactzipcode;?>" required>
+                    <input type="text" class="form-control" id="zipcode" name="contact_zipcode" placeholder="<?php echo $contactzipcode;?>">
                   </div>
                   <div class="form-group">
                     <label for="city">City</label>
-                    <input type="text" class="form-control" id="city" name="contact_city" placeholder="<?php echo $contactcity;?>" required>
+                    <input type="text" class="form-control" id="city" name="contact_city" placeholder="<?php echo $contactcity;?>">
                   </div>
                   <div class="form-group">
                     <label for="state">State</label>
-                    <input type="text" class="form-control" id="state" name="contact_state" placeholder="<?php echo $contactstate;?>" required>
+                    <input type="text" class="form-control" id="state" name="contact_state" placeholder="<?php echo $contactstate;?>">
                   </div>
                   <div class="form-group">
                     <label for="country">Country</label>
-                    <select class="custom-select form-control border border-width-2" id="country" name="contact_country" required>
+                    <select class="custom-select form-control border border-width-2" id="country" name="contact_country">
                       <?php
                         $getcountries = mysqli_query($conn, $countries);
 
@@ -318,7 +318,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row3 = mysqli_fetch_assoc($getcountries)) {?>
-                          <option value="<?php htmlspecialchars($row3['countryid']) ;?>"><?php echo htmlspecialchars($row3['nicename']);?></option>
+                          <option value="<?php echo htmlspecialchars($row3['countryid']) ;?>"><?php echo htmlspecialchars($row3['nicename']);?></option>
                         <?php };
                         ?>
                     </select>

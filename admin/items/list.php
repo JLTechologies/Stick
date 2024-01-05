@@ -279,7 +279,7 @@
                       </td>
                       <td>
                         <form name="itemremove" action="./list.php" method="post">
-                          <input type="hidden" name="itemremove" value="<?php htmlspecialchars($row['itemID']);?>"/>
+                          <input type="hidden" name="itemremove" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
                           <input type="submit" value="remove brand"/>
                         </form>
                       </td>

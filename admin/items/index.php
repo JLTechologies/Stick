@@ -274,7 +274,7 @@
                       </td>
                       <td>
                         <form action="./index.php" method="post">
-                          <input type="hidden" name="itemremove" value="<?php htmlspecialchars($row['itemID']);?>"/>
+                          <input type="hidden" name="itemremove" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
                           <button type="submit" name="itemremove" class="btn btn-danger btn-block">Remove Item</button>
                         </form>
                       </td>

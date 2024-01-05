@@ -281,7 +281,7 @@
                           </td>
                           <td>
                             <form action="./index.php" method="post">
-                              <input type="hidden" name="brandremove" value="<?php echo htmlspecialchars($row['brandcontactID']);?>"/>
+                              <input type="hidden" name="contact_remove" value="<?php echo htmlspecialchars($row['brandcontactID']);?>"/>
                               <button type="submit" class="btn btn-primary btn-block" name="contactremove">Remove contact</button>
                             </form>
                           </td>        
@@ -301,43 +301,43 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="reference">Reference</label>
-                    <input type="text" class="form-control" id="reference" name="contact_reference" placeholder="Enter Reference" required>
+                    <input type="text" class="form-control" id="reference" name="reference" placeholder="Enter Reference">
                   </div>
                   <div class="form-group">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" name="contact_name" placeholder="Enter Name" required>
+                    <input type="text" class="form-control" id='name' name="name" placeholder="Enter Name">
                   </div>
                   <div class="form-group">
                     <label for="phone">Phone</label>
-                    <input type="text" class="form-control" id="phone" name="contact_phone" placeholder="Enter Phone Number" required>
+                    <input type="text" class="form-control" id='phone' name="phone" placeholder="Enter Phone Number">
                   </div>
                   <div class="form-group">
                     <label for="street">Street</label>
-                    <input type="text" class="form-control" id="street" name="contact_street" placeholder="Enter Streetname" required>
+                    <input type="text" class="form-control" id='street' name="street" placeholder="Enter Streetname">
                   </div>
                   <div class="form-group">
                     <label for="number">Number</label>
-                    <input type="number" class="form-control" id="number" name="contact_number" placeholder="Enter Number" required>
+                    <input type="number" class="form-control" id='number' name="number" placeholder="Enter Number">
                   </div>
                   <div class="form-group">
                     <label for="addition">Addition</label>
-                    <input type="text" class="form-control" id="addition" name="contact_addition" placeholder="Enter addition to number">
+                    <input type="text" class="form-control" id='addition' name="addition" placeholder="Enter addition to number">
                   </div>
                   <div class="form-group">
                     <label for="zipcode">Zipcode</label>
-                    <input type="text" class="form-control" id="zipcode" name="contact_zipcode" placeholder="Enter Zipcode" required>
+                    <input type="text" class="form-control" id='zipcode' name="zipcode" placeholder="Enter Zipcode">
                   </div>
                   <div class="form-group">
                     <label for="city">City</label>
-                    <input type="text" class="form-control" id="city" name="contact_city" placeholder="Enter City" required>
+                    <input type="text" class="form-control" id='city' name="city" placeholder="Enter City">
                   </div>
                   <div class="form-group">
                     <label for="state">State</label>
-                    <input type="text" class="form-control" id="state" name="contact_state" placeholder="Enter State" required>
+                    <input type="text" class="form-control" id='state' name="state" placeholder="Enter State">
                   </div>
                   <div class="form-group">
                     <label for="country">Country</label>
-                    <select class="custom-select form-control border border-width-2" id="country" name="contact_country" required>
+                    <select class="custom-select form-control border border-width-2" id='country' name="country">
                       <?php
                         $getcountries = mysqli_query($conn, $countries);
 
@@ -345,7 +345,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getcountries)) {?>
-                          <option value="<?php htmlspecialchars($row1['countryid']) ;?>"><?php echo htmlspecialchars($row1['nicename']);?></option>
+                          <option value="<?php echo htmlspecialchars($row1['countryid']) ;?>"><?php echo htmlspecialchars($row1['nicename']);?></option>
                         <?php };
                         ?>
                     </select>

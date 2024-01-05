@@ -30,9 +30,9 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="./plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="./admin/plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="./css/adminlte.min.css">
+  <link rel="stylesheet" href="./admin/css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -50,7 +50,7 @@
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->
       <li class="nav-item">
-        <a class="nav-link" href="../">
+        <a class="nav-link" href="./account/">
           <i class="fas fa-th-large"></i>
         </a>
       </li>
@@ -82,54 +82,14 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="./locations" class="nav-link">
-              <i class="nav-icon fas fa-users-cog"></i>
-              <p>
-                Locations
-              </p>
-            </a>
-          </li>
-		  <li class="nav-item">
-            <a href="./locations/cowcodes.php" class="nav-link">
+            <a href="./cowcodes.php" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Cow-Codes
               </p>
             </a>
           </li>
-          <li class="nav-item">
-			<a href="./categories/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Categories
-				</p>
-			</a>
-			</li>
-      <li class="nav-item">
-			<a href="./brands/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Brands
-				</p>
-			</a>
-			</li>
-      <li class="nav-item">
-			<a href="./brands/contacts/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Contacts
-				</p>
-			</a>
-			</li>
-      <li class="nav-item">
-			<a href="./measurements/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Measurements
-				</p>
-			</a>
-			</li>
-      <li class="nav-item menu-closed">
+		  <li class="nav-item menu-closed">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
@@ -138,6 +98,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="./" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -148,36 +111,16 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
         </ul>
       </li>
-		  <li class="nav-item">
-			<a href="./users/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Users
-				</p>
-			</a>
-			</li>
-      <li class="nav-item">
-			<a href="./users/groups" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Groups
-				</p>
-			</a>
-			</li>
-			<li class="nav-item">
-			<a href="./settings.php" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Settings
-				</p>
-			</a>
-			</li>
       <?php if (isset($_SESSION['email'])): ?>
       <li class="nav-item">
 			<a href="./index.php?logout='1'" class="nav-link">
@@ -206,7 +149,6 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="./">Admin</a></li>
               <li class="breadcrumb-item active">Dashboard</li>
             </ol>
           </div><!-- /.col -->
@@ -246,7 +188,7 @@
               <div class="icon">
                 <i class="ion ion-bag"></i>
               </div>
-              <a href="./locations/cowcodes.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="./cowcodes.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <div class="col-lg-3 col-6">
@@ -302,7 +244,6 @@
               <div class="icon">
                 <i class="ion ion-bag"></i>
               </div>
-              <a href="./locations/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
         </div>
@@ -324,10 +265,10 @@
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src="./plugins/jquery/jquery.min.js"></script>
+<script src="./admin/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="./plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="./admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="./js/adminlte.min.js"></script>
+<script src="./admin/js/adminlte.min.js"></script>
 </body>
 </html>

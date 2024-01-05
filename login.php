@@ -6,7 +6,6 @@
   <link rel="shortcut icon" href="./favicon.jpg" type="image/x-icon">
     <?php
         include ('./config.php');
-        include ('./server.php');
         include('./authentication.php');
 		
 	include('./queries.php');
@@ -23,11 +22,11 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="./plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="./admin/plugins/fontawesome-free/css/all.min.css">
   <!-- icheck bootstrap -->
-  <link rel="stylesheet" href="./plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <link rel="stylesheet" href="./admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="./dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="./admin/css/adminlte.min.css">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -41,8 +40,9 @@
       <?php if (isset($_SESSION['success'])) : ?>
       <p class="login-box-msg">
         <?php 
-            echo $_SSESSION['success']; 
-            unset($_SSESSION['success']);
+            echo $_SESSION['success'];
+            echo $_SESSION['msg']; 
+            unset($_SESSION['success']);
         ?>
       </p>
       <?php endif ?>
@@ -84,10 +84,10 @@
 <!-- /.login-box -->
 
 <!-- jQuery -->
-<script src="./plugins/jquery/jquery.min.js"></script>
+<script src="./admin/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="./plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="./admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="./dist/js/adminlte.min.js"></script>
+<script src="./admin/js/adminlte.min.js"></script>
 </body>
 </html>
