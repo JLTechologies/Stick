@@ -4,6 +4,7 @@ session_start();
 // initializing variables
 $username = "";
 $email    = "";
+$groupid = "";
 $errors = array(); 
 
 // connect to the database
@@ -80,7 +81,9 @@ if (isset($_POST['login_user'])) {
         $query = "SELECT * FROM users WHERE email='$email' AND password='$hashed_password'";
         $results = mysqli_query($conn, $query);
         if (mysqli_num_rows($results) == 1) {
+          session_start();
           $_SESSION['email'] = $email;
+          //$_SESSION['group'] = $groupid;
           $_SESSION['success'] = "Welcome $email.";
           header('location: ./index.php');
         }else {

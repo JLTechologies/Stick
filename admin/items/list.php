@@ -137,6 +137,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="./" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -147,14 +150,18 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
         </ul>
       </li>
 		  <li class="nav-item">
-			<a href="../users/" class="nav-link">
+			<a href="../users/" type="hidden" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Users
@@ -272,7 +279,7 @@
                       </td>
                       <td>
                         <form name="itemremove" action="./list.php" method="post">
-                          <input type="hidden" name="itemremove" value="<?php htmlspecialchars($row['itemID']);?>"/>
+                          <input type="hidden" name="itemremove" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
                           <input type="submit" value="remove brand"/>
                         </form>
                       </td>

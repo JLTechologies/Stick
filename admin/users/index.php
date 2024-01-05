@@ -123,7 +123,7 @@
 				</p>
 			</a>
 			</li>
-      <li class="nav-item menu-closed">
+		  <li class="nav-item menu-closed">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
@@ -132,6 +132,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="./" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -142,7 +145,11 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
@@ -255,9 +262,9 @@
                         ?>
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['userid']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['first_name']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['last_name']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['last_name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['groupname']);?></td>
                           <td>
                             <form action="./details.php" method="post">
                               <input type="hidden" name="userdetails" value="<?php echo htmlspecialchars($row['userid']);?>"/>
@@ -272,7 +279,7 @@
                           </td>
                           <td>
                             <form action="./index.php" method="post">
-                              <input type="hidden" name="userremove" value="<?php htmlspecialchars($row['userid']);?>"/>
+                              <input type="hidden" name="userremove" value="<?php echo htmlspecialchars($row['userid']);?>"/>
                               <button type="submit" class="btn btn-danger btn-block" name="remove_user">Remove User</button>
                             </form>
                           </td>
@@ -293,23 +300,27 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="userfirstname">Name</label>
-                    <input type="text" class="form-control" id="userfirstname" placeholder="Enter Name">
+                    <input type="text" class="form-control" id="userfirstname" name="userfirstname" placeholder="Enter Name">
                   </div>
                   <div class="form-group">
                     <label for="userlastname">Last Name</label>
-                    <input type="text" class="form-control" id="userlastname" placeholder="Enter Last Name">
+                    <input type="text" class="form-control" id="userlastname" name="userlastname" placeholder="Enter Last Name">
                   </div>
                   <div class="form-group">
                     <label for="useremail">Email</label>
-                    <input type="text" class="form-control" id="useremail" placeholder="Enter Email">
+                    <input type="text" class="form-control" id="useremail" name="useremail" placeholder="Enter Email">
                   </div>
                   <div class="form-group">
                     <label for="userphone">Phone</label>
-                    <input type="text" class="form-control" id="userphone" placeholder="Enter Work Phone">
+                    <input type="text" class="form-control" id="userphone" name="userphone" placeholder="Enter Work Phone">
+                  </div>
+                  <div class="form-group">
+                    <label for="team">Team</label>
+                    <input type="text" class="form-control" id="team" name="team" placeholder="Enter Team">
                   </div>
                   <div class="form-group">
                     <label for="usergroup">Select Group</label>
-                    <select class="custom-select form-control border border-width-2" id="usergroup">
+                    <select class="custom-select form-control border border-width-2" name="usergroup" id="usergroup">
                       <?php
                         $getgrouplist = mysqli_query($conn, $grouplist);
 
@@ -317,25 +328,25 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getgrouplist)) {?>
-                          <option value="<?php htmlspecialchars($row1['groupID']) ;?>"><?php echo htmlspecialchars($row1['name']);?></option>
+                          <option value="<?php echo htmlspecialchars($row1['groupID']) ;?>"><?php echo htmlspecialchars($row1['groupname']);?></option>
                         <?php };
                         ?>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="useractive">User Active?</label>                    
-                    <select class="custom-select form-control border border-width-2" id="useractive">
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
+                    <select class="custom-select form-control border border-width-2" name="useractive" id="useractive">
+                      <option value="true">Yes</option>
+                      <option value="false">No</option>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="password1">Password</label>
-                    <input type="text" class="form-control" id="password1" placeholder="Enter Password">
+                    <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter Password">
                   </div>
                   <div class="form-group">
                     <label for="password2">Verify Password</label>
-                    <input type="text" class="form-control" id="password2" placeholder="Re-enter Password">
+                    <input type="password" class="form-control" id="password2" name="password2" placeholder="Re-enter Password">
                   </div>
                 </div>
                 <div class="card-footer">

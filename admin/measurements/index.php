@@ -127,7 +127,7 @@
 				</p>
 			</a>
 			</li>
-      <li class="nav-item menu-closed">
+		  <li class="nav-item menu-closed">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
@@ -136,6 +136,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="./" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -146,7 +149,11 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
@@ -259,12 +266,12 @@
                           <td>
                             <form name="measureedit" action="./edit.php" method="post">
                               <input type="hidden" name="measureedit" value="<?php echo htmlspecialchars($row['measureID']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <button type="submit" name="measureedit" class="btn btn-warning btn-block">Edit Measurement</button>
                             </form>
                           </td>
                           <td>
                             <form action="./index.php" method="post">
-                              <input type="hidden" name="measureremove" value="<?php htmlspecialchars($row['measureID']);?>"/>
+                              <input type="hidden" name="measureremove" value="<?php echo htmlspecialchars($row['measureID']);?>"/>
                               <button type="submit" name="measureremove" class="btn btn-danger btn-block">Remove Measurement</button>
                             </form>
                           </td>        
@@ -284,11 +291,11 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="measurename">Name</label>
-                    <input type="text" class="form-control" id="measurename" placeholder="Enter Name">
+                    <input type="text" class="form-control" id="measurename" name="measurename" placeholder="Enter Name">
                   </div>
                   <div class="form-group">
                     <label for="measureshortcode">Shortcode</label>
-                    <input type="text" class="form-control" id="measureshortcode" placeholder="Enter Shortcode">
+                    <input type="text" class="form-control" id="measureshortcode" name="measureshortcode" placeholder="Enter Shortcode">
                   </div>
                 </div>
                 <div class="card-footer">

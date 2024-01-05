@@ -72,12 +72,12 @@ if (isset($_POST['add_group'])) {
         $getamountperms = htmlspecialchars($row4['aantalperms']);
       }
       
-      for ($i = 0; $i <= $getamountperms; $i++) {
+      for ($i = 1; $i <= $getamountperms; $i++) {
         $addgroupperm = "INSERT INTO permissions (setting, groupID, permissionID)" ."VALUES ('false','$newgroupaddID','$i')";
         mysqli_query($conn,$addgroupperm);
       }
       if ($i === $getamountperms) {
-        unset($i, $newgroupadd);
+        unset($i, $newgroupadd, $getamountperms);
         $result = "done";
         return $result;
       }
@@ -113,13 +113,14 @@ if (isset($_POST['add_group'])) {
 
   // ADD ITEM
   if (isset($_POST['add_item'])) {
-    $itemname = mysqli_real_escape_string($conn, $_POST['item_name']);
-    $itemprice = mysqli_real_escape_string($conn, $_POST['item_price']);
-    $itembrand = mysqli_real_escape_string($conn, $_POST['item_brand']);
-    $itemcategory = mysqli_real_escape_string($conn, $_POST['item_category']);
-    $itemcreatedby = mysqli_real_escape_string($conn, $_SESSION['email']);
-    $itemmeasure = mysqli_real_escape_string($conn, $_POST['item_measure']);
-    $itemminamount = mysqli_real_escape_string($conn, $_POST['item_minamount']);
+    $itemname = mysqli_real_escape_string($conn, $_POST['itemname']);
+    $itemref = mysqli_real_escape_strin($conn, $_POST['reference']);
+    $itemprice = mysqli_real_escape_string($conn, $_POST['itemprice']);
+    $itembrand = mysqli_real_escape_string($conn, $_POST['brand']);
+    $itemcategory = mysqli_real_escape_string($conn, $_POST['categoryid']);
+    $itemmeasure = mysqli_real_escape_string($conn, $_POST['measure']);
+    $itemminamount = mysqli_real_escape_string($conn, $_POST['minamount']);
+    $itemsorting = mysqli_real_escape_string($conn, $_POST['sorting']);
 
     if (empty($itemname)) {
       array_push($errors, "Itemname is required");
@@ -129,11 +130,43 @@ if (isset($_POST['add_group'])) {
     }
 
     if (count($errors) == 0) {
-      $itemadd = "INSERT INTO items (name, price, brandID, min_amount, childcategoryId, createdby, measureID) VALUES ('$itemname','$itemprice','$itembrand','$itemminamount','$itemcategory','$itemcreatedby','$itemmeasure')";
+      $itemadd = "INSERT INTO items (name, price, brandID, min_amount, childcategoryID, measureID, reference, sortingID) VALUES ('$itemname','$itemprice','$itembrand','$itemminamount','$itemcategory','$itemmeasure', '$itemref', '$itemsorting')";
       mysqli_query($conn, $itemadd);
+      add_amount($itemname, $conn);
+
+      if (isset($resultamount) && $resultamount == "tada") {
       $_SESSION['success'] = "New item $itemname has been succesfully added to the system";
       header('location: ./new.php');
+      }
     }
+  }
+
+  //FUNCTION ADD MINIMUMAMOUNTFIELD PER LOCATION
+  function add_amount($itemname, $conn) {
+    $newitemadd = "SELECT itemID FROM items WHERE name = '$itemname'";
+      $amountlocations = "SELECT COUNT(locationID) as aantallocations FROM locations";
+
+      $getnewitemadd = mysqli_query($conn, $newitemadd);
+      $getamountlocations = mysqli_query($conn, $amountlocations);
+
+      while ($row3 = mysqli_fetch_assoc($getnewitemadd)) {
+        $newitemaddID = htmlspecialchars($row3['itemID']);
+      }
+
+      while ($row4 = mysqli_fetch_assoc($getamountlocations)) {
+        $getamountlocs = htmlspecialchars($row4['aantallocations']);
+      }
+      
+      for ($i = 1; $i <= $getamountlocs; $i++) {
+        $additemmin = "INSERT INTO amount (itemID, locationID, amount)" ."VALUES ('$newitemaddID','$i','0')";
+        mysqli_query($conn,$additemmin);
+      }
+      if ($i === $getamountlocs) {
+        unset($i, $newitemaddID,$getamountlocs);
+        $resultamount = "tada";
+        return $resultamount;
+      }
+
   }
 
   // REMOVE ITEM
@@ -203,8 +236,8 @@ if (isset($_POST['add_group'])) {
   // ADD BRAND
   if (isset($_POST['brandadd'])) {
     $brandname = mysqli_real_escape_string($conn, $_POST['brandname']);
-    $brandimage = mysqli_real_escape_string($conn, $_POST['brandimage']);
-    $brandcontact = mysqli_real_escape_string($conn, $POST['brandcontact']);
+    $brandurl = mysqli_real_escape_string($conn, $_POST['brandurl']);
+    $brandcontact = mysqli_real_escape_string($conn, $_POST['brandcontact']);
 
     if (empty($brandname)) {
       array_push($errors, "Name of the brand can not be empty!");
@@ -214,12 +247,24 @@ if (isset($_POST['add_group'])) {
     }
 
     if (count($errors) == 0) {
-      $brandaddquery = "INSERT INTO brands (name, image, brandcontactID) VALUES ('$brandname', '$brandimage', '$brandcontact')";
+      $brandaddquery = "INSERT INTO brands (name, url, brandcontactID) VALUES ('$brandname', '$brandurl', '$brandcontact')";
       mysqli_query($conn, $brandaddquery);
       $_SESSION['success'] = "New brand created";
       header('location: ./index.php');
     }
+  }
 
+  //EDIT BRAND
+  if (isset($_POST['brandedit'])) {
+    $brandID = mysqli_real_escape_string($conn, $_POST['contactid']);
+    $brand_name = mysqli_real_escape_string($conn, $_POST['newbrandname']);
+    $brand_url = mysqli_real_escape_string($conn, $_POST['newbrandurl']);
+    $brand_contact = mysqli_real_escape_string($conn, $_POST['newbrandcontact']);
+
+    $updatebrand = "UPDATE brands SET name = '$brand_name', url = '$brand_url', brandcontactID = '$brand_contact' WHERE brandID = '$brandID'";
+    mysqli_query($conn,$updatebrand);
+    $_SESSION['success'] = "Brand $brand_name has been updated";
+    header('location: ./index.php');
   }
 
   // REMOVE BRAND
@@ -259,7 +304,7 @@ if (isset($_POST['add_group'])) {
   }
 
   // REMOVE LOCATION
-  if (isset($_POST['locationremove'])) {
+  if (isset($_POST['location_remove'])) {
     $locationid = mysqli_real_escape_string($conn, $_POST['locationremove']);
   
     $locationdelete = "DELETE from locations WHERE locationID = '$locationid'";
@@ -295,10 +340,9 @@ if (isset($_POST['add_group'])) {
 
   // ADD BRANDCONTACT
   if (isset($_POST['contactadd'])) {
+    $contactreference = mysqli_real_escape_string($conn,$_POST['reference']);
     $contactname = mysqli_real_escape_string($conn,$_POST['name']);
-    $contactlastname = mysqli_real_escape_string($conn,$_POST['lastname']);
     $contactphone = mysqli_real_escape_string($conn,$_POST['phone']);
-    $contactemail = mysqli_real_escape_string($conn,$_POST['email']);
     $contactstreet = mysqli_real_escape_string($conn,$_POST['street']);
     $contactnumber = mysqli_real_escape_string($conn,$_POST['number']);
     $contactaddition = mysqli_real_escape_string($conn,$_POST['addition']);
@@ -307,25 +351,52 @@ if (isset($_POST['add_group'])) {
     $contactstate = mysqli_real_escape_string($conn,$_POST['state']);
     $contactcountry = mysqli_real_escape_string($conn,$_POST['country']);
     if (empty($contactaddition)) {
-      $contactaddquery = "INSERT INTO brandcontact (name, last_name, phone, email, street, number, zipcode, city, state, countryID) 
-            VALUES ('$contactname', '$contactlastname', '$contactphone', '$contactemail', '$contactstreet', '$contactnumber', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
+      $contactaddquery = "INSERT INTO brandcontact(reference, name, phone, street, number, zipcode, city, state, countryID) 
+            VALUES ('$contactreference', '$contactname', '$contactphone', '$contactstreet', '$contactnumber', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
       mysqli_query($conn, $contactaddquery);
       $_SESSION['success'] = "Contact has been created";
       header('location: ./index.php');
-    }
+    }  
     else {
-      $contactaddquery2 = "INSERT INTO brandcontact (name, last_name, phone, email, street, number, addition, zipcode, city, state, countryID) 
-            VALUES ('$contactname', '$contactlastname', '$contactphone', '$contactemail', '$contactstreet', '$contactnumber', '$contactaddition', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
+      $contactaddquery2 = "INSERT INTO brandcontact(reference, name, phone, street, number, addition, zipcode, city, state, countryID) 
+            VALUES ('$contactreference', '$contactname', '$contactphone', '$contactstreet', '$contactnumber', '$contactaddition', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
       mysqli_query($conn, $contactaddquery2);
       $_SESSION['success'] = "Contact has been created";
       header('location: ./index.php');
     }
   }
 
+  //UPDATE BRANDCONTACT
+  if (isset($_POST['contactupdate'])) {
+    $contactid = mysqli_real_escape_string($conn,$_POST('contactid'));
+    $contactname = mysqli_real_escape_string($conn,$_POST['contact_reference']);
+    $contactlastname = mysqli_real_escape_string($conn,$_POST['contact_name']);
+    $contactphone = mysqli_real_escape_string($conn,$_POST['contact_phone']);
+    $contactstreet = mysqli_real_escape_string($conn,$_POST['contact_street']);
+    $contactnumber = mysqli_real_escape_string($conn,$_POST['contact_number']);
+    $contactaddition = mysqli_real_escape_string($conn,$_POST['contact_addition']);
+    $contactzipcode = mysqli_real_escape_string($conn,$_POST['contact_zipcode']);
+    $contactcity = mysqli_real_escape_string($conn,$_POST['contact_city']);
+    $contactstate = mysqli_real_escape_string($conn,$_POST['contact_state']);
+    $contactcountry = mysqli_real_escape_string($conn,$_POST['contact_country']);
+    if (empty($contactaddition)) {
+      $contactupdatequery = "UPDATE brandcontact SET reference = '$contactname', name = '$contactlastname', phone = '$contactphone', street = '$contactstreet', number = '$contactnumber', zipcode = '$contactzipcode', city = '$contactcity', state = '$contactstate', countryID = '$contactcountry' WHERE brandcontactID = '$contactid'";
+      mysqli_query($conn, $contactupdatequery);
+      $_SESSION['success'] = "Contact has been updated";
+      header('location: ./index.php');
+    }
+    else {
+      $contactupdatequery2 = "UPDATE brandcontact SET reference = '$contactname', name = '$contactlastname', phone = '$contactphone', street = '$contactstreet', number = '$contactnumber', addition = '$contactaddition', zipcode = '$contactzipcode', city = '$contactcity', state = '$contactstate', countryID = '$contactcountry' WHERE brandcontactID = '$contactid'";
+      mysqli_query($conn, $contactupdatequery2);
+      $_SESSION['success'] = "Contact has been updated";
+      header('location: ./index.php');
+    }
+  }
+
   // REMOVE BRANDCONTACT
   if (isset($_POST['contactremove'])) {
-    $contactID = mysqli_real_escape_string($conn,$_POST['contactremove']);
-    $removecontactbrande = "DELETE FROM brandcontact WHERE brandcontactID = '$contactID'";
+    $contactID = mysqli_real_escape_string($conn,$_POST['contact_remove']);
+    $removecontactbrand = "DELETE FROM brandcontact WHERE brandcontactID = '$contactID'";
     mysqli_query($conn, $removecontactbrand);
     $_SESSION['success'] = "Contact has been removed";
     header('location: ./index.php');
@@ -371,6 +442,16 @@ if (isset($_POST['add_group'])) {
       }
     }
 
+  //ADJUST ROOT CATEGORY ACTIVE STATE
+  if(isset($_POST['rootcat_active'])) {
+    $setting_rootactive = mysqli_real_escape_string($conn, $_POST['new_active']);
+    $rootid = mysqli_real_escape_string($conn, $_POST['rootcatid']);
+    $updaterootactive = "UPDATE rootcategories SET active = '$setting_rootactive' WHERE categoryid = '$rootid'";
+    mysqli_query($conn, $updaterootactive);
+    $_SESSION['success'] = "Category active status has been changed";
+    header('location: ./index.php');
+  }
+
   //ADJUST SITEACTIVITY
     if (isset($_POST['setting_siteactive'])) {
       $setting_active = mysqli_real_escape_string($conn, $_POST['new_active']);
@@ -407,28 +488,28 @@ if (isset($_POST['add_group'])) {
       $updateperm = "UPDATE permissions SET setting = '$newstatus' WHERE permissionsID = $permid";
       mysqli_query($conn, $updateperm);
       $_SESSION['success'] = "Permission has been updated";
-      header("location: ./perms.php?id='$id'");
+      header("location: ./index.php");
     }
 
   //ADD COWCODE SITE
-  if (isset($_POST['siteadd'])) {
-    $cowcode = mysqli_real_escape_string($conn,$_POST['sitename']);
-    $cowcodestreet = mysqli_real_escape_string($conn,$_POST['sitestreet']);
-    $cowcodenumber = mysqli_real_escape_string($conn,$_POST['sitenumber']);
-    $cowcodeaddition = mysqli_real_escape_string($conn,$_POST['siteaddition']);
-    $cowcodezipcode = mysqli_real_escape_string($conn,$_POST['sitezipcode']);
-    $cowcodecity = mysqli_real_escape_string($conn,$_POST['sitecity']);
-    $cowcodestate = mysqli_real_escape_string($conn,$_POST['sitestate']);
-    $cowcodecountry = mysqli_real_escape_string($conn,$_POST['sitecountry']);
+  if (isset($_POST['site_add'])) {
+    $cowcode = mysqli_real_escape_string($conn,$_POST['site_name']);
+    $cowcodestreet = mysqli_real_escape_string($conn,$_POST['site_street']);
+    $cowcodenumber = mysqli_real_escape_string($conn,$_POST['site_number']);
+    $cowcodeaddition = mysqli_real_escape_string($conn,$_POST['site_addition']);
+    $cowcodezipcode = mysqli_real_escape_string($conn,$_POST['site_zipcode']);
+    $cowcodecity = mysqli_real_escape_string($conn,$_POST['site_city']);
+    $cowcodestate = mysqli_real_escape_string($conn,$_POST['site_state']);
+    $cowcodecountry = mysqli_real_escape_string($conn,$_POST['site_country']);
     if (empty($cowcodeaddition)) {
-      $cowcodeadd = "INSERT INTO locations(locationname, street, number, zipcode, city, state, countryID)
+      $cowcodeadd = "INSERT INTO sites (cowcode, street, number, zipcode, city, state, countryID)
       VALUES ('$cowcode', '$cowcodestreet', '$cowcodenumber', '$cowcodezipcode', '$cowcodecity', '$cowcodestate', '$cowcodecountry')";
       mysqli_query($conn, $cowcodeadd);
       $_SESSION['success'] = "Site with code '$cowcode' has been added";
       header("location: ./cowcodes.php");
     }
     else {
-      $cowcodeadd2 = "INSERT INTO locations(locationname, street, number, addition, zipcode, city, state, countryID)
+      $cowcodeadd2 = "INSERT INTO sites (cowcode, street, number, addition, zipcode, city, state, countryID)
           VALUES ('$cowcode', '$cowcodestreet', '$cowcodenumber','$cowcodeaddition' ,'$cowcodezipcode', '$cowcodecity', '$cowcodestate', '$cowcodecountry')";
       mysqli_query($conn, $cowcodeadd2);
       $_SESSION['success'] = "Site with code '$cowcode' has been added";
@@ -437,7 +518,7 @@ if (isset($_POST['add_group'])) {
   }
 
   //REMOVE COWCODE SITE
-  if (isset($_POST['siteremove'])) {
+  if (isset($_POST['site_remove'])) {
     $cowcodeID = mysqli_real_escape_string($conn, $_POST['siteremove']);
   
     $cowcoderemove = "DELETE from sites WHERE siteID = '$cowcodeID'";
@@ -445,4 +526,58 @@ if (isset($_POST['add_group'])) {
     $_SESSION['success'] = "Site has been removed";
     header('location: ./cowcodes.php');
   }
+
+  // ADD USER
+if (isset($_POST['admin_reg_user'])) {
+  // receive all input values from the form
+  $userfirstname = mysqli_real_escape_string($conn, $_POST['userfirstname']);
+  $userlastname = mysqli_real_escape_string($conn, $_POST['userlastname']);
+  $useremail = mysqli_real_escape_string($conn, $_POST['useremail']);
+  $userphone = mysqli_real_escape_string($conn, $_POST['userphone']);
+  $userteam = mysqli_real_escape_string($conn, $_POST['team']);
+  $useractive = mysqli_real_escape_string($conn, $_POST['useractive']);
+  $usergroup = mysqli_real_escape_string($conn, $_POST['usergroup']);
+  $password1 = mysqli_real_escape_string($conn, $_POST['password1']);
+  $password2 = mysqli_real_escape_string($conn, $_POST['password2']);
+
+  // form validation: ensure that the form is correctly filled ...
+  // by adding (array_push()) corresponding error unto $errors array
+  if (empty($userfirstname)) { array_push($errors, "First name is required"); }
+  if (empty($userlastname)) { array_push($erros, "Last name is required"); }
+  if (empty($useremail)) { array_push($errors, "Phone number is required"); }
+  if (empty($userphone)) { array_push($errors, "Email is required"); }
+  if (empty($useractive)) { array_push($errors, "Active status is required"); }
+  if (empty($usergroup)) { array_push($errors, "Group selection is required"); }
+  if (empty($password1)) { array_push($errors, "Password is required"); }
+  if ($password1 != $password2) {
+	array_push($errors, "The two passwords do not match");
+  }
+
+  // first check the database to make sure 
+  /* a user does not already exist with the same username and/or email
+  $user_check_query = "SELECT * FROM users WHERE first_name='$userfirstname' OR last_name='$userlastname' OR email='$useremail' LIMIT 1";
+  $result = mysqli_query($conn, $user_check_query);
+  $user = mysqli_fetch_assoc($result);
+  
+  if ($user) { // if user exists
+    if ($user['email'] === $useremail) {
+      array_push($errors, "Email is already used by another account.");
+    }
+
+    if ($user['first_name'] === $userfirstname && ['last_name'] === $userlastname) {
+      array_push($errors, "Person already exists.");
+    }
+  }*/
+
+  // Finally, register user if there are no errors in the form
+  if (count($errors) == 0) {
+  	$password = md5($password1);//encrypt the password before saving in the database
+
+  	$query = "INSERT INTO users (name, last_name, groupID, email, phone, active, password, team) 
+  			  VALUES('$userfirstname', '$userlastname', '$usergroup', '$useremail', '$userphone', '$useractive', '$password', '$userteam')";
+  	mysqli_query($conn, $query);
+  	$_SESSION['success'] = "$userlastname $userfirstname is now registered";
+  	header('location: ./index.php');
+  }
+}
   ?>
