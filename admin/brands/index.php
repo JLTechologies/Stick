@@ -144,7 +144,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="./" class="nav-link">Complete List</a>
+              <a href="../items" class="nav-link">Complete List</a>
             </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
@@ -156,7 +156,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
               {?>
               hidden
               <?php };
@@ -268,18 +268,18 @@
                         ?>
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['brandID']);?></td>
-                          <td class="text-center"><a href="<?php echo htmlspecialchars($row['url']);?>"><?php echo htmlspecialchars($row['name']);?></a></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
+                          <td class="text-center"><a href="<?php echo htmlspecialchars($row['url']);?>"><?php echo htmlspecialchars($row['brandname']);?></a></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['brandname']);?></td>
                           <td>
                             <form name="brandedit" action="./edit.php" method="post">
                               <input type="hidden" name="brandedit" value="<?php echo htmlspecialchars($row['brandID']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <button type="submit" class="btn btn-warning btn-block" name="brandedit">Edit brand</button>
                             </form>
                           </td>
                           <td>
                             <form action="./index.php" method="post">
                               <input type="hidden" name="brandremove" value="<?php echo htmlspecialchars($row['brandID']);?>"/>
-                              <button type="submit" class="btn btn-primary btn-block" name="brandremove">Remove brand</button>
+                              <button type="submit" class="btn btn-danger btn-block" name="brandremove">Remove brand</button>
                             </form>
                           </td>        
                      <?php };

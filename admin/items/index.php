@@ -258,8 +258,8 @@
                      while ($row = mysqli_fetch_assoc($getitemlist)) { ?>
                     <tr class="align-middle">
                       <td class="text-center"><?php echo htmlspecialchars($row['itemID']);?></td>
-                      <td class="text-center"><?php echo htmlspecialchars($row['items.name']);?></td>
-                      <td class="text-center"><?php echo htmlspecialchars($row['brands.name']);?></td>
+                      <td class="text-center"><?php echo htmlspecialchars($row['itemname']);?></td>
+                      <td class="text-center"><?php echo htmlspecialchars($row['brandname']);?></td>
                       <td>
                         <form name="itemdetails" action="./details.php" method="post">
                           <input type="hidden" name="itemdetails" value="<?php echo htmlspecialchars($row['itemID']);?>"/>

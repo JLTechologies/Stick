@@ -114,7 +114,7 @@ if (isset($_POST['add_group'])) {
   // ADD ITEM
   if (isset($_POST['add_item'])) {
     $itemname = mysqli_real_escape_string($conn, $_POST['itemname']);
-    $itemref = mysqli_real_escape_strin($conn, $_POST['reference']);
+    $itemref = mysqli_real_escape_string($conn, $_POST['reference']);
     $itemprice = mysqli_real_escape_string($conn, $_POST['itemprice']);
     $itembrand = mysqli_real_escape_string($conn, $_POST['brand']);
     $itemcategory = mysqli_real_escape_string($conn, $_POST['categoryid']);
@@ -130,7 +130,7 @@ if (isset($_POST['add_group'])) {
     }
 
     if (count($errors) == 0) {
-      $itemadd = "INSERT INTO items (name, price, brandID, min_amount, childcategoryID, measureID, reference, sortingID) VALUES ('$itemname','$itemprice','$itembrand','$itemminamount','$itemcategory','$itemmeasure', '$itemref', '$itemsorting')";
+      $itemadd = "INSERT INTO items (itemname, price, brandID, min_amount, childcategoryID, measureID, reference, sortingID) VALUES ('$itemname','$itemprice','$itembrand','$itemminamount','$itemcategory','$itemmeasure', '$itemref', '$itemsorting')";
       mysqli_query($conn, $itemadd);
       add_amount($itemname, $conn);
 
@@ -143,7 +143,7 @@ if (isset($_POST['add_group'])) {
 
   //FUNCTION ADD MINIMUMAMOUNTFIELD PER LOCATION
   function add_amount($itemname, $conn) {
-    $newitemadd = "SELECT itemID FROM items WHERE name = '$itemname'";
+    $newitemadd = "SELECT * FROM items WHERE itemname = '$itemname'";
       $amountlocations = "SELECT COUNT(locationID) as aantallocations FROM locations";
 
       $getnewitemadd = mysqli_query($conn, $newitemadd);
@@ -157,12 +157,12 @@ if (isset($_POST['add_group'])) {
         $getamountlocs = htmlspecialchars($row4['aantallocations']);
       }
       
-      for ($i = 1; $i <= $getamountlocs; $i++) {
-        $additemmin = "INSERT INTO amount (itemID, locationID, amount)" ."VALUES ('$newitemaddID','$i','0')";
+      for ($z = 1; $z <= $getamountlocs; $z++) {
+        $additemmin = "INSERT INTO amount (itemID, locationID, amount)" ."VALUES ('$newitemaddID','$z','0')";
         mysqli_query($conn,$additemmin);
       }
-      if ($i === $getamountlocs) {
-        unset($i, $newitemaddID,$getamountlocs);
+      if ($z === $getamountlocs) {
+        unset($z, $newitemaddID,$getamountlocs);
         $resultamount = "tada";
         return $resultamount;
       }
@@ -247,7 +247,7 @@ if (isset($_POST['add_group'])) {
     }
 
     if (count($errors) == 0) {
-      $brandaddquery = "INSERT INTO brands (name, url, brandcontactID) VALUES ('$brandname', '$brandurl', '$brandcontact')";
+      $brandaddquery = "INSERT INTO brands (brandname, url, brandcontactID) VALUES ('$brandname', '$brandurl', '$brandcontact')";
       mysqli_query($conn, $brandaddquery);
       $_SESSION['success'] = "New brand created";
       header('location: ./index.php');
@@ -261,7 +261,7 @@ if (isset($_POST['add_group'])) {
     $brand_url = mysqli_real_escape_string($conn, $_POST['newbrandurl']);
     $brand_contact = mysqli_real_escape_string($conn, $_POST['newbrandcontact']);
 
-    $updatebrand = "UPDATE brands SET name = '$brand_name', url = '$brand_url', brandcontactID = '$brand_contact' WHERE brandID = '$brandID'";
+    $updatebrand = "UPDATE brands SET brandname = '$brand_name', url = '$brand_url', brandcontactID = '$brand_contact' WHERE brandID = '$brandID'";
     mysqli_query($conn,$updatebrand);
     $_SESSION['success'] = "Brand $brand_name has been updated";
     header('location: ./index.php');

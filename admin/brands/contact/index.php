@@ -144,7 +144,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="./" class="nav-link">Complete List</a>
+              <a href="../../items" class="nav-link">Complete List</a>
             </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
@@ -156,7 +156,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              <a href="../../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
               {?>
               hidden
               <?php };
@@ -276,13 +276,13 @@
                           <td>
                             <form name="edit" action="./edit.php?id=<?php echo htmlspecialchars($row['brandcontactID']);?>" method="post">
                               <input type="hidden" name="edit" value="<?php echo htmlspecialchars($row['brandcontactID']);?>"/>
-                              <input type="submit" value="edit brand"/>
+                              <button type="submit" class="btn btn-warning btn-block">Edit contact</button>
                             </form>
                           </td>
                           <td>
                             <form action="./index.php" method="post">
                               <input type="hidden" name="contact_remove" value="<?php echo htmlspecialchars($row['brandcontactID']);?>"/>
-                              <button type="submit" class="btn btn-primary btn-block" name="contactremove">Remove contact</button>
+                              <button type="submit" class="btn btn-danger btn-block" name="contactremove">Remove contact</button>
                             </form>
                           </td>        
                      <?php };

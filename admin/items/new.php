@@ -285,7 +285,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row3 = mysqli_fetch_assoc($getbrands)) {?>
-                          <option value="<?php echo htmlspecialchars($row3['brandID']) ;?>"><?php echo htmlspecialchars($row3['name']);?></option>
+                          <option value="<?php echo htmlspecialchars($row3['brandID']) ;?>"><?php echo htmlspecialchars($row3['brandname']);?></option>
                         <?php };
                         ?>
                     </select>
@@ -322,7 +322,7 @@
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-primary">Add Item</button>
+                  <button type="submit" name="add_item" class="btn btn-primary">Add Item</button>
                 </div>
               </form>
             </div>

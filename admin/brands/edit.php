@@ -147,7 +147,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="./" class="nav-link">Complete List</a>
+              <a href="../items/" class="nav-link">Complete List</a>
             </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
@@ -159,7 +159,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
               {?>
               hidden
               <?php };
@@ -240,9 +240,9 @@
         die('Could not load requested info :'.mysqli_error($conn));
     }
     while ($row3 = mysqli_fetch_assoc($getbrandinfo)) {
-        $brandname = htmlspecialchars($row3['brands.name']);
-        $brandurl = htmlspecialchars($row3['brands.url']);
-        $brandcontact = htmlspecialchars($row3['brands.brandcontactID']);
+        $brandname = htmlspecialchars($row3['brandname']);
+        $brandurl = htmlspecialchars($row3['url']);
+        $brandcontact = htmlspecialchars($row3['brandcontactID']);
     }
     
     if (isset($_SESSION['success'])) : ?>
@@ -283,7 +283,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getcontact)) {?>
-                          <option value="<?php echo htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['name']);?> <?php echo htmlspecialchars($row1['last_name']);?> </option>
+                          <option value="<?php echo htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['brandname']);?></option>
                         <?php };
                         ?>
                     </select>

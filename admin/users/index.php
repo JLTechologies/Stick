@@ -133,7 +133,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="./" class="nav-link">Complete List</a>
+              <a href="../items" class="nav-link">Complete List</a>
             </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
@@ -145,7 +145,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
               {?>
               hidden
               <?php };
