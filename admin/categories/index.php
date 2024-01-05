@@ -134,7 +134,7 @@
 				</p>
 			</a>
 			</li>
-      <li class="nav-item menu-closed">
+		  <li class="nav-item menu-closed">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
@@ -143,6 +143,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="./" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -153,7 +156,11 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
@@ -265,7 +272,25 @@
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['categoryid']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['active']);?></td>
+                          <td class="text-center"><?php $active = htmlspecialchars($row['active']);?>
+                          <form action="./index.php" method="post">
+                            <div class="form-group">
+                              <input type="hidden" name="rootcatid" value="<?php echo htmlspecialchars($row['categoryid']);?>"> 
+                              <select name="new_active" class="form-control">
+                                <?php
+                                  if($active == "true") {?>
+                                  <option value="true">Yes</option>
+                                  <option value="false">No</option>
+                                <?php }
+                                  else {?>
+                                  <option value="false">No</option>
+                                  <option value="true">Yes</option>
+                                <?php } ?>
+                              </select>
+                              <button type="submit" name="rootcat_active" class="btn btn-primary btn-block">Update</button>
+                            </div>
+                          </form>
+                          </td>
                           <td>
                             <form name="rootedit" action="./edit.php" method="post">
                               <input type="hidden" name="rootedit" value="<?php echo htmlspecialchars($row['categoryid']);?>"/>

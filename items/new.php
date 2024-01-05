@@ -135,9 +135,6 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="./" class="nav-link">Complete List</a>
-            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -148,11 +145,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
-              {?>
-              hidden
-              <?php };
-              ?>><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
@@ -242,19 +235,19 @@
                 <div class="card-header">
                     <h3 class="card-title">Add Item</h3>
                 </div>
-                <form action="./new.php" method="post">
+                <form name="add_item" action="./new.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
                     <label for="itemname">Name</label>
-                    <input type="text" class="form-control" id="itemname" name="itemname">
+                    <input type="text" class="form-control" id="itemname" name="item_name">
                   </div>
                   <div class="form-group">
                     <label for="reference">External Reference</label>
-                    <input type="text" class="form-control" id="reference" name="reference">
+                    <input type="text" class="form-control" id="reference" name="external_ref">
                   </div>
                   <div class="form-group">
                     <label for="itemprice">Price</label>
-                    <input type="text" class="form-control" id="itemprice" name="itemprice">
+                    <input type="text" class="form-control" id="itemprice" name="item_price">
                   </div>                  
                   <div class="form-group">
                     <label for="categoryid">Category</label>
@@ -273,11 +266,11 @@
                   </div>
                   <div class="form-group">
                     <label for="minamount">Minimum amount </label>
-                    <input type="text" class="form-control" id="minamount" name="minamount">
+                    <input type="text" class="form-control" id="minamount" name="min_amount">
                   </div>
                   <div class="form-group">
                     <label for="brand">Brand</label>
-                    <select class="custom-select form-control border border-width-2" id="brand" name="brand">
+                    <select class="custom-select form-control border border-width-2" id="brand" name="brand_name">
                       <?php
                         $getbrands = mysqli_query($conn, $brandlist);
 
@@ -292,7 +285,7 @@
                   </div>
                   <div class="form-group">
                     <label for="measure">Measurement</label>
-                    <select class="custom-select form-control border border-width-2" id="measure" name="measure">
+                    <select class="custom-select form-control border border-width-2" id="measure" name="measure_select">
                       <?php
                         $getmeasurements = mysqli_query($conn, $measurements);
 
@@ -307,7 +300,7 @@
                   </div>
                   <div class="form-group">
                     <label for="sorting">Sorting</label>
-                    <select class="custom-select form-control border border-width-2" id="sorting" name="sorting">
+                    <select class="custom-select form-control border border-width-2" id="sorting" name="sorting_select">
                       <?php
                         $getsorting = mysqli_query($conn, $sortings);
 

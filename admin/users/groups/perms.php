@@ -130,7 +130,7 @@
 				</p>
 			</a>
 			</li>
-      <li class="nav-item menu-closed">
+		  <li class="nav-item menu-closed">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
@@ -139,6 +139,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="./" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -149,7 +152,11 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
@@ -254,18 +261,19 @@
                       }
 
                       while($row = mysqli_fetch_assoc($getperms)) {
+                        $perm_active = htmlspecialchars($row['setting']);
                         ?>
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['permissionID']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['permissionname']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['description']);?></td>
                           <td>
-                            <form name="edit_perm" action="./perms.php?id=<?php echo htmlspecialchars($id);?>)" method="post">
+                            <form action="./index.php" method="post">
                             <input type="hidden" name="permid" value="<?php echo htmlspecialchars($row['permissionID']);?>">
-                            <label for="new_status" class="control-label">Site Active</label>
+                            <label for="new_status" class="control-label">Perm Status</label>
                               <select name="new_status" class="form-control">
                                 <?php
-                                  if($active == "true") {?>
+                                  if($perm_active === "true") {?>
                                     <option value="true">Yes</option>
                                     <option value="false">No</option>
                                   <?php }
@@ -274,7 +282,7 @@
                                     <option value="true">Yes</option>
                                   <?php } ?>
                                 </select>
-                              <button type="submit" class="btn btn-warning btn-block" value="edit permission">Update Perm</button>
+                              <button type="submit" class="btn btn-warning btn-block" name="edit_perm">Update Perm</button>
                             </form>
                           </td> 
                      <?php };

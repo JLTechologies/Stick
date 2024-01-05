@@ -134,7 +134,7 @@
 				</p>
 			</a>
 			</li>
-      <li class="nav-item menu-closed">
+		  <li class="nav-item menu-closed">
         <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
@@ -143,6 +143,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="./" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -153,7 +156,11 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
@@ -243,7 +250,7 @@
                   <thead>
                     <tr>
                       <th>Index</th>
-                      <th>Image</th>
+                      <th>URL</th>
                       <th>Name</th>
                       <th>Edit</th>
                       <th>Remove</th>
@@ -261,7 +268,7 @@
                         ?>
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['brandID']);?></td>
-                          <td class="text-center"><img src="<?php echo htmlspecialchars($row['image']);?>" alt="brandimage" style="width:50px;height:50px;"></td>
+                          <td class="text-center"><a href="<?php echo htmlspecialchars($row['url']);?>"><?php echo htmlspecialchars($row['name']);?></a></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
                           <td>
                             <form name="brandedit" action="./edit.php" method="post">
@@ -271,7 +278,7 @@
                           </td>
                           <td>
                             <form action="./index.php" method="post">
-                              <input type="hidden" name="brandremove" value="<?php htmlspecialchars($row['brandID']);?>"/>
+                              <input type="hidden" name="brandremove" value="<?php echo htmlspecialchars($row['brandID']);?>"/>
                               <button type="submit" class="btn btn-primary btn-block" name="brandremove">Remove brand</button>
                             </form>
                           </td>        
@@ -291,15 +298,15 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="brandname">Brand name</label>
-                    <input type="text" class="form-control" id="brandname" placeholder="Enter Brand Name">
+                    <input type="text" class="form-control" id="brandname" name="brandname" placeholder="Enter Brand Name">
                   </div>
                   <div class="form-group">
-                    <label for="brandimage">Brand Image</label>
-                    <input type="text" class="form-control" id="brandimage" placeholder="Enter Brand Name">
+                    <label for="brandurl">Brand URL</label>
+                    <input type="text" class="form-control" id="brandurl" name="brandurl" placeholder="Enter Brand URL">
                   </div>
                   <div class="form-group">
                     <label for="brandcontact">Brand Contact</label>
-                    <select class="custom-select form-control border border-width-2" id="brandcontact" placeholder="Please select a contact">
+                    <select class="custom-select form-control border border-width-2" id="brandcontact" name="brandcontact" placeholder="Please select a contact">
                       <?php
                         $getcontact = mysqli_query($conn, $brandcontactlist);
 
@@ -307,7 +314,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getcontact)) {?>
-                          <option value="<?php htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['name']);?> <?php echo htmlspecialchars($row1['last_name']);?> </option>
+                          <option value="<?php echo htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['name']);?></option>
                         <?php };
                         ?>
                     </select>

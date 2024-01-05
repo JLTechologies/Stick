@@ -20,4 +20,5 @@ $countcowcodes = "SELECT COUNT(cowcode) 'amountsites' FROM sites";
 $countusers = "SELECT COUNT(name) 'amountusers' FROM users";
 $countitems = "SELECT COUNT(name) 'amountitems' FROM items";
 $countlocations = "SELECT COUNT(locationname) 'amountlocations' FROM locations";
+$sortings = "SELECT * FROM sorting";
 ?>

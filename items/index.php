@@ -6,12 +6,9 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
-
-  if (isset($_GET['logout'])) {
-    session_destroy();
-  }
-
   include('../queries.php');
+  include('../../authentication.php');
+  include('../server.php');
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -25,9 +22,12 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="../admin/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="../admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="../admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="../admin/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="../css/adminlte.min.css">
+  <link rel="stylesheet" href="../admin/css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -57,7 +57,7 @@
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="../index.php" class="brand-link">
-      <img src="./favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="../favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $site; ?></span>
     </a>
 
@@ -70,7 +70,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="../" class="nav-link active">
+            <a href="../" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -110,7 +110,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="../brands/contacts/" class="nav-link">
+			<a href="../brands/contact/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -125,8 +125,8 @@
 				</p>
 			</a>
 			</li>
-		  <li class="nav-item menu-closed">
-        <a href="#" class="nav-link">
+      <li class="nav-item menu-open active">
+        <a href="./" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
               Items
@@ -134,9 +134,6 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="./" class="nav-link">Complete List</a>
-            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -147,18 +144,14 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
-              {?>
-              hidden
-              <?php };
-              ?>><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
         </ul>
       </li>
 		  <li class="nav-item">
-			<a href="./" class="nav-link">
+			<a href="../users/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Users
@@ -166,7 +159,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="./groups/" class="nav-link">
+			<a href="../users/groups/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Groups
@@ -209,8 +202,9 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="./">Admin</a></li>
-              <li class="breadcrumb-item active">Dashboard</li>
+              <li class="breadcrumb-item"><a href="../">Admin</a></li>
+              <li class="breadcrumb-item"><a href="../">Dashboard</a></li>
+              <li class="breadcrumb-item">Items</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -220,20 +214,80 @@
 
     <!-- Main content -->
     <div class="content">
-      <div class="container-fluid">
-        <div class="row">
           <!-- notification message -->
   	<?php if (isset($_SESSION['success'])) : ?>
       <div class="error success" >
       	<h3>
           <?php 
           	echo $_SESSION['success'];
+            unset($_SESSION["success"]);
           ?>
       	</h3>
       </div>
   	<?php endif ?>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="card-body table-responsive p-0">
+              <table class="table table-bordered table-stripe" id="main">
+                <thead>
+                  <tr>
+                    <th>Index</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Details</th>
+                    <?php
+                    $getlocation = mysqli_query($conn, $locations);
+                    if (! $getlocation) {
+                      die ('Could not fetch data: '. mysqli_error($conn));
+                    }
+                    
+                    while ($loc = mysqli_fetch_assoc($getlocation)) {
+                      ?><th><?php echo htmlspecialchars($loc['locationname']);?></th>
+                    <?php }?>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+                     $getitemlist = mysqli_query($conn, $itemlist1);
+            
+                    if (! $getitemlist) {
+                     die('Could not fetch data: '.mysqli_error($conn));
+                    }
+            
+                     while ($row = mysqli_fetch_assoc($getitemlist)) { ?>
+                    <tr class="align-middle">
+                      <td class="text-center"><?php echo htmlspecialchars($row['itemID']);?></td>
+                      <td class="text-center"><?php echo htmlspecialchars($row['items.name']);?></td>
+                      <td class="text-center"><?php echo htmlspecialchars($row['brands.name']);?></td>
+                      <td>
+                        <form name="itemdetails" action="./details.php" method="post">
+                          <input type="hidden" name="itemdetails" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
+                          <input type="submit" value="edit brand"/>
+                        </form>
+                      </td>
+                      <td></td>
+                      <td>
+                        <form name="itemedit" action="./edit.php" method="post">
+                          <input type="hidden" name="itemedit" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
+                          <input type="submit" value="edit brand"/>
+                        </form>
+                      </td>
+                      <td>
+                        <form action="./index.php" method="post">
+                          <input type="hidden" name="itemremove" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
+                          <button type="submit" name="itemremove" class="btn btn-danger btn-block">Remove Item</button>
+                        </form>
+                      </td>
+                    </tr>
+                  <?php };?>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
-        <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
@@ -243,7 +297,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('./footer.php'); ?>
+	<?php include('../footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->
@@ -251,9 +305,41 @@
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src="../plugins/jquery/jquery.min.js"></script>
+<script src="../admin/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../admin/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="../admin/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="../admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+<script src="../admin/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="../admin/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+<script src="../admin/plugins/jszip/jszip.min.js"></script>
+<script src="../admin/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="../admin/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="../admin/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="../admin/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="../admin/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $("#main").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#main_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+
 <!-- AdminLTE App -->
 <script src="../js/adminlte.min.js"></script>
 </body>

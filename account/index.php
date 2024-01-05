@@ -3,20 +3,42 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="shortcut icon" href="./favicon.jpg" type="image/x-icon">
+  <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
-  include('./config.php');
-  include('./server.php');
-  include('./authentication.php');
+  include('../config.php');
+  include('../server.php');
+  include('../authentication.php');
 
-  if (isset($_GET['logout'])) {
-    session_destroy();
+  if (!isset($_SESSION['email'])) {
+    $_SESSION['msg'] = "You must log in first";
+    header('location: ../login.php');
   }
 
-  include('./queries.php');
-  $getcountitems = mysqli_query($conn, $countitems);
-  $getcountlocations = mysqli_query($conn, $countlocations);
-  $getcountcowcodes = mysqli_query($conn, $countcowcodes);
+  if (isset($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+  }
+  if (isset($_GET['logout'])) {
+    session_destroy();
+    unset($_SESSION['email']);
+    unset($_SESSION['success']);
+    header("location: ../login.php");
+  }
+
+  include('../queries.php');
+
+  $userinfo = "SELECT * FROM users INNER JOIN groups ON users.groupID = groups.groupID WHERE email = '$email'";
+  $getuserinfo = mysqli_query($conn, $userinfo);
+  if (! $getuserinfo) {
+    die('Could not data :'.mysqli_error($conn));
+  }
+  while($userdata = mysqli_fetch_assoc($getuserinfo)) {
+    $userid = htmlspecialchars($userdata['userid']);
+    $firstname = htmlspecialchars($userdata['name']);
+    $lastname = htmlspecialchars($userdata['last_name']);
+    $phone = htmlspecialchars($userdata['phone']);
+    $team = htmlspecialchars($userdata['team']);
+    $groupname = htmlspecialchars($userdata['groupname']);
+  }
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -30,9 +52,9 @@
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="./admin/plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="../admin/plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="./admin/css/adminlte.min.css">
+  <link rel="stylesheet" href="../admin/css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -50,7 +72,7 @@
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->
       <li class="nav-item">
-        <a class="nav-link" href="./account/">
+        <a class="nav-link" href="./">
           <i class="fas fa-th-large"></i>
         </a>
       </li>
@@ -61,8 +83,8 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="./index.php" class="brand-link">
-      <img src="./favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <a href="../index.php" class="brand-link">
+      <img src="../favicon.jpg" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light"><?php echo $site; ?></span>
     </a>
 
@@ -74,7 +96,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="./" class="nav-link active">
+            <a href="../" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -82,7 +104,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="./cowcodes.php" class="nav-link">
+            <a href="./locations/cowcodes.php" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Cow-Codes
@@ -99,7 +121,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="./" class="nav-link">Complete List</a>
+              <a href="../" class="nav-link">Complete List</a>
             </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
@@ -149,7 +171,8 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item active">Dashboard</li>
+              <li class="breadcrumb-item">Dashboard</li>
+              <li class="breadcrumb-item active">Profile</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -172,81 +195,76 @@
               </h3>
             </div>
   	      <?php endif ?>
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3><?php 
-                if (! $getcountcowcodes) {
-                  die('Could not fetch data: '.mysqli_error($conn));
-                }
-                while ($row3 = mysqli_fetch_assoc($getcountcowcodes)) {
-                  echo htmlspecialchars($row3['amountsites']);
-                } ?></h3>
+            <div class="col-md-3">
 
-                <p>Cow-Codes</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="./cowcodes.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3><?php 
-                if (! $getcountitems) {
-                  die('Could not fetch data: '.mysqli_error($conn));
-                }
-                while ($row4 = mysqli_fetch_assoc($getcountitems)) {
-                  echo htmlspecialchars($row4['amountitems']);
-                } ?></h3>
-                <p>Items</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="./items/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3><?php 
-            //    if (! $getcountusers) {
-            //      die('Could not fetch data: '.mysqli_error($conn));
-            //    }
-            //    while ($row5 = mysqli_fetch_assoc($getcountusers)) {
-            //      echo htmlspecialchars($row5['amountusers']);
-            //    }?></h3>
+<!-- Profile Image -->
+<div class="card card-primary card-outline">
+  <div class="card-body box-profile">
+    <div class="text-center">
+      <img class="profile-user-img img-fluid img-circle"
+           src="../favicon.jpg"
+           alt="User profile picture">
+    </div>
 
-                <p>Users</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
-              <a href="./users/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-6">
-            <div class="small-box bg-info">
-              <div class="inner">
-                <h3><?php 
-                if (! $getcountlocations) {
-                  die('Could not fetch data: '.mysqli_error($conn));
-                }
-                while ($row3 = mysqli_fetch_assoc($getcountlocations)) {
-                  echo htmlspecialchars($row3['amountlocations']);
-                } ?></h3>
+    <h3 class="profile-username text-center"><?php echo $lastname;?> <?php echo $firstname;?></h3>
 
-                <p>Locations</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-bag"></i>
-              </div>
+    <p class="text-muted text-center"><?php echo $team;?></p>
+  </div>
+  <!-- /.card-body -->
+</div>
+<!-- /.card -->
+
+</div>
+<!-- /.col -->
+<div class="col-md-9">
+<div class="card">
+  <div class="card-header p-2">
+    <ul class="nav nav-pills">
+      <li class="nav-item"><a class="nav-link active" href="#info" data-toggle="tab">Info</a></li>
+      <li class="nav-item"><a class="nav-link" href="#password" data-toggle="tab">Password</a></li>
+    </ul>
+  </div><!-- /.card-header -->
+  <div class="card-body">
+    <div class="tab-content">
+      <div class="active tab-pane" id="info">
+        <p><?php echo $lastname;?> <?php echo $firstname;?></p>
+        <p><?php echo $email;?></p>
+        <p>+32 <?php echo $phone;?></p>
+        <p><?php echo $groupname;?></p>
+        <p><?php echo $team;?></p>
+      </div>
+      <!-- /.tab-pane -->
+      <div class="tab-pane" id="password">
+        <form class="form-horizontal">
+          <div class="form-group row">
+            <label for="password" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+              <input type="hidden" name="userid" value="<?php echo $userid;?>">
+              <input type="password" class="form-control" id="password" name="password" placeholder="New Password">
             </div>
           </div>
-        </div>
+          <div class="form-group row">
+            <label for="verify_password" class="col-sm-2 col-form-label">Email</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" id="verify_password" name="verify_password" placeholder="Verify Password">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="offset-sm-2 col-sm-10">
+              <button type="submit" name="new_password" class="btn btn-danger">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <!-- /.tab-pane -->
+    </div>
+    <!-- /.tab-content -->
+  </div><!-- /.card-body -->
+</div>
+<!-- /.card -->
+</div>
+<!-- /.col -->
+</div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -257,7 +275,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('./admin/footer.php'); ?>
+	<?php include('../admin/footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->
@@ -265,10 +283,10 @@
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src="./admin/plugins/jquery/jquery.min.js"></script>
+<script src="../admin/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
-<script src="./admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->
-<script src="./admin/js/adminlte.min.js"></script>
+<script src="../admin/js/adminlte.min.js"></script>
 </body>
 </html>
