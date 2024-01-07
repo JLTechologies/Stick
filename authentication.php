@@ -3,6 +3,7 @@ session_start();
 
 // initializing variables
 $username = "";
+$group = "";
 $email    = "";
 $errors = array(); 
 
@@ -27,7 +28,11 @@ if (isset($_POST['login_user'])) {
         $results = mysqli_query($conn, $query);
         if (mysqli_num_rows($results) == 1) {
           $_SESSION['email'] = $email;
+          while($userdata = mysqli_fetch_assoc($query)) {
+            $group = htmlspecialchars($userdata['groupID']);
+          }
           $_SESSION['success'] = "Welcome $email.";
+          $_SESSION['group'] = $group;
           header('location: ./index.php');
         }else {
             array_push($errors, "Wrong email or password combination");

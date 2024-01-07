@@ -300,7 +300,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row4 = mysqli_fetch_assoc($getmeasurements)) {?>
-                          <option value="<?php echo htmlspecialchars($row4['measureID']) ;?>"><?php echo htmlspecialchars($row4['name']);?> / <?php echo htmlspecialchars($row4['shortcode']);?></option>
+                          <option value="<?php echo htmlspecialchars($row4['measureID']) ;?>"><?php echo htmlspecialchars($row4['measurename']);?> / <?php echo htmlspecialchars($row4['shortcode']);?></option>
                         <?php };
                         ?>
                     </select>

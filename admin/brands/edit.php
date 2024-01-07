@@ -283,7 +283,7 @@
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
                         while ($row1 = mysqli_fetch_assoc($getcontact)) {?>
-                          <option value="<?php echo htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['brandname']);?></option>
+                          <option value="<?php echo htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['brandcname']);?></option>
                         <?php };
                         ?>
                     </select>

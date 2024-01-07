@@ -6,11 +6,49 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../config.php');
+  include('../authentication.php');
+
+  if (!isset($_SESSION['email'])) {
+    $_SESSION['msg'] = "You must log in first";
+    header('location: ../login.php');
+  }
+
+  if (isset($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+  }
+  if (isset($_GET['logout'])) {
+    session_destroy();
+    unset($_SESSION['email']);
+    unset($_SESSION['success']);
+    header("location: ../login.php");
+  }
   $_SESSION['message'] = '';
   $id = $_GET['id'];
-  $getiteminfo = "SELECT * FROM items WHERE itemID = '$id'";
-  $getitemamount = "SELECT * FROM amount WHERE itemID = '$id'";
-
+  $getiteminfo = "SELECT * FROM items INNER JOIN measure ON items.measureID = measure.measureID INNER JOIN childcategories ON items.childcategoryID = childcategories.childcategoryID INNER JOIN rootcategories ON childcategories.rootcategoryID = rootcategories.categoryid INNER JOIN brands ON items.brandID = brands.brandID INNER JOIN brandcontact ON brands.brandcontactID = brandcontact.brandcontactID INNER JOIN countries ON brandcontact.countryID = countries.countryID WHERE itemID = '$id'";
+  $getinfo = mysqli_query($conn, $getiteminfo);
+  if (! $getinfo) {
+    die ('Could not fetch requested data: '.mysqli_error($conn));
+  }
+  while($itemdata = mysqli_fetch_assoc($getinfo)) {
+    $itemname = htmlspecialchars($itemdata['itemname']);
+    $rootcategory = htmlspecialchars($itemdata['name']);
+    $childcategory = htmlspecialchars($itemdata['childname']);
+    $price = htmlspecialchars($itemdata['price']);
+    $extreference = htmlspecialchars($itemdata['reference']);
+    $minamount = htmlspecialchars($itemdata['min_amount']);
+    $measurement = htmlspecialchars($itemdata['measurename']);
+    $brandname = htmlspecialchars($itemdata['brandname']);
+    $brandurl = htmlspecialchars($itemdata['url']);
+    $brandcontactname = htmlspecialchars($itemdata['brandcname']);
+    $brandzipcode = htmlspecialchars($itemdata['zipcode']);
+    $brandnumber = htmlspecialchars($itemdata['number']);
+    $brandaddition = htmlspecialchars($itemdata['addition']);
+    $brandstreet = htmlspecialchars($itemdata['street']);
+    $brandcity = htmlspecialchars($itemdata['city']);
+    $brandstate = htmlspecialchars($itemdata['state']);
+    $brandphone = htmlspecialchars($itemdata['phone']);
+    $brandcountry = htmlspecialchars($itemdata['nicename']);
+  }
   include('../queries.php');
   include('../server.php');
 
@@ -19,7 +57,7 @@
     die('Could not load sitename: '.mysqli_error($conn));
   }
   while($row = mysqli_fetch_assoc($name)) {?>
-  <title>Admin | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
+  <title>User | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
   <?php }
   ?>
 
@@ -151,7 +189,7 @@
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="../">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="./index.php">Items</a></li>
-              <li class="breadcrumb-item">Item name</li>
+              <li class="breadcrumb-item"><?php echo $itemname;?></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -179,32 +217,66 @@
         <div class="card-body">
           <div class="row">
             <div class="col-12 col-sm-6">
-              <h3 class="d-inline-block d-sm-none">Product name</h3>
+              <h3 class="d-inline-block d-sm-none"><?php echo $itemname;?></h3>
             </div>
             <div class="col-12 col-sm-6">
-              <h3 class="my-3">product name</h3>
-              <p>Description.</p>
-
+              <h3 class="my-3"><?php echo $brandname;?> / <?php echo $itemname;?></h3>
               <hr>
 
-              <div class="bg-gray py-2 px-3 mt-4">
+              <div class="bg-red py-2 px-3 mt-4">
+                <p>NIET ACTUELE PRIJZEN!</p>
                 <h2 class="mb-0">
-                  Price set
+                  €<?php echo $price;?>
                 </h2>
                 <h4 class="mt-0">
-                  <small>Ex Tax: $80.00 </small>
+                  <small>Ex BTW: €<?php $exbtw = $price * 0.21;
+                  $newprice = $price - $exbtw; echo $newprice;?> </small>
                 </h4>
               </div>
 
-              <div class="mt-4">
-                <div class="btn btn-primary btn-lg btn-flat">
-                  <i class="fas fa-cart-plus fa-lg mr-2"></i>
-                  Add to Cart
-                </div>
-
-                <div class="btn btn-default btn-lg btn-flat">
-                  <i class="fas fa-heart fa-lg mr-2"></i>
-                  Add to Wishlist
+              <div class="col-lg-6">
+                <div class="card">
+                  <div class="card-body table-responsive p-0">
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <?php
+                            $getlocation = mysqli_query($conn, $locations);
+                            if (! $getlocation) {
+                              die ('Could not fetch data: '. mysqli_error($conn));
+                            }
+                    
+                            while ($loc = mysqli_fetch_assoc($getlocation)) {
+                            ?><th><?php echo htmlspecialchars($loc['locationname']);?></th>
+                          <?php }?>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="align-middle">
+                        <?php $getlocations = mysqli_query($conn, $countlocations);
+                          if (! $getlocations) {
+                            die ('could not fetch data: '.mysqli_error($conn));
+                          }
+                          while ($data = mysqli_fetch_assoc($getlocations)) {
+                            $amountlocs = htmlspecialchars($data['amountlocations']);
+                          }
+                          for ($l = 1; $l <= $amountlocs; $l++) {
+                            $currentvalue = "SELECT * FROM amount WHERE itemID = '$id' AND locationID = '$l'";
+                            $getvalue = mysqli_query($conn, $currentvalue);
+                            if (! $getvalue) {die ('could not fetch data: '.mysqli_error($conn));}
+                            while ($value = mysqli_fetch_assoc($getvalue)) {
+                              $defvalue = htmlspecialchars($value['amount']);
+                              $amountid = htmlspecialchars($value['amountID']);
+                            }
+                        ?>
+                        <td class="text-center"><?php echo $defvalue;?> / <?php echo $minamount;?>  <button type="button" class="btn btn-success open-addamount" data-target="#open-addamount" data-toggle="modal" data-id="<?php echo $amountid;?>" data-addvalue="<?php echo $defvalue;?>">Add</button>
+                        <button class="btn btn-danger open-removeamount" data-target="#open-removeamount" data-toggle="modal" data-id2="<?php echo $amountid;?>" data-removevalue="<?php echo $defvalue;?>">Subtract</button></td>
+                        <?php };
+                        ?>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
 
@@ -214,14 +286,28 @@
             <nav class="w-100">
               <div class="nav nav-tabs" id="product-tab" role="tablist">
                 <a class="nav-item nav-link active" id="product-desc-tab" data-toggle="tab" href="#product-desc" role="tab" aria-controls="product-desc" aria-selected="true">Description</a>
-                <a class="nav-item nav-link" id="product-comments-tab" data-toggle="tab" href="#product-comments" role="tab" aria-controls="product-comments" aria-selected="false">Comments</a>
-                <a class="nav-item nav-link" id="product-rating-tab" data-toggle="tab" href="#product-rating" role="tab" aria-controls="product-rating" aria-selected="false">Rating</a>
+                <a class="nav-item nav-link" id="product-info-tab" data-toggle="tab" href="#product-info" role="tab" aria-controls="product-info" aria-selected="false">Supplier Info</a>
               </div>
             </nav>
             <div class="tab-content p-3" id="nav-tabContent">
-              <div class="tab-pane fade show active" id="product-desc" role="tabpanel" aria-labelledby="product-desc-tab"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi vitae condimentum erat. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed posuere, purus at efficitur hendrerit, augue elit lacinia arcu, a eleifend sem elit et nunc. Sed rutrum vestibulum est, sit amet cursus dolor fermentum vel. Suspendisse mi nibh, congue et ante et, commodo mattis lacus. Duis varius finibus purus sed venenatis. Vivamus varius metus quam, id dapibus velit mattis eu. Praesent et semper risus. Vestibulum erat erat, condimentum at elit at, bibendum placerat orci. Nullam gravida velit mauris, in pellentesque urna pellentesque viverra. Nullam non pellentesque justo, et ultricies neque. Praesent vel metus rutrum, tempus erat a, rutrum ante. Quisque interdum efficitur nunc vitae consectetur. Suspendisse venenatis, tortor non convallis interdum, urna mi molestie eros, vel tempor justo lacus ac justo. Fusce id enim a erat fringilla sollicitudin ultrices vel metus. </div>
-              <div class="tab-pane fade" id="product-comments" role="tabpanel" aria-labelledby="product-comments-tab"> Vivamus rhoncus nisl sed venenatis luctus. Sed condimentum risus ut tortor feugiat laoreet. Suspendisse potenti. Donec et finibus sem, ut commodo lectus. Cras eget neque dignissim, placerat orci interdum, venenatis odio. Nulla turpis elit, consequat eu eros ac, consectetur fringilla urna. Duis gravida ex pulvinar mauris ornare, eget porttitor enim vulputate. Mauris hendrerit, massa nec aliquam cursus, ex elit euismod lorem, vehicula rhoncus nisl dui sit amet eros. Nulla turpis lorem, dignissim a sapien eget, ultrices venenatis dolor. Curabitur vel turpis at magna elementum hendrerit vel id dui. Curabitur a ex ullamcorper, ornare velit vel, tincidunt ipsum. </div>
-              <div class="tab-pane fade" id="product-rating" role="tabpanel" aria-labelledby="product-rating-tab"> Cras ut ipsum ornare, aliquam ipsum non, posuere elit. In hac habitasse platea dictumst. Aenean elementum leo augue, id fermentum risus efficitur vel. Nulla iaculis malesuada scelerisque. Praesent vel ipsum felis. Ut molestie, purus aliquam placerat sollicitudin, mi ligula euismod neque, non bibendum nibh neque et erat. Etiam dignissim aliquam ligula, aliquet feugiat nibh rhoncus ut. Aliquam efficitur lacinia lacinia. Morbi ac molestie lectus, vitae hendrerit nisl. Nullam metus odio, malesuada in vehicula at, consectetur nec justo. Quisque suscipit odio velit, at accumsan urna vestibulum a. Proin dictum, urna ut varius consectetur, sapien justo porta lectus, at mollis nisi orci et nulla. Donec pellentesque tortor vel nisl commodo ullamcorper. Donec varius massa at semper posuere. Integer finibus orci vitae vehicula placerat. </div>
+              <div class="tab-pane fade show active" id="product-desc" role="tabpanel" aria-labelledby="product-desc-tab"></div>
+              <div class="tab-pane fade" id="product-info" role="tabpanel" aria-labelledby="product-info-tab"> 
+              <div class="card-body">
+                <strong><i class="fas fa-book mr-1"></i> <a href="<?php echo $brandurl;?>">Supplier</a> / Manufacturer Info</strong>
+
+                <p class="text-muted">
+                  <?php echo $brandcontactname;?> / <?php echo $brandname;?>
+                </p>
+
+                <hr>
+
+                <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+
+                <p class="text-muted"><?php echo $brandstreet;?> <?php echo $brandnumber;?> / <?php echo $brandaddition;?>, <?php echo $brandzipcode;?> <?php echo $brandcity;?></p>
+                <p class="text-muted"><?php echo $brandstate;?>, <?php echo $brandcountry;?></p>
+              </div>
+              <!-- /.card-body -->
+              </div>
             </div>
           </div>
         </div>
@@ -231,6 +317,61 @@
       <!-- /.card -->
     </div>
     <!-- /.content -->
+    <div class="modal fade" id="open-addamount">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Add Amount</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="./index.php" method="post">
+                <input type="hidden" id="amountid" name="amountid" value="">
+                <input type="hidden" id="currentvalue" name="currentvalue" value="">
+                <label for="amounttoadd">Amount to Add</label>
+                <input type="text" class="form-control" id="amounttoadd" name="amounttoadd" placeholder="Insert amount to be added"></input>
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" name="add_value" class="btn btn-primary">Add Amount</button>
+                </div>
+              </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      
+      <div class="modal fade" id="open-removeamount">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Remove Amount</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="./index.php" method="post">
+                <input type="hidden" id="amountid2" name="amountid2" value="">
+                <input type="hidden" id="currentvalue2" name="currentvalue2" value="">
+                <label for="amounttoremove">Amount to Remove</label>
+                <input type="text" class="form-control" id="amounttoremove" name="amounttoremove" placeholder="Insert amount to be Removed"></input>
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" name="remove_value" class="btn btn-primary">Remove Amount</button>
+                </div>
+              </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
   </div>
   <!-- /.content-wrapper -->
 
@@ -243,6 +384,22 @@
 <!-- ./wrapper -->
 
 <!-- REQUIRED SCRIPTS -->
+
+<script>
+  $(document).on("click", ".open-addamount", function () {
+    var oldamount = $(this).data('id');
+    var currentValue = $(this).data('addvalue');
+    $(".modal-body #amountid").val( oldamount );
+    $(".modal-body #currentvalue").val( currentValue );
+  });
+
+  $(document).on("click", ".open-removeamount", function () {
+    var oldamount2 = $(this).data('id2');
+    var currentValue2 = $(this).data('removevalue');
+    $(".modal-body #amountid2").val( oldamount2 );
+    $(".modal-body #currentvalue2").val( currentValue2 );
+  });
+</script>
 
 <!-- jQuery -->
 <script src="../admin/plugins/jquery/jquery.min.js"></script>

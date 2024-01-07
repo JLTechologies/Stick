@@ -261,7 +261,7 @@
                         ?>
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['measureID']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['measurename']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['shortcode']);?></td>
                           <td>
                             <form name="measureedit" action="./edit.php" method="post">

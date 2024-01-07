@@ -45,7 +45,7 @@
     die('Could not load sitename: '.mysqli_error($conn));
   }
   while($row = mysqli_fetch_assoc($name)) {?>
-  <title>Admin | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
+  <title>User | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
   <?php }
   ?>
 
@@ -237,14 +237,14 @@
       <div class="tab-pane" id="password">
         <form class="form-horizontal">
           <div class="form-group row">
-            <label for="password" class="col-sm-2 col-form-label">Name</label>
+            <label for="password" class="col-sm-2 col-form-label">Password</label>
             <div class="col-sm-10">
               <input type="hidden" name="userid" value="<?php echo $userid;?>">
               <input type="password" class="form-control" id="password" name="password" placeholder="New Password">
             </div>
           </div>
           <div class="form-group row">
-            <label for="verify_password" class="col-sm-2 col-form-label">Email</label>
+            <label for="verify_password" class="col-sm-2 col-form-label">Verify Password</label>
             <div class="col-sm-10">
               <input type="password" class="form-control" id="verify_password" name="verify_password" placeholder="Verify Password">
             </div>

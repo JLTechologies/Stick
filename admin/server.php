@@ -351,14 +351,14 @@ if (isset($_POST['add_group'])) {
     $contactstate = mysqli_real_escape_string($conn,$_POST['state']);
     $contactcountry = mysqli_real_escape_string($conn,$_POST['country']);
     if (empty($contactaddition)) {
-      $contactaddquery = "INSERT INTO brandcontact(reference, name, phone, street, number, zipcode, city, state, countryID) 
+      $contactaddquery = "INSERT INTO brandcontact(extreference, brandcname, phone, street, number, zipcode, city, state, countryID) 
             VALUES ('$contactreference', '$contactname', '$contactphone', '$contactstreet', '$contactnumber', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
       mysqli_query($conn, $contactaddquery);
       $_SESSION['success'] = "Contact has been created";
       header('location: ./index.php');
     }  
     else {
-      $contactaddquery2 = "INSERT INTO brandcontact(reference, name, phone, street, number, addition, zipcode, city, state, countryID) 
+      $contactaddquery2 = "INSERT INTO brandcontact(extreference, brandcname, phone, street, number, addition, zipcode, city, state, countryID) 
             VALUES ('$contactreference', '$contactname', '$contactphone', '$contactstreet', '$contactnumber', '$contactaddition', '$contactzipcode', '$contactcity', '$contactstate', '$contactcountry')";
       mysqli_query($conn, $contactaddquery2);
       $_SESSION['success'] = "Contact has been created";
@@ -380,13 +380,13 @@ if (isset($_POST['add_group'])) {
     $contactstate = mysqli_real_escape_string($conn,$_POST['contact_state']);
     $contactcountry = mysqli_real_escape_string($conn,$_POST['contact_country']);
     if (empty($contactaddition)) {
-      $contactupdatequery = "UPDATE brandcontact SET reference = '$contactname', name = '$contactlastname', phone = '$contactphone', street = '$contactstreet', number = '$contactnumber', zipcode = '$contactzipcode', city = '$contactcity', state = '$contactstate', countryID = '$contactcountry' WHERE brandcontactID = '$contactid'";
+      $contactupdatequery = "UPDATE brandcontact SET reference = '$contactname', brandcname = '$contactlastname', phone = '$contactphone', street = '$contactstreet', number = '$contactnumber', zipcode = '$contactzipcode', city = '$contactcity', state = '$contactstate', countryID = '$contactcountry' WHERE brandcontactID = '$contactid'";
       mysqli_query($conn, $contactupdatequery);
       $_SESSION['success'] = "Contact has been updated";
       header('location: ./index.php');
     }
     else {
-      $contactupdatequery2 = "UPDATE brandcontact SET reference = '$contactname', name = '$contactlastname', phone = '$contactphone', street = '$contactstreet', number = '$contactnumber', addition = '$contactaddition', zipcode = '$contactzipcode', city = '$contactcity', state = '$contactstate', countryID = '$contactcountry' WHERE brandcontactID = '$contactid'";
+      $contactupdatequery2 = "UPDATE brandcontact SET reference = '$contactname', brandcname = '$contactlastname', phone = '$contactphone', street = '$contactstreet', number = '$contactnumber', addition = '$contactaddition', zipcode = '$contactzipcode', city = '$contactcity', state = '$contactstate', countryID = '$contactcountry' WHERE brandcontactID = '$contactid'";
       mysqli_query($conn, $contactupdatequery2);
       $_SESSION['success'] = "Contact has been updated";
       header('location: ./index.php');
@@ -412,7 +412,7 @@ if (isset($_POST['add_group'])) {
       array_push($errors, "Shortcode is required");
     }
     if (count($errors) == 0) {
-      $measureadd = "INSERT INTO measure (name, shortcode) VALUES ('$measurename', '$measureshortcode')";
+      $measureadd = "INSERT INTO measure (measurename, shortcode) VALUES ('$measurename', '$measureshortcode')";
       mysqli_query($conn, $measureadd);
       $_SESSION['success'] = "New measurement has been created";
       header('location: ./index.php');

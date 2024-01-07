@@ -9,8 +9,19 @@
   include('./authentication.php');
   include('./server.php');
 
+  if (!isset($_SESSION['email'])) {
+    $_SESSION['msg'] = "You must log in first";
+    header('location: ../login.php');
+  }
+
+  if (isset($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+  }
   if (isset($_GET['logout'])) {
     session_destroy();
+    unset($_SESSION['email']);
+    unset($_SESSION['success']);
+    header("location: ../login.php");
   }
 
   include('./queries.php');
@@ -20,7 +31,7 @@
     die('Could not load sitename: '.mysqli_error($conn));
   }
   while($row = mysqli_fetch_assoc($name)) {?>
-  <title>Admin | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
+  <title>User | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
   <?php }
   ?>
 
@@ -103,7 +114,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="./" class="nav-link">Complete List</a>
+              <a href="./items" class="nav-link">Complete List</a>
             </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
@@ -115,7 +126,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              <a href="./items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
               {?>
               hidden
               <?php };

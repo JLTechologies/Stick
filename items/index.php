@@ -5,9 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
-  include('../../config.php');
+  include('../config.php');
   include('../queries.php');
-  include('../../authentication.php');
+  include('../authentication.php');
+
+  if (!isset($_SESSION['email'])) {
+    $_SESSION['msg'] = "You must log in first";
+    header('location: ../login.php');
+  }
+
+  if (isset($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+  }
+  if (isset($_GET['logout'])) {
+    session_destroy();
+    unset($_SESSION['email']);
+    unset($_SESSION['success']);
+    header("location: ../login.php");
+  }
+  
   include('../server.php');
 
   $name = mysqli_query($conn, $sitename);
@@ -15,7 +31,7 @@
     die('Could not load sitename: '.mysqli_error($conn));
   }
   while($row = mysqli_fetch_assoc($name)) {?>
-  <title>Admin | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
+  <title>User | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
   <?php }
   ?>
 
@@ -78,55 +94,15 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations/" class="nav-link">
-              <i class="nav-icon fas fa-users-cog"></i>
-              <p>
-                Locations
-              </p>
-            </a>
-          </li>
-		  <li class="nav-item">
-            <a href="../locations/cowcodes.php" class="nav-link">
+            <a href="../cowcodes.php" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Cow-Codes
               </p>
             </a>
           </li>
-          <li class="nav-item">
-			<a href="../categories/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Categories
-				</p>
-			</a>
-			</li>
-      <li class="nav-item">
-			<a href="../brands/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Brands
-				</p>
-			</a>
-			</li>
-      <li class="nav-item">
-			<a href="../brands/contact/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Contacts
-				</p>
-			</a>
-			</li>
-      <li class="nav-item">
-			<a href="../measurements/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Measurements
-				</p>
-			</a>
-			</li>
-      <li class="nav-item menu-open active">
-        <a href="./" class="nav-link">
+		  <li class="nav-item menu-open active">
+        <a href="#" class="nav-link">
           <i class="nav-icon fas fa-tree"></i>
             <p>
               Items
@@ -134,6 +110,9 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="./" class="nav-link">Complete List</a>
+            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -144,36 +123,16 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              {?>
+              hidden
+              <?php };
+              ?>><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
         </ul>
       </li>
-		  <li class="nav-item">
-			<a href="../users/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Users
-				</p>
-			</a>
-			</li>
-      <li class="nav-item">
-			<a href="../users/groups/" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Groups
-				</p>
-			</a>
-			</li>
-			<li class="nav-item">
-			<a href="../settings.php" class="nav-link">
-				<i class="nav-icon fas fa-th"></i>
-				<p>
-					Settings
-				</p>
-			</a>
-			</li>
       <?php if (isset($_SESSION['email'])): ?>
       <li class="nav-item">
 			<a href="./index.php?logout='1'" class="nav-link">
@@ -245,8 +204,6 @@
                     while ($loc = mysqli_fetch_assoc($getlocation)) {
                       ?><th><?php echo htmlspecialchars($loc['locationname']);?></th>
                     <?php }?>
-                    <th>Edit</th>
-                    <th>Delete</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -257,30 +214,40 @@
                      die('Could not fetch data: '.mysqli_error($conn));
                     }
             
-                     while ($row = mysqli_fetch_assoc($getitemlist)) { ?>
+                     while ($row = mysqli_fetch_assoc($getitemlist)) {
+                      $itemid = htmlspecialchars($row['itemID']);
+                      $minamount = htmlspecialchars($row['min_amount']); ?>
                     <tr class="align-middle">
                       <td class="text-center"><?php echo htmlspecialchars($row['itemID']);?></td>
-                      <td class="text-center"><?php echo htmlspecialchars($row['items.name']);?></td>
-                      <td class="text-center"><?php echo htmlspecialchars($row['brands.name']);?></td>
+                      <td class="text-center"><?php echo htmlspecialchars($row['itemname']);?></td>
+                      <td class="text-center"><?php echo htmlspecialchars($row['brandname']);?></td>
                       <td>
-                        <form name="itemdetails" action="./details.php" method="post">
-                          <input type="hidden" name="itemdetails" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
-                          <input type="submit" value="edit brand"/>
+                        <form name="itemdetails" action="./details.php?id=<?php echo $itemid;?>" method="post">
+                          <input type="hidden" name="itemdetails" value="<?php echo $itemid;?>"/>
+                          <button type="submit" name="itemdetails" class="btn btn-primary btn-block">Item Details</button>
                         </form>
                       </td>
-                      <td></td>
-                      <td>
-                        <form name="itemedit" action="./edit.php" method="post">
-                          <input type="hidden" name="itemedit" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
-                          <input type="submit" value="edit brand"/>
-                        </form>
-                      </td>
-                      <td>
-                        <form action="./index.php" method="post">
-                          <input type="hidden" name="itemremove" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
-                          <button type="submit" name="itemremove" class="btn btn-danger btn-block">Remove Item</button>
-                        </form>
-                      </td>
+                      <?php $getlocations = mysqli_query($conn, $countlocations);
+                      if (! $getlocations) {
+                        die ('could not fetch data: '.mysqli_error($conn));
+                      }
+                      while ($data = mysqli_fetch_assoc($getlocations)) {
+                        $amountlocs = htmlspecialchars($data['amountlocations']);
+                      }
+                      for ($l = 1; $l <= $amountlocs; $l++) {
+                        $currentvalue = "SELECT * FROM amount WHERE itemID = '$itemid' AND locationID = '$l'";
+                        $getvalue = mysqli_query($conn, $currentvalue);
+                        if (! $getvalue) {die ('could not fetch data: '.mysqli_error($conn));}
+                        while ($value = mysqli_fetch_assoc($getvalue)) {
+                          $defvalue = htmlspecialchars($value['amount']);
+                          $amountid = htmlspecialchars($value['amountID']);
+                        }
+                        ?>
+                        <td class="text-center"><?php echo $defvalue;?> / <?php echo $minamount;?>  <button type="button" class="btn btn-success open-addamount" data-target="#open-addamount" data-toggle="modal" data-id="<?php echo $amountid;?>" data-addvalue="<?php echo $defvalue;?>">Add</button>
+                        <button class="btn btn-danger open-removeamount" data-target="#open-removeamount" data-toggle="modal" data-id2="<?php echo $amountid;?>" data-removevalue="<?php echo $defvalue;?>">Subtract</button></td>
+                        
+                      <?php }
+                      ?>
                     </tr>
                   <?php };?>
                 </tbody>
@@ -288,6 +255,61 @@
             </div>
           </div>
         </div>
+        <div class="modal fade" id="open-addamount">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Add Amount</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="./index.php" method="post">
+                <input type="hidden" id="amountid" name="amountid" value="">
+                <input type="hidden" id="currentvalue" name="currentvalue" value="">
+                <label for="amounttoadd">Amount to Add</label>
+                <input type="text" class="form-control" id="amounttoadd" name="amounttoadd" placeholder="Insert amount to be added"></input>
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" name="add_value" class="btn btn-primary">Add Amount</button>
+                </div>
+              </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      
+      <div class="modal fade" id="open-removeamount">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Remove Amount</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="./index.php" method="post">
+                <input type="hidden" id="amountid2" name="amountid2" value="">
+                <input type="hidden" id="currentvalue2" name="currentvalue2" value="">
+                <label for="amounttoremove">Amount to Remove</label>
+                <input type="text" class="form-control" id="amounttoremove" name="amounttoremove" placeholder="Insert amount to be Removed"></input>
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" name="remove_value" class="btn btn-primary">Remove Amount</button>
+                </div>
+              </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
@@ -339,8 +361,23 @@
     });
   });
 </script>
+<script>
+  $(document).on("click", ".open-addamount", function () {
+    var oldamount = $(this).data('id');
+    var currentValue = $(this).data('addvalue');
+    $(".modal-body #amountid").val( oldamount );
+    $(".modal-body #currentvalue").val( currentValue );
+  });
+
+  $(document).on("click", ".open-removeamount", function () {
+    var oldamount2 = $(this).data('id2');
+    var currentValue2 = $(this).data('removevalue');
+    $(".modal-body #amountid2").val( oldamount2 );
+    $(".modal-body #currentvalue2").val( currentValue2 );
+  });
+</script>
 
 <!-- AdminLTE App -->
-<script src="../js/adminlte.min.js"></script>
+<script src="../admin/js/adminlte.min.js"></script>
 </body>
 </html>

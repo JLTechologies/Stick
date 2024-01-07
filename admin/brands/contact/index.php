@@ -270,8 +270,8 @@
                         ?>
                         <tr class="align-middle">
                           <td class="text-center"><?php echo htmlspecialchars($row['brandcontactID']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['reference']);?></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['extreference']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($row['brandcname']);?></td>
                           <td class="text-center"><?php echo htmlspecialchars($row['phone']);?></td>
                           <td>
                             <form name="edit" action="./edit.php?id=<?php echo htmlspecialchars($row['brandcontactID']);?>" method="post">

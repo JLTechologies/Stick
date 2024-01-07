@@ -239,8 +239,8 @@
         die('Could not load requested contact info: '.mysqli_error($conn));
     }
     while ($row1 = mysqli_fetch_assoc($geteditcontact)) {
-        $contactname = htmlspecialchars($row1['reference']);
-        $contactlastname = htmlspecialchars($row1['name']);
+        $contactname = htmlspecialchars($row1['extreference']);
+        $contactlastname = htmlspecialchars($row1['brandcname']);
         $contactphone = htmlspecialchars($row1['phone']);
         $contactstreet = htmlspecialchars($row1['street']);
         $contactnumber = htmlspecialchars($row1['number']);;
