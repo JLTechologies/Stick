@@ -28,38 +28,30 @@ CREATE TABLE IF NOT EXISTS `amount` (
   PRIMARY KEY (`amountID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.amount: ~0 rows (ongeveer)
-
 -- Structuur van  tabel stock.brandcontact wordt geschreven
 CREATE TABLE IF NOT EXISTS `brandcontact` (
   `brandcontactID` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `last_name` varchar(255) NOT NULL,
-  `phone` int(10) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `street` varchar(255) NOT NULL,
-  `number` int(10) NOT NULL,
+  `extreference` varchar(50) DEFAULT NULL,
+  `brandcname` varchar(255) DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `street` varchar(255) DEFAULT NULL,
+  `number` int(10) DEFAULT NULL,
   `addition` varchar(255) DEFAULT NULL,
-  `zipcode` int(10) NOT NULL,
-  `city` varchar(255) NOT NULL,
-  `state` varchar(255) NOT NULL,
-  `countryID` int(10) NOT NULL,
+  `zipcode` varchar(50) DEFAULT '',
+  `city` varchar(255) DEFAULT NULL,
+  `state` varchar(255) DEFAULT NULL,
+  `countryID` int(10) DEFAULT NULL,
   PRIMARY KEY (`brandcontactID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumpen data van tabel stock.brandcontact: ~0 rows (ongeveer)
 
 -- Structuur van  tabel stock.brands wordt geschreven
 CREATE TABLE IF NOT EXISTS `brands` (
   `brandID` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `image` longtext DEFAULT NULL,
-  `url` varchar(255) DEFAULT NULL,
+  `brandname` varchar(255) NOT NULL,
+  `url` longtext DEFAULT NULL,
   `brandcontactID` int(10) NOT NULL,
   PRIMARY KEY (`brandID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumpen data van tabel stock.brands: ~0 rows (ongeveer)
 
 -- Structuur van  tabel stock.childcategories wordt geschreven
 CREATE TABLE IF NOT EXISTS `childcategories` (
@@ -73,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `childcategories` (
 CREATE TABLE IF NOT EXISTS `countries` (
   `countryid` int(11) NOT NULL AUTO_INCREMENT,
   `iso` char(2) NOT NULL,
-  `name` varchar(80) NOT NULL,
+  `countryname` varchar(80) NOT NULL,
   `nicename` varchar(80) NOT NULL,
   `iso3` char(3) DEFAULT NULL,
   `numcode` smallint(6) DEFAULT NULL,
@@ -83,7 +75,7 @@ CREATE TABLE IF NOT EXISTS `countries` (
 
 -- Dumpen data van tabel stock.countries: 239 rows
 /*!40000 ALTER TABLE `countries` DISABLE KEYS */;
-REPLACE INTO `countries` (`countryid`, `iso`, `name`, `nicename`, `iso3`, `numcode`, `phonecode`) VALUES
+REPLACE INTO `countries` (`countryid`, `iso`, `countryname`, `nicename`, `iso3`, `numcode`, `phonecode`) VALUES
 	(1, 'AF', 'AFGHANISTAN', 'Afghanistan', 'AFG', 4, 93),
 	(2, 'AL', 'ALBANIA', 'Albania', 'ALB', 8, 355),
 	(3, 'DZ', 'ALGERIA', 'Algeria', 'DZA', 12, 213),
@@ -333,26 +325,19 @@ CREATE TABLE IF NOT EXISTS `groups` (
   PRIMARY KEY (`groupID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.groups: ~0 rows (ongeveer)
-
 -- Structuur van  tabel stock.items wordt geschreven
 CREATE TABLE IF NOT EXISTS `items` (
   `itemID` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
+  `itemname` varchar(255) NOT NULL,
   `price` varchar(50) NOT NULL DEFAULT '0',
   `brandID` int(10) NOT NULL,
-  `image` longtext DEFAULT NULL,
-  `min_amount` int(10) NOT NULL DEFAULT 5,
+  `min_amount` varchar(50) NOT NULL DEFAULT '5',
   `childcategoryID` int(10) NOT NULL,
-  `created_by` int(10) NOT NULL,
-  `created_on` datetime NOT NULL,
   `measureID` int(10) NOT NULL,
-  `updated_on` datetime DEFAULT NULL,
-  `reference` int(20) NOT NULL,
+  `reference` varchar(50) NOT NULL DEFAULT '',
+  `sortingID` int(10) NOT NULL DEFAULT 1,
   PRIMARY KEY (`itemID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumpen data van tabel stock.items: ~0 rows (ongeveer)
 
 -- Structuur van  tabel stock.locations wordt geschreven
 CREATE TABLE IF NOT EXISTS `locations` (
@@ -371,12 +356,10 @@ CREATE TABLE IF NOT EXISTS `locations` (
 -- Structuur van  tabel stock.measure wordt geschreven
 CREATE TABLE IF NOT EXISTS `measure` (
   `measureID` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
+  `measurename` varchar(255) DEFAULT NULL,
   `shortcode` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`measureID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumpen data van tabel stock.measure: ~0 rows (ongeveer)
 
 -- Structuur van  tabel stock.permissions wordt geschreven
 CREATE TABLE IF NOT EXISTS `permissions` (
@@ -387,8 +370,6 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   PRIMARY KEY (`permissionsID`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.permissions: ~0 rows (ongeveer)
-
 -- Structuur van  tabel stock.permissionslist wordt geschreven
 CREATE TABLE IF NOT EXISTS `permissionslist` (
   `permissionID` int(10) NOT NULL AUTO_INCREMENT,
@@ -397,7 +378,7 @@ CREATE TABLE IF NOT EXISTS `permissionslist` (
   PRIMARY KEY (`permissionID`)
 ) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.permissionslist: ~40 rows (ongeveer)
+-- Dumpen data van tabel stock.permissionslist: ~37 rows (ongeveer)
 REPLACE INTO `permissionslist` (`permissionID`, `permissionname`, `description`) VALUES
 	(1, 'admin_access', NULL),
 	(2, 'can_view_prices', NULL),
@@ -461,42 +442,57 @@ CREATE TABLE IF NOT EXISTS `settings` (
   PRIMARY KEY (`settingID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.settings: ~1 rows (ongeveer)
+-- Dumpen data van tabel stock.settings: ~0 rows (ongeveer)
 REPLACE INTO `settings` (`settingID`, `sitename`, `siteactive`, `favicon`, `emailhost`, `emailuser`, `emailpassword`, `emailport`) VALUES
 	(1, 'Power-Installation', 'true', NULL, 'localhost', 'admin@localhost.be', 'Test123', 587);
 
 -- Structuur van  tabel stock.sites wordt geschreven
 CREATE TABLE IF NOT EXISTS `sites` (
   `siteID` int(10) NOT NULL AUTO_INCREMENT,
-  `cowcode` varchar(50) NOT NULL DEFAULT '',
+  `cowcode` char(50) NOT NULL DEFAULT '',
   `street` varchar(255) NOT NULL DEFAULT '',
-  `number` int(10) NOT NULL,
-  `addition` varchar(50) DEFAULT NULL,
-  `zipcode` varchar(10) NOT NULL DEFAULT '',
+  `number` varchar(50) DEFAULT '',
+  `addition` char(50) DEFAULT NULL,
+  `zipcode` varchar(255) NOT NULL DEFAULT '',
   `city` varchar(255) NOT NULL DEFAULT '',
-  `countryID` int(10) NOT NULL,
+  `state` varchar(255) NOT NULL,
+  `countryID` int(10) NOT NULL DEFAULT 21,
   PRIMARY KEY (`siteID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Dumpen data van tabel stock.sites: ~0 rows (ongeveer)
+-- Structuur van  tabel stock.sorting wordt geschreven
+CREATE TABLE IF NOT EXISTS `sorting` (
+  `sortingID` int(10) NOT NULL AUTO_INCREMENT,
+  `peramount` int(10) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`sortingID`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Dumpen data van tabel stock.sorting: ~9 rows (ongeveer)
+REPLACE INTO `sorting` (`sortingID`, `peramount`) VALUES
+	(1, 1),
+	(2, 5),
+	(3, 10),
+	(4, 20),
+	(5, 25),
+	(6, 40),
+	(7, 50),
+	(8, 75),
+	(9, 100);
 
 -- Structuur van  tabel stock.users wordt geschreven
 CREATE TABLE IF NOT EXISTS `users` (
   `userid` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `last_name` varchar(255) DEFAULT NULL,
-  `groupID` int(10) DEFAULT NULL,
-  `email` longtext DEFAULT NULL,
-  `phone` int(10) DEFAULT NULL,
-  `active` char(255) DEFAULT NULL,
-  `created_on` date DEFAULT NULL,
-  `last_seen` date DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `last_name` varchar(255) NOT NULL,
+  `groupID` int(10) NOT NULL,
+  `email` longtext NOT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `active` char(255) NOT NULL DEFAULT 'yes',
   `password` varchar(255) NOT NULL,
   `reset` char(255) NOT NULL DEFAULT 'false',
+  `team` varchar(50) NOT NULL DEFAULT '',
   PRIMARY KEY (`userid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Dumpen data van tabel stock.users: ~0 rows (ongeveer)
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
