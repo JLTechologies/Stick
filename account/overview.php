@@ -6,8 +6,8 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../config.php');
-  include('../server.php');
   include('../authentication.php');
+  include('../server.php');
 
   if (!isset($_SESSION['email'])) {
     $_SESSION['msg'] = "You must log in first";
@@ -26,20 +26,6 @@
 
   include('../queries.php');
 
-  $userinfo = "SELECT * FROM users INNER JOIN groups ON users.groupID = groups.groupID WHERE email = '$email'";
-  $getuserinfo = mysqli_query($conn, $userinfo);
-  if (! $getuserinfo) {
-    die('Could not data :'.mysqli_error($conn));
-  }
-  while($userdata = mysqli_fetch_assoc($getuserinfo)) {
-    $userid = htmlspecialchars($userdata['userid']);
-    $firstname = htmlspecialchars($userdata['name']);
-    $lastname = htmlspecialchars($userdata['last_name']);
-    $phone = htmlspecialchars($userdata['phone']);
-    $team = htmlspecialchars($userdata['team']);
-    $groupname = htmlspecialchars($userdata['groupname']);
-  }
-
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
     die('Could not load sitename: '.mysqli_error($conn));
@@ -53,7 +39,10 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="../admin/plugins/fontawesome-free/css/all.min.css">
-  <!-- Theme style -->
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="../admin/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
+  <!-- Toastr -->
+  <link rel="stylesheet" href="../admin/plugins/toastr/toastr.min.css">
   <link rel="stylesheet" href="../admin/css/adminlte.min.css">
 </head>
 <body class="hold-transition sidebar-mini">
@@ -95,13 +84,14 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
+
       <!-- Sidebar Menu -->
       <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="../" class="nav-link active">
+            <a href="../../" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -109,7 +99,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="./locations/cowcodes.php" class="nav-link">
+            <a href="../cowcodes.php" class="nav-link active">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Cow-Codes
@@ -126,7 +116,7 @@
         </a>
         <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="../" class="nav-link">Complete List</a>
+              <a href="../items" class="nav-link">Complete List</a>
             </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
@@ -138,7 +128,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
+              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
               {?>
               hidden
               <?php };
@@ -176,8 +166,8 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="../">Dashboard</a></li>
-              <li class="breadcrumb-item active">Profile</li>
+              <li class="breadcrumb-item"><a href="./">Dashboard</a></li>
+              <li class="breadcrumb-item active">Cow-Codes</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -188,89 +178,56 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+        <?php include ('./errors.php'); ?>
         <div class="row">
           <!-- notification message -->
-  	      <?php if (isset($_SESSION['success'])) : ?>
-            <div class="error success" >
-      	      <h3>
-                <?php 
-          	      echo $_SESSION['success'];
-                  unset($_SESSION['success']);
-                ?>
-              </h3>
-            </div>
-  	      <?php endif ?>
-            <div class="col-md-3">
-
-<!-- Profile Image -->
-<div class="card card-primary card-outline">
-  <div class="card-body box-profile">
-    <div class="text-center">
-      <img class="profile-user-img img-fluid img-circle"
-           src="../favicon.jpg"
-           alt="User profile picture">
-    </div>
-
-    <h3 class="profile-username text-center"><?php echo $lastname;?> <?php echo $firstname;?></h3>
-
-    <p class="text-muted text-center"><?php echo $team;?></p>
-  </div>
-  <!-- /.card-body -->
-</div>
-<!-- /.card -->
-
-</div>
-<!-- /.col -->
-<div class="col-md-9">
-<div class="card">
-  <div class="card-header p-2">
-    <ul class="nav nav-pills">
-      <li class="nav-item"><a class="nav-link active" href="#info" data-toggle="tab">Info</a></li>
-      <li class="nav-item"><a class="nav-link" href="#password" data-toggle="tab">Password</a></li>
-    </ul>
-  </div><!-- /.card-header -->
-  <div class="card-body">
-    <div class="tab-content">
-      <div class="active tab-pane" id="info">
-        <p><?php echo $lastname;?> <?php echo $firstname;?></p>
-        <p><?php echo $email;?></p>
-        <p>+<?php echo $phone;?></p>
-        <p><?php echo $groupname;?></p>
-        <p><?php echo $team;?></p>
+  	<?php if (isset($_SESSION['success'])) : ?>
+      <div class="error success" >
+      	<h3>
+          <?php 
+          	echo $_SESSION['success'];
+            unset($_SESSION["success"]);
+          ?>
+      	</h3>
       </div>
-      <!-- /.tab-pane -->
-      <div class="tab-pane" id="password">
-        <form class="form-horizontal">
-          <div class="form-group row">
-            <label for="password" class="col-sm-2 col-form-label">Password</label>
-            <div class="col-sm-10">
-              <input type="hidden" name="userid" value="<?php echo $userid;?>">
-              <input type="password" class="form-control" id="password" name="password" placeholder="New Password">
+  	<?php endif ?>
+     <div class="col-lg-12">
+            <div class="card">
+              <div class="card-body table-responsive p-0">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th class="text-center">Name</th>
+                      <th class="text-center">Last Name</th>
+                      <th class="text-center">Email</th>
+                      <th class="text-center">Phone</th>
+                      <th class="text-center">Team</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php  
+                    $userinfo = "SELECT * FROM users ORDER BY team";
+                    $getuserinfo = mysqli_query($conn, $userinfo);
+                    if (! $getuserinfo) {
+                        die('Could not data :'.mysqli_error($conn));
+                    }
+                      while($userdata = mysqli_fetch_assoc($getuserinfo)) {
+                        ?>
+                        <tr class="align-middle">
+                          <td class="text-center"><?php echo htmlspecialchars($userdata['name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($userdata['last_name']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($userdata['email']);?></td>
+                          <td class="text-center">+<?php echo htmlspecialchars($userdata['phone']);?></td>
+                          <td class="text-center"><?php echo htmlspecialchars($userdata['team']);?></td>
+                      </tr>                            
+                     <?php };
+                    ?>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-          <div class="form-group row">
-            <label for="verify_password" class="col-sm-2 col-form-label">Verify Password</label>
-            <div class="col-sm-10">
-              <input type="password" class="form-control" id="verify_password" name="verify_password" placeholder="Verify Password">
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="offset-sm-2 col-sm-10">
-              <button type="submit" name="new_password" class="btn btn-danger">Submit</button>
-            </div>
-          </div>
-        </form>
-      </div>
-      <!-- /.tab-pane -->
-    </div>
-    <!-- /.tab-content -->
-  </div><!-- /.card-body -->
-</div>
-<!-- /.card -->
-</div>
-<!-- /.col -->
-</div>
-        <!-- /.row -->
+        </div>
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
@@ -280,7 +237,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('../admin/footer.php'); ?>
+	<?php include('./admin/footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->
@@ -291,6 +248,12 @@
 <script src="../admin/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap 4 -->
 <script src="../admin/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- SweetAlert2 -->
+<script src="../admin/plugins/sweetalert2/sweetalert2.min.js"></script>
+<!-- Toastr -->
+<script src="../admin/plugins/toastr/toastr.min.js"></script>
+<!-- Page specific script -->
+
 <!-- AdminLTE App -->
 <script src="../admin/js/adminlte.min.js"></script>
 </body>

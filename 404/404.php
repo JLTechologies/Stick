@@ -7,7 +7,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
     <?php
-        include ('../admin/required.php');
+        include ('../admin/config.php');
         session_start();
 		$_SESSION['message'] = '';
 		
@@ -18,7 +18,7 @@
 		die('Kon site naam niet inladen: '.mysqli_error($conn));
 	}
 	while($row = mysqli_fetch_assoc($name)) {?>
-		<title>404 | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
+		<title>400 | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
 	<?php }
 	?>
     <meta name="author" content="pkfrom" />
@@ -74,7 +74,7 @@
                 <div class="info">
                     <img src="./assets/img/404-light.gif" alt="404 error" />
                     <!-- end Rabbit -->
-                    <p>De pagina die u probeerde te bereiken is uitgeschakeld. Voor nieuwe bestellingen kan u rechtstreeks terecht bij de Toog.</p>
+                    <p>System is currently under maintenance. For more info visit the <a href="http://status.jl-tech.be">Status Page</p>
                     <a href="http://%domain%/" class="btn">Go Home</a>
                     <!--<a href="#" class="btn btn-brown">Contact Us</a>-->
                 </div>

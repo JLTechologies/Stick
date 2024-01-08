@@ -9,6 +9,7 @@
   $_SESSION['message'] = '';
 
   include('../queries.php');
+  include('../authentication.php');
   
   include('../server.php');
   $id = $_GET['id'];

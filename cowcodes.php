@@ -64,7 +64,7 @@
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->
       <li class="nav-item">
-        <a class="nav-link" href="../">
+        <a class="nav-link" href="./account">
           <i class="fas fa-th-large"></i>
         </a>
       </li>

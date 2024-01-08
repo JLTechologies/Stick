@@ -16,7 +16,13 @@
 	}
 	while($row = mysqli_fetch_assoc($name)) {?>
 		<title>Admin | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
-	<?php }
+	<?php 
+  $status = htmlspecialchars($row['siteactive']);
+}
+
+if ($status === 'false') {
+  header("location: ./404/404.php");
+}
 	?>
 
   <!-- Google Font: Source Sans Pro -->
@@ -72,10 +78,6 @@
           <!-- /.col -->
         </div>
       </form>
-
-      <p class="mb-1">
-        <a href="reset.php">I forgot my password</a>
-      </p>
     </div>
     <!-- /.card-body -->
   </div>
