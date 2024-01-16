@@ -73,7 +73,7 @@
       <!-- Navbar Search -->
       <li class="nav-item">
         <a class="nav-link" href="./">
-          <i class="fas fa-th-large"></i>
+          <i class="fas fa-user"></i>
         </a>
       </li>
       <li class="nav-item">
@@ -101,7 +101,7 @@
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
           <li class="nav-item">
-            <a href="../" class="nav-link active">
+            <a href="../" class="nav-link">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
@@ -176,7 +176,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="../">Dashboard</a></li>
+              <li class="breadcrumb-item">Dashboard</li>
               <li class="breadcrumb-item active">Profile</li>
             </ol>
           </div><!-- /.col -->
@@ -234,7 +234,7 @@
       <div class="active tab-pane" id="info">
         <p><?php echo $lastname;?> <?php echo $firstname;?></p>
         <p><?php echo $email;?></p>
-        <p>+<?php echo $phone;?></p>
+        <p>+32 <?php echo $phone;?></p>
         <p><?php echo $groupname;?></p>
         <p><?php echo $team;?></p>
       </div>

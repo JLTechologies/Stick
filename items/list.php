@@ -6,10 +6,10 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../config.php');
+  include('../authentication.php');
   $_SESSION['message'] = '';
 
   include('../queries.php');
-  include('../authentication.php');
   
   include('../server.php');
   $id = $_GET['id'];
@@ -361,8 +361,7 @@
 <script>
   $(function () {
     $("#main").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "responsive": true, "lengthChange": false, "autoWidth": false, "pageLength": 25,
     }).buttons().container().appendTo('#main_wrapper .col-md-6:eq(0)');
     $('#example2').DataTable({
       "paging": true,

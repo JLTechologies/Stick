@@ -16,6 +16,7 @@
 	}
 	while($row = mysqli_fetch_assoc($name)) {?>
 		<title>Admin | <?php $site = htmlspecialchars($row['sitename']); echo $site ;?></title>
+    
 	<?php 
   $status = htmlspecialchars($row['siteactive']);
 }
@@ -78,6 +79,10 @@ if ($status === 'false') {
           <!-- /.col -->
         </div>
       </form>
+
+      <!--<p class="mb-1">
+        <a href="reset.php">I forgot my password</a>
+      </p>-->
     </div>
     <!-- /.card-body -->
   </div>

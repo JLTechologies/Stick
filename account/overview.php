@@ -62,7 +62,7 @@
       <!-- Navbar Search -->
       <li class="nav-item">
         <a class="nav-link" href="./">
-          <i class="fas fa-th-large"></i>
+          <i class="fas fa-user"></i>
         </a>
       </li>
       <li class="nav-item">
@@ -99,7 +99,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../cowcodes.php" class="nav-link active">
+            <a href="../cowcodes.php" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Cow-Codes
@@ -167,7 +167,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="./">Dashboard</a></li>
-              <li class="breadcrumb-item active">Cow-Codes</li>
+              <li class="breadcrumb-item active">Users Overview</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -181,17 +181,17 @@
         <?php include ('./errors.php'); ?>
         <div class="row">
           <!-- notification message -->
-  	<?php if (isset($_SESSION['success'])) : ?>
-      <div class="error success" >
-      	<h3>
-          <?php 
-          	echo $_SESSION['success'];
-            unset($_SESSION["success"]);
-          ?>
-      	</h3>
-      </div>
-  	<?php endif ?>
-     <div class="col-lg-12">
+  	      <?php if (isset($_SESSION['success'])) : ?>
+          <div class="error success" >
+      	    <h3>
+              <?php 
+          	    echo $_SESSION['success'];
+                unset($_SESSION["success"]);
+              ?>
+      	    </h3>
+          </div>
+  	      <?php endif ?>
+          <div class="col-lg-12">
             <div class="card">
               <div class="card-body table-responsive p-0">
                 <table class="table table-bordered table-striped">
@@ -237,7 +237,7 @@
   <!-- Main Footer -->
   <footer class="main-footer">
     <!-- Default to the left -->
-	<?php include('./admin/footer.php'); ?>
+	<?php include('../admin/footer.php'); ?>
   </footer>
 </div>
 <!-- ./wrapper -->

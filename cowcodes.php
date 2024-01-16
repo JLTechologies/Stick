@@ -220,7 +220,8 @@
                               <input type="hidden" name="editcowcode" value="<?php echo htmlspecialchars($row['siteID']);?>"/>
                               <button type="submit" class="btn btn-warning btn-block" name="editcowcode">Edit Site</button>
                             </form>
-                          </td>       
+                          </td>
+                      </tr>  
                      <?php };
                     ?>
                   </tbody>
@@ -268,7 +269,7 @@
 <script>
   $(function () {
     $("#main").DataTable({
-      "responsive": true, "lengthChange": true, "autoWidth": false, "info": true, "ordering": true, "paging": true,
+      "responsive": true, "lengthChange": true, "autoWidth": false, "info": true, "ordering": true, "paging": true, "pageLength": 25,
       "buttons": [""]
     }).buttons().container().appendTo('#main_wrapper .col-md-6:eq(0)');
     $('#example2').DataTable({

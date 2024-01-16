@@ -216,7 +216,8 @@
             
                      while ($row = mysqli_fetch_assoc($getitemlist)) {
                       $itemid = htmlspecialchars($row['itemID']);
-                      $minamount = htmlspecialchars($row['min_amount']); ?>
+                      $minamount = htmlspecialchars($row['min_amount']);
+                      $measure = htmlspecialchars($row['shortcode']); ?>
                     <tr class="align-middle">
                       <td class="text-center"><?php echo htmlspecialchars($row['itemID']);?></td>
                       <td class="text-center"><?php echo htmlspecialchars($row['itemname']);?></td>
@@ -243,7 +244,7 @@
                           $amountid = htmlspecialchars($value['amountID']);
                         }
                         ?>
-                        <td class="text-center"><?php echo $defvalue;?> / <?php echo $minamount;?>  <button type="button" class="btn btn-success open-addamount" data-target="#open-addamount" data-toggle="modal" data-id="<?php echo $amountid;?>" data-addvalue="<?php echo $defvalue;?>">Add</button>
+                        <td class="text-center"><?php echo $defvalue;?> / <?php echo $minamount;?> <?php echo $measure;?>  <button type="button" class="btn btn-success open-addamount" data-target="#open-addamount" data-toggle="modal" data-id="<?php echo $amountid;?>" data-addvalue="<?php echo $defvalue;?>">Add</button>
                         <button class="btn btn-danger open-removeamount" data-target="#open-removeamount" data-toggle="modal" data-id2="<?php echo $amountid;?>" data-removevalue="<?php echo $defvalue;?>">Subtract</button></td>
                         
                       <?php }
@@ -347,8 +348,7 @@
 <script>
   $(function () {
     $("#main").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+      "responsive": true, "lengthChange": false, "autoWidth": false, "pageLength": 25,
     }).buttons().container().appendTo('#main_wrapper .col-md-6:eq(0)');
     $('#example2').DataTable({
       "paging": true,
