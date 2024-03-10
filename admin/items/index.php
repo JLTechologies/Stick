@@ -232,19 +232,28 @@
       	</h3>
       </div>
   	<?php endif ?>
-      <div class="container-fluid">
+    <div class="container-fluid">
         <div class="row">
           <div class="col-lg-12">
             <div class="card-body table-responsive p-0">
               <table class="table table-bordered table-stripe" id="main">
                 <thead>
                   <tr>
-                    <th>Index</th>
+                    <th>Reference</th>
                     <th>Name</th>
                     <th>Brand</th>
                     <th>Details</th>
                     <th>Edit</th>
                     <th>Delete</th>
+                    <?php
+                    $getlocation = mysqli_query($conn, $locations);
+                    if (! $getlocation) {
+                      die ('Could not fetch data: '. mysqli_error($conn));
+                    }
+                    
+                    while ($loc = mysqli_fetch_assoc($getlocation)) {
+                      ?><th><?php echo htmlspecialchars($loc['locationname']);?></th>
+                    <?php }?>
                   </tr>
                 </thead>
                 <tbody>
@@ -255,21 +264,24 @@
                      die('Could not fetch data: '.mysqli_error($conn));
                     }
             
-                     while ($row = mysqli_fetch_assoc($getitemlist)) { ?>
+                     while ($row = mysqli_fetch_assoc($getitemlist)) {
+                      $itemid = htmlspecialchars($row['itemID']);
+                      $minamount = htmlspecialchars($row['min_amount']);
+                      $measure = htmlspecialchars($row['shortcode']); ?>
                     <tr class="align-middle">
-                      <td class="text-center"><?php echo htmlspecialchars($row['itemID']);?></td>
+                      <td class="text-center"><?php echo htmlspecialchars($row['reference']);?></td>
                       <td class="text-center"><?php echo htmlspecialchars($row['itemname']);?></td>
                       <td class="text-center"><?php echo htmlspecialchars($row['brandname']);?></td>
                       <td>
-                        <form name="itemdetails" action="./details.php" method="post">
-                          <input type="hidden" name="itemdetails" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
-                          <input type="submit" value="edit brand"/>
+                        <form name="itemdetails" action="./details.php?id=<?php echo $itemid;?>" method="post">
+                          <input type="hidden" name="itemdetails" value="<?php echo $itemid;?>"/>
+                          <button type="submit" name="itemdetails" class="btn btn-primary btn-block">Item Details</button>
                         </form>
                       </td>
                       <td>
                         <form name="itemedit" action="./edit.php" method="post">
                           <input type="hidden" name="itemedit" value="<?php echo htmlspecialchars($row['itemID']);?>"/>
-                          <input type="submit" value="edit brand"/>
+                          <button type="submit" name="itemedit" class="btn btn-warning btn-block">Edit Item</button>
                         </form>
                       </td>
                       <td>
@@ -278,6 +290,27 @@
                           <button type="submit" name="itemremove" class="btn btn-danger btn-block">Remove Item</button>
                         </form>
                       </td>
+                      <?php $getlocations = mysqli_query($conn, $countlocations);
+                      if (! $getlocations) {
+                        die ('could not fetch data: '.mysqli_error($conn));
+                      }
+                      while ($data = mysqli_fetch_assoc($getlocations)) {
+                        $amountlocs = htmlspecialchars($data['amountlocations']);
+                      }
+                      for ($l = 1; $l <= $amountlocs; $l++) {
+                        $currentvalue = "SELECT * FROM amount WHERE itemID = '$itemid' AND locationID = '$l'";
+                        $getvalue = mysqli_query($conn, $currentvalue);
+                        if (! $getvalue) {die ('could not fetch data: '.mysqli_error($conn));}
+                        while ($value = mysqli_fetch_assoc($getvalue)) {
+                          $defvalue = htmlspecialchars($value['amount']);
+                          $amountid = htmlspecialchars($value['amountID']);
+                        }
+                        ?>
+                        <td class="text-center" <?php if ($defvalue <= $minamount) {?>style="color:red;"<?php }?>><?php echo $defvalue;?> / <?php echo $minamount;?> <?php echo $measure;?>  <button type="button" class="btn btn-success open-addamount" data-target="#open-addamount" data-toggle="modal" data-id="<?php echo $amountid;?>" data-addvalue="<?php echo $defvalue;?>">Add</button>
+                        <button class="btn btn-danger open-removeamount" data-target="#open-removeamount" data-toggle="modal" data-id2="<?php echo $amountid;?>" data-removevalue="<?php echo $defvalue;?>">Subtract</button></td>
+                        
+                      <?php }
+                      ?>
                     </tr>
                   <?php };?>
                 </tbody>
@@ -285,6 +318,61 @@
             </div>
           </div>
         </div>
+        <div class="modal fade" id="open-addamount">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Add Amount</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="./index.php" method="post">
+                <input type="hidden" id="amountid" name="amountid" value="">
+                <input type="hidden" id="currentvalue" name="currentvalue" value="">
+                <label for="amounttoadd">Amount to Add</label>
+                <input type="text" class="form-control" id="amounttoadd" name="amounttoadd" placeholder="Insert amount to be added"></input>
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" name="add_value" class="btn btn-primary">Add Amount</button>
+                </div>
+              </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+      
+      <div class="modal fade" id="open-removeamount">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Remove Amount</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form action="./index.php" method="post">
+                <input type="hidden" id="amountid2" name="amountid2" value="">
+                <input type="hidden" id="currentvalue2" name="currentvalue2" value="">
+                <label for="amounttoremove">Amount to Remove</label>
+                <input type="text" class="form-control" id="amounttoremove" name="amounttoremove" placeholder="Insert amount to be Removed"></input>
+                </div>
+                <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  <button type="submit" name="remove_value" class="btn btn-primary">Remove Amount</button>
+                </div>
+              </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->

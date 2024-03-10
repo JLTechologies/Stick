@@ -65,7 +65,7 @@ if (isset($_POST['admin_reg_user'])) {
 }
 
 // LOGIN USER
-if (isset($_POST['login_user'])) {
+/*if (isset($_POST['login_user'])) {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = mysqli_real_escape_string($conn, $_POST['password']);
   
@@ -82,8 +82,9 @@ if (isset($_POST['login_user'])) {
         $results = mysqli_query($conn, $query);
         if (mysqli_num_rows($results) == 1) {
           session_start();
+          //user_perms($groupid, $conn);
           $_SESSION['email'] = $email;
-          //$_SESSION['group'] = $groupid;
+          //$_SESSION['group'] = $permissions();
           $_SESSION['success'] = "Welcome $email.";
           header('location: ./index.php');
         }else {
@@ -92,4 +93,22 @@ if (isset($_POST['login_user'])) {
     }
   }
 
+
+//GET USER PERMISSIONS SET BY GROUP
+function user_perms($groupid, $conn) {
+  $getperms = "SELECT permissionname, setting FROM permissions INNER JOIN permissionslist ON permissions.permissionID = permissionslist.permissionID WHERE groupID = '$groupid'";
+  /*$countperms = "SELECT COUNT(permissionID) 'perms' FROM permissions WHERE groupID = $groupid";
+  $countperm = mysqli_query($conn, $countperms);
+  while ($perm = mysqli_fetch_assoc($countperm)) {
+    $countp = htmlspecialchars($perm['perms']);
+  }
+  $permissions = array();
+  $permlist = mysqli_query($conn, $getperms);
+  while ($perms = mysqli_fetch_assoc($permlist)) {
+    $permissions[] = $perms;
+  }
+
+  $permsdone = 'done';
+  return $permissions;
+}*/
   ?>

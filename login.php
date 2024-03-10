@@ -6,7 +6,7 @@
   <link rel="shortcut icon" href="./favicon.jpg" type="image/x-icon">
     <?php
         include ('./config.php');
-        include('./authentication.php');
+        include ('./authentication.php');
 		
 	include('./queries.php');
 	

@@ -1,6 +1,7 @@
 <?php
 //connect to the database
-include('../config.php');
+include('./config.php');
+include('./authentication.php');
 $errors = array(); 
 
 
@@ -8,7 +9,7 @@ $errors = array();
 if (isset($_POST['new_password'])) {
   $user = mysqli_real_escape_string($conn, $_POST['userid']);
   $password = mysqli_real_escape_string($conn, $_POST['password']);
-  $verify = mysqli_real_escape_string($conn, $_POST['verify_pasword']);
+  $verify = mysqli_real_escape_string($conn, $_POST['verify_password']);
 
   if (empty($password)) { array_push($errors, "Password is required");}
   if (empty($verify)) { array_push($errors, "You need to retype the password");}
@@ -18,8 +19,8 @@ if (isset($_POST['new_password'])) {
     $def_pass = md5($password);
     $updatepass = "UPDATE users SET password = '$def_pass' WHERE userid = '$user'";
     mysqli_query($conn, $updatepass);
-    $_SESSION['success'] = "Password has been updated";
-    header('location: ./account.php');
+    $_SESSION['success'] = "Password has been updated"; 
+    header('location: ../login.php');
   }
 }
 
@@ -53,7 +54,7 @@ if (isset($_POST['remove_value'])) {
 
     mysqli_query($conn, $AmountADD);
     $_SESSION['success'] = "Stock has been updated successfully.";
-    header('location: ./index.php');
+    header("location: ./index.php");
   }
 }
   ?>

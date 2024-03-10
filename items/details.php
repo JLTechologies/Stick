@@ -19,6 +19,7 @@
   if (isset($_GET['logout'])) {
     session_destroy();
     unset($_SESSION['email']);
+    unset($_SESSION['groupid']);
     unset($_SESSION['success']);
     header("location: ../login.php");
   }
@@ -36,7 +37,7 @@
     $price = htmlspecialchars($itemdata['price']);
     $extreference = htmlspecialchars($itemdata['reference']);
     $minamount = htmlspecialchars($itemdata['min_amount']);
-    $measurement = htmlspecialchars($itemdata['measurename']);
+    $measure = htmlspecialchars($itemdata['shortcode']);
     $brandname = htmlspecialchars($itemdata['brandname']);
     $brandurl = htmlspecialchars($itemdata['url']);
     $brandcontactname = htmlspecialchars($itemdata['brandcname']);
@@ -269,8 +270,7 @@
                               $amountid = htmlspecialchars($value['amountID']);
                             }
                         ?>
-                        <td class="text-center"><?php echo $defvalue;?> / <?php echo $minamount;?>  <button type="button" class="btn btn-success open-addamount" data-target="#open-addamount" data-toggle="modal" data-id="<?php echo $amountid;?>" data-addvalue="<?php echo $defvalue;?>">Add</button>
-                        <button class="btn btn-danger open-removeamount" data-target="#open-removeamount" data-toggle="modal" data-id2="<?php echo $amountid;?>" data-removevalue="<?php echo $defvalue;?>">Subtract</button></td>
+                        <td class="text-center" <?php if ($defvalue <= $minamount) {?>style="color:red;"<?php }?>><?php echo $defvalue;?> / <?php echo $minamount;?> <?php echo $measure;?></td>
                         <?php };
                         ?>
                         </tr>
@@ -317,61 +317,6 @@
       <!-- /.card -->
     </div>
     <!-- /.content -->
-    <div class="modal fade" id="open-addamount">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Add Amount</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form action="./index.php" method="post">
-                <input type="hidden" id="amountid" name="amountid" value="">
-                <input type="hidden" id="currentvalue" name="currentvalue" value="">
-                <label for="amounttoadd">Amount to Add</label>
-                <input type="text" class="form-control" id="amounttoadd" name="amounttoadd" placeholder="Insert amount to be added"></input>
-                </div>
-                <div class="modal-footer justify-content-between">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <button type="submit" name="add_value" class="btn btn-primary">Add Amount</button>
-                </div>
-              </form>
-          </div>
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>
-      <!-- /.modal -->
-      
-      <div class="modal fade" id="open-removeamount">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h4 class="modal-title">Remove Amount</h4>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <form action="./index.php" method="post">
-                <input type="hidden" id="amountid2" name="amountid2" value="">
-                <input type="hidden" id="currentvalue2" name="currentvalue2" value="">
-                <label for="amounttoremove">Amount to Remove</label>
-                <input type="text" class="form-control" id="amounttoremove" name="amounttoremove" placeholder="Insert amount to be Removed"></input>
-                </div>
-                <div class="modal-footer justify-content-between">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                  <button type="submit" name="remove_value" class="btn btn-primary">Remove Amount</button>
-                </div>
-              </form>
-          </div>
-          <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-      </div>
-      <!-- /.modal -->
   </div>
   <!-- /.content-wrapper -->
 

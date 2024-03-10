@@ -6,21 +6,10 @@
   <link rel="shortcut icon" href="../favicon.jpg" type="image/x-icon">
   <?php
   include('../../config.php');
-  include('../authentication.php');
-  include('../server.php');
-
-  //if (!isset($_SESSION['email'])) {
-   // $_SESSION['msg'] = "You must log in first";
-    //header('location: ../login.php');
-  //}
-  //if (isset($_GET['logout'])) {
-    //session_destroy();
-    //unset($_SESSION['email']);
-    //unset($_SESSION['success']);
-    //header("location: ../login.php");
-  //}
+  $_SESSION['message'] = '';
 
   include('../queries.php');
+  include('../server.php');
 
   $name = mysqli_query($conn, $sitename);
   if (! $name) {
@@ -35,6 +24,9 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+  <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+  <link rel="stylesheet" href="../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../css/adminlte.min.css">
 </head>
@@ -87,7 +79,7 @@
             </a>
           </li>
 		  <li class="nav-item">
-            <a href="../locations/" class="nav-link">
+            <a href="../locations.php" class="nav-link">
               <i class="nav-icon fas fa-users-cog"></i>
               <p>
                 Locations
@@ -111,7 +103,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="./" class="nav-link active">
+			<a href="../brands/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Brands
@@ -119,7 +111,7 @@
 			</a>
 			</li>
       <li class="nav-item">
-			<a href="./contact/" class="nav-link">
+			<a href="../brands/contacts/" class="nav-link">
 				<i class="nav-icon fas fa-th"></i>
 				<p>
 					Contacts
@@ -134,8 +126,8 @@
 				</p>
 			</a>
 			</li>
-		  <li class="nav-item menu-closed">
-        <a href="#" class="nav-link">
+		  <li class="nav-item menu-open">
+        <a href="#" class="nav-link active">
           <i class="nav-icon fas fa-tree"></i>
             <p>
               Items
@@ -143,9 +135,6 @@
             </p>
         </a>
         <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="../items" class="nav-link">Complete List</a>
-            </li>
           <?php
           $getroot = mysqli_query($conn, $rootcategories);
 
@@ -156,11 +145,7 @@
           while ($row2 = mysqli_fetch_assoc($getroot)) {
             ?>
             <li class="nav-item">
-              <a href="../items/list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link" <?php if(htmlspecialchars($row2['active']) == 'false') 
-              {?>
-              hidden
-              <?php };
-              ?>><?php echo htmlspecialchars($row2['name']);?></a>
+              <a href="./list.php?id=<?php echo htmlspecialchars($row2['categoryid']);?>" class="nav-link"><?php echo htmlspecialchars($row2['name']);?></a>
             </li>
           <?php };
           ?>
@@ -219,8 +204,9 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="../">Admin</a></li>
-              <li class="breadcrumb-item"><a href ="../">Dashboard</a></li>
-              <li class="breadcrumb-item active">Brands</li>
+              <li class="breadcrumb-item"><a href="../">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="./index.php">Items</a></li>
+              <li class="breadcrumb-item">New Item</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -230,98 +216,106 @@
 
     <!-- Main content -->
     <div class="content">
+      <div class="container-fluid">
+        <?php include ('../errors.php');?>
           <!-- notification message -->
   	<?php if (isset($_SESSION['success'])) : ?>
       <div class="error success" >
       	<h3>
           <?php 
           	echo $_SESSION['success'];
-            unset($_SESSION["success"]);
+            unset($_SESSION['success']);
           ?>
       	</h3>
       </div>
   	<?php endif ?>
-      <div class="container-fluid">
         <div class="row">
-          <div class="col-lg-6">
+          <div class="col-lg-12">
             <div class="card">
-              <div class="card-body table-responsive p-0">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Index</th>
-                      <th>URL</th>
-                      <th>Name</th>
-                      <th>Edit</th>
-                      <th>Remove</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php
-                      $getbrandlist = mysqli_query($conn, $brandlist);
-
-                      if (! $getbrandlist) {
-                        die('Could not fetch data: '.mysqli_error($conn));
-                      }
-
-                      while($row = mysqli_fetch_assoc($getbrandlist)) {
-                        ?>
-                        <tr class="align-middle">
-                          <td class="text-center"><?php echo htmlspecialchars($row['brandID']);?></td>
-                          <td class="text-center"><a href="<?php echo htmlspecialchars($row['url']);?>" target="_blank"><?php echo htmlspecialchars($row['brandname']);?></a></td>
-                          <td class="text-center"><?php echo htmlspecialchars($row['brandname']);?></td>
-                          <td>
-                            <form name="brandedit" action="./edit.php" method="post">
-                              <input type="hidden" name="brandedit" value="<?php echo htmlspecialchars($row['brandID']);?>"/>
-                              <button type="submit" class="btn btn-warning btn-block" name="brandedit">Edit brand</button>
-                            </form>
-                          </td>
-                          <td>
-                            <form action="./index.php" method="post">
-                              <input type="hidden" name="brandremove" value="<?php echo htmlspecialchars($row['brandID']);?>"/>
-                              <button type="submit" class="btn btn-danger btn-block" name="brandremove">Remove brand</button>
-                            </form>
-                          </td>        
-                     <?php };
-                    ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="card card-primary">
-              <div class="card-header">
-                <h3 class="card-title">Add Brand</h3>
-              </div>
-              <form action="./index.php" method="post">
+                <div class="card-header">
+                    <h3 class="card-title">Add Item</h3>
+                </div>
+                <form name="add_item" action="./new.php" method="post">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="brandname">Brand name</label>
-                    <input type="text" class="form-control" id="brandname" name="brandname" placeholder="Enter Brand Name">
+                    <label for="itemname">Name</label>
+                    <input type="text" class="form-control" id="itemname" name="item_name">
                   </div>
                   <div class="form-group">
-                    <label for="brandurl">Brand URL</label>
-                    <input type="text" class="form-control" id="brandurl" name="brandurl" placeholder="Enter Brand URL">
+                    <label for="reference">External Reference</label>
+                    <input type="text" class="form-control" id="reference" name="external_ref">
                   </div>
                   <div class="form-group">
-                    <label for="brandcontact">Brand Contact</label>
-                    <select class="custom-select form-control border border-width-2" id="brandcontact" name="brandcontact" placeholder="Please select a contact">
+                    <label for="itemprice">Price</label>
+                    <input type="text" class="form-control" id="itemprice" name="item_price">
+                  </div>                  
+                  <div class="form-group">
+                    <label for="categoryid">Category</label>
+                    <select class="custom-select form-control border border-width-2" id="categoryid" name="categoryid">
                       <?php
-                        $getcontact = mysqli_query($conn, $brandcontactlist);
+                        $getchildcategories = mysqli_query($conn, $childcategories);
 
-                        if (! $getcontact) {
+                        if (! $getchildcategories) {
                           die('Could not fetch data: '.mysqli_error($conn));
                         }
-                        while ($row1 = mysqli_fetch_assoc($getcontact)) {?>
-                          <option value="<?php echo htmlspecialchars($row1['brandcontactID']) ;?>"><?php echo htmlspecialchars($row1['brandcname']);?></option>
+                        while ($row1 = mysqli_fetch_assoc($getchildcategories)) {?>
+                          <option value="<?php echo htmlspecialchars($row1['childcategoryID']) ;?>"><?php echo htmlspecialchars($row1['childname']);?></option>
+                        <?php };
+                        ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="minamount">Minimum amount </label>
+                    <input type="text" class="form-control" id="minamount" name="min_amount">
+                  </div>
+                  <div class="form-group">
+                    <label for="brand">Brand</label>
+                    <select class="custom-select form-control border border-width-2" id="brand" name="brand_name">
+                      <?php
+                        $getbrands = mysqli_query($conn, $brandlist);
+
+                        if (! $getbrands) {
+                          die('Could not fetch data: '.mysqli_error($conn));
+                        }
+                        while ($row3 = mysqli_fetch_assoc($getbrands)) {?>
+                          <option value="<?php echo htmlspecialchars($row3['brandID']) ;?>"><?php echo htmlspecialchars($row3['name']);?></option>
+                        <?php };
+                        ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="measure">Measurement</label>
+                    <select class="custom-select form-control border border-width-2" id="measure" name="measure_select">
+                      <?php
+                        $getmeasurements = mysqli_query($conn, $measurements);
+
+                        if (! $getmeasurements) {
+                          die('Could not fetch data: '.mysqli_error($conn));
+                        }
+                        while ($row4 = mysqli_fetch_assoc($getmeasurements)) {?>
+                          <option value="<?php echo htmlspecialchars($row4['measureID']) ;?>"><?php echo htmlspecialchars($row4['name']);?> / <?php echo htmlspecialchars($row4['shortcode']);?></option>
+                        <?php };
+                        ?>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="sorting">Sorting</label>
+                    <select class="custom-select form-control border border-width-2" id="sorting" name="sorting_select">
+                      <?php
+                        $getsorting = mysqli_query($conn, $sortings);
+
+                        if (! $getsorting) {
+                          die('Could not fetch data: '.mysqli_error($conn));
+                        }
+                        while ($row5 = mysqli_fetch_assoc($getsorting)) {?>
+                          <option value="<?php echo htmlspecialchars($row5['sortingID']) ;?>"><?php echo htmlspecialchars($row5['peramount']);?></option>
                         <?php };
                         ?>
                     </select>
                   </div>
                 </div>
                 <div class="card-footer">
-                  <button type="submit" name="brandadd" class="btn btn-primary btn-block">Add Brand</button>
+                  <button type="submit" class="btn btn-primary">Add Item</button>
                 </div>
               </form>
             </div>

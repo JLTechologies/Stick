@@ -234,13 +234,13 @@
       <div class="active tab-pane" id="info">
         <p><?php echo $lastname;?> <?php echo $firstname;?></p>
         <p><?php echo $email;?></p>
-        <p>+32 <?php echo $phone;?></p>
+        <p>+<?php echo $phone;?></p>
         <p><?php echo $groupname;?></p>
         <p><?php echo $team;?></p>
       </div>
       <!-- /.tab-pane -->
       <div class="tab-pane" id="password">
-        <form class="form-horizontal">
+        <form class="form-horizontal" action="./index.php" method="post">
           <div class="form-group row">
             <label for="password" class="col-sm-2 col-form-label">Password</label>
             <div class="col-sm-10">

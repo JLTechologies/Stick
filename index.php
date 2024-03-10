@@ -20,6 +20,7 @@
   if (isset($_GET['logout'])) {
     session_destroy();
     unset($_SESSION['email']);
+    unset($_SESSION['groupid']);
     unset($_SESSION['success']);
     header("location: ../login.php");
   }
@@ -177,7 +178,7 @@
             <div class="error success" >
       	      <h3>
                 <?php 
-          	      echo $_SESSION['success'];
+          	      echo($_SESSION['success']);
                   unset($_SESSION['success']);
                 ?>
               </h3>

@@ -25,6 +25,7 @@
   if (isset($_GET['logout'])) {
     session_destroy();
     unset($_SESSION['email']);
+    unset($_SESSION['groupid']);
     unset($_SESSION['success']);
     header("location: ../login.php");
   }
@@ -198,7 +199,7 @@
               <table class="table table-bordered table-stripe" id="main">
                 <thead>
                   <tr>
-                    <th>Index</th>
+                    <th>Reference</th>
                     <th>Name</th>
                     <th>Brand</th>
                     <th>Details</th>
@@ -226,7 +227,7 @@
                       $itemid = htmlspecialchars($row['itemID']);
                       $minamount = htmlspecialchars($row['min_amount']);?>
                     <tr class="align-middle">
-                      <td class="text-center"><?php echo htmlspecialchars($row['itemID']);?></td>
+                      <td class="text-center"><?php echo htmlspecialchars($row['reference']);?></td>
                       <td class="text-center"><?php echo htmlspecialchars($row['itemname']);?></td>
                       <td class="text-center"><?php echo htmlspecialchars($row['brandname']);?></td>
                       <td>
@@ -250,7 +251,7 @@
                           $amountid = htmlspecialchars($value['amountID']);
                         }
                         ?>
-                        <td class="text-center"><?php echo $defvalue;?> / <?php echo $minamount;?>  <button type="button" class="btn btn-success open-addamount" data-target="#open-addamount" data-toggle="modal" data-id="<?php echo $amountid;?>" data-addvalue="<?php echo $defvalue;?>">Add</button>
+                        <td class="text-center" <?php if ($defvalue <= $minamount) {?>style="color:red;"<?php }?>><?php echo $defvalue;?> / <?php echo $minamount;?>  <button type="button" class="btn btn-success open-addamount" data-target="#open-addamount" data-toggle="modal" data-id="<?php echo $amountid;?>" data-addvalue="<?php echo $defvalue;?>">Add</button>
                         <button class="btn btn-danger open-removeamount" data-target="#open-removeamount" data-toggle="modal" data-id2="<?php echo $amountid;?>" data-removevalue="<?php echo $defvalue;?>">Subtract</button></td>
                         
                       <?php }

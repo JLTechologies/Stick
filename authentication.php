@@ -3,8 +3,8 @@ session_start();
 
 // initializing variables
 $username = "";
-$group = "";
 $email    = "";
+$groupid    = "";
 $errors = array(); 
 
 // connect to the database
@@ -28,16 +28,39 @@ if (isset($_POST['login_user'])) {
         $results = mysqli_query($conn, $query);
         if (mysqli_num_rows($results) == 1) {
           $_SESSION['email'] = $email;
-          while($userdata = mysqli_fetch_assoc($query)) {
-            $group = htmlspecialchars($userdata['groupID']);
+          while($userdata = mysqli_fetch_assoc($results)) {
+            $groupid = htmlspecialchars($userdata['groupID']);
+            $_SESSION['groupid'] = $groupid;
           }
+          //user_perms($groupid, $conn);
           $_SESSION['success'] = "Welcome $email.";
-          $_SESSION['group'] = $group;
           header('location: ./index.php');
         }else {
             array_push($errors, "Wrong email or password combination");
         }
     }
   }
+
+
+  //GET USER PERMISSIONS SET BY GROUP
+  /*function user_perms($groupid, $conn) {
+    $getperms = "SELECT permissionname, setting FROM permissions INNER JOIN permissionslist ON permissions.permissionID = permissionslist.permissionID WHERE groupID = '$groupid'";
+    $permamount = "SELECT COUNT(permissionID) 'perms' FROM permissions WHERE groupID = '$groupid'";
+    $permcount = (mysqli_query($conn, $permamount));
+    while ($count = mysqli_fetch_assoc($permcount)) {
+      $amountperm = htmlspecialchars($count['perms']);
+    }
+    $permlist = mysqli_query($conn, $getperms);
+    while ($perms = mysqli_fetch_assoc($permlist)) {
+      for($p = 1; $p <= $amountperm; $p++) {
+        $_SESSION[htmlspecialchars($perms['permissionname'])] = htmlspecialchars($perms['setting']);
+      }
+    }
+    if ($p === $permamount) {
+      unset($p, $permamount, $amountperm);
+      $result = 'done';
+      return $result;
+    }
+  }*/
 
   ?>
